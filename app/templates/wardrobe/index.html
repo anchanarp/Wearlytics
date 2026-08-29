@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}My Wardrobe | Wearlytics{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Digital Closet</p>
+    <h1>My Wardrobe</h1>
+    <p>Browse, filter, and manage your clothing items.</p>
+  </div>
+  <a href="{{ url_for('wardrobe.upload') }}" class="btn primary-button">
+    <span aria-hidden="true">+</span> Add Clothing
+  </a>
+</div>
+
+<!-- Filters & Search Toolbar -->
+<div class="toolbar-wrap">
+  <form action="{{ url_for('wardrobe.index') }}" method="get" class="filter-form">
+    <div class="filter-pills">
+      {% for cat in categories %}
+        <a href="{{ url_for('wardrobe.index', category=cat if cat != 'All' else '', season=request.args.get('season',''), q=search_query) }}" 
+           class="pill-item {% if selected_category == cat or (cat == 'All' and not selected_category) %}active{% endif %}">
+          {{ cat }}
+        </a>
+      {% endfor %}
+    </div>
+
+    <div class="filter-options row g-2 mt-2">
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="search-wrap w-100">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.8 4a6.8 6.8 0 1 1 0 13.6A6.8 6.8 0 0 1 10.8 4Zm0 2a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Zm6.75 10.14 3.16 3.15-1.42 1.42-3.15-3.16 1.41-1.41Z"/></svg>
+          <input name="q" type="search" placeholder="Search by name, brand, color..." value="{{ search_query }}">
+        </div>
+      </div>
+      
+      <div class="col-6 col-sm-3 col-md-3">
+        <select name="season" class="form-select-custom" onchange="this.form.submit()">
+          <option value="">All Seasons</option>
+          <option value="Summer" {% if selected_season == 'Summer' %}selected{% endif %}>Summer</option>
+          <option value="Winter" {% if selected_season == 'Winter' %}selected{% endif %}>Winter</option>
+          <option value="Spring/Fall" {% if selected_season == 'Spring/Fall' %}selected{% endif %}>Spring/Fall</option>
+        </select>
+      </div>
+
+      <div class="col-6 col-sm-3 col-md-3">
+        <a href="{{ url_for('wardrobe.index', favorite='1' if not favorite_only else '') }}" 
+           class="btn filter-fav-btn {% if favorite_only %}active{% endif %}">
+          ★ Favorites Only
+        </a>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Wardrobe Grid -->
+{% if items %}
+<div class="row g-3 g-md-4 mt-3">
+  {% for item in items %}
+  <div class="col-6 col-sm-4 col-lg-3">
+    <div class="clothing-card">
+      <div class="card-image-wrap">
+        <img src="{{ item.image_url }}" alt="{{ item.name }}" loading="lazy">
+        <span class="badge-category">{{ item.category }}</span>
+        
+        <form action="{{ url_for('wardrobe.toggle_favorite', item_id=item.id) }}" method="post" class="fav-form-overlay">
+          <button type="submit" class="btn-star-fav {% if item.is_favorite %}is-active{% endif %}" title="Toggle Favorite">
+            ★
+          </button>
+        </form>
+      </div>
+
+      <div class="card-body-custom">
+        <h3>{{ item.name }}</h3>
+        <p class="meta-info">{{ item.brand or 'Unbranded' }} • {{ item.color }} • {{ item.season }}</p>
+        
+        <div class="card-footer-custom">
+          <span class="wear-count">Worn {{ item.wear_count }}x</span>
+          <div class="card-actions">
+            <form action="{{ url_for('wardrobe.wear_item', item_id=item.id) }}" method="post" style="display:inline;">
+              <button type="submit" class="btn-action-icon" title="Log Wear">+1</button>
+            </form>
+            <a href="{{ url_for('wardrobe.edit_item', item_id=item.id) }}" class="btn-action-icon" title="Edit Item">✏</a>
+            <form action="{{ url_for('wardrobe.delete_item', item_id=item.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Remove this item?')">
+              <button type="submit" class="btn-action-icon delete" title="Delete">🗑</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">👔</div>
+  <h3>No clothing items found</h3>
+  <p>Try adjusting your search filters or add a new piece to your closet.</p>
+  <a href="{{ url_for('wardrobe.upload') }}" class="btn primary-button mt-3">+ Add Clothing</a>
+</div>
+{% endif %}
+{% endblock %}

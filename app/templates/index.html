@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Wearlytics{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">{{ today_str }}</p>
+    <h1>Welcome back, {{ current_user.name.split()[0] }}</h1>
+    <p>Here is what is happening with your wardrobe today.</p>
+  </div>
+  <a href="{{ url_for('wardrobe.upload') }}" class="btn primary-button">
+    <span aria-hidden="true">+</span> Add new clothing
+  </a>
+</div>
+
+<!-- Welcome Banner Card -->
+<section class="welcome-card" aria-labelledby="inspiration-heading">
+  <div class="welcome-copy">
+    <span class="chip">✦ AI Powered Styling</span>
+    <h2 id="inspiration-heading">Your next favourite look is waiting.</h2>
+    <p>We found new outfit combinations from the {{ total_items }} pieces in your wardrobe.</p>
+    <a href="{{ url_for('outfits.index') }}" class="btn light-button">
+      Explore AI outfits <span aria-hidden="true">→</span>
+    </a>
+  </div>
+  <div class="welcome-art" aria-hidden="true">
+    <span class="art-orbit orbit-one"></span>
+    <span class="art-orbit orbit-two"></span>
+    <div class="sparkle sparkle-one">✦</div>
+    <div class="sparkle sparkle-two">✦</div>
+    <svg viewBox="0 0 190 170"><path d="M64 36c12-12 50-12 62 0l18 18-18 16-12-11v76H76V59L64 70 46 54l18-18Z"/></svg>
+  </div>
+</section>
+
+<!-- Stats Grid -->
+<section class="stats-section" aria-labelledby="statistics-heading">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">At a glance</p>
+      <h2 id="statistics-heading">Your wardrobe overview</h2>
+    </div>
+    <a href="{{ url_for('analytics.index') }}">View analytics <span aria-hidden="true">→</span></a>
+  </div>
+  
+  <div class="row g-3 g-xl-4">
+    <div class="col-6 col-md-3">
+      <a href="{{ url_for('wardrobe.index') }}" class="stat-card-link">
+        <article class="stat-card">
+          <div class="stat-icon clothes-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 3 5 3 5-3 4 5-4 3v10H7V11L3 8l4-5Zm1.1 2.7L5.8 8.55 9 10.95V19h6v-8.05l3.2-2.4-2.3-2.85-3.9 2.35-3.9-2.35Z"/></svg>
+          </div>
+          <div>
+            <p>Total Clothes</p>
+            <strong>{{ total_items }}</strong>
+            <span class="trend positive">↑ Active wardrobe</span>
+          </div>
+        </article>
+      </a>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <a href="{{ url_for('outfits.index') }}" class="stat-card-link">
+        <article class="stat-card">
+          <div class="stat-icon ai-icon">✦</div>
+          <div>
+            <p>AI Recommendations</p>
+            <strong>{{ total_outfits }}</strong>
+            <span class="trend positive">↑ Curated looks</span>
+          </div>
+        </article>
+      </a>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <a href="{{ url_for('planner.index') }}" class="stat-card-link">
+        <article class="stat-card">
+          <div class="stat-icon plan-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3ZM4 9V7a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2H4Zm0 2h16v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8Z"/></svg>
+          </div>
+          <div>
+            <p>Weekly Plans</p>
+            <strong>{{ total_plans }}</strong>
+            <span class="trend neutral">Scheduled fits</span>
+          </div>
+        </article>
+      </a>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <a href="{{ url_for('wardrobe.index', favorite='1') }}" class="stat-card-link">
+        <article class="stat-card">
+          <div class="stat-icon favorite-icon">♥</div>
+          <div>
+            <p>Favorites</p>
+            <strong>{{ total_favorites }}</strong>
+            <span class="trend positive">★ Top pieces</span>
+          </div>
+        </article>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Recent Items Section -->
+<section class="recent-section mt-5">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Recent Additions</p>
+      <h2>Your Wardrobe Pieces</h2>
+    </div>
+    <a href="{{ url_for('wardrobe.index') }}">See all items <span aria-hidden="true">→</span></a>
+  </div>
+
+  <div class="row g-3 g-md-4">
+    {% for item in recent_items %}
+    <div class="col-6 col-sm-4 col-md-3">
+      <div class="clothing-card">
+        <div class="card-image-wrap">
+          <img src="{{ item.image_url }}" alt="{{ item.name }}" loading="lazy">
+          <span class="badge-category">{{ item.category }}</span>
+          {% if item.is_favorite %}
+            <span class="favorite-star">★</span>
+          {% endif %}
+        </div>
+        <div class="card-body-custom">
+          <h3>{{ item.name }}</h3>
+          <p class="meta-info">{{ item.brand or item.color }} • {{ item.season }}</p>
+          <div class="card-footer-custom">
+            <span class="wear-count">Worn {{ item.wear_count }}x</span>
+            <form action="{{ url_for('wardrobe.wear_item', item_id=item.id) }}" method="post" style="display:inline;">
+              <button type="submit" class="btn-wear-icon" title="+1 Wear">+</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,333 @@
+{"kind":"deck","id":"pr/hpozy4","name":"Deck"}
+{"kind":"layout","layoutId":"ee2937b2-82cd-4786-a427-1b8547ed7630","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"c873f503-10a9-4a8a-aa3b-abf55415451d","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/e5x4dy","slide":1,"title":"MCA MINI PROJECT  •  FIRST INTERIM PRESENTATION","textShapes":7}
+{"kind":"shape","id":"sh/5w7edcj2","slide":1,"bbox":[-95,465,390,390]}
+{"kind":"shape","id":"sh/itgv2x0b","slide":1,"bbox":[915,-145,490,490]}
+{"kind":"textbox","id":"sh/jupwb21w","slide":1,"text":"MCA MINI PROJECT  •  FIRST INTERIM PRESENTATION","textPreview":"MCA MINI PROJECT  •  FIRST INTERIM PRESENTATION","textChars":47,"textLines":1,"bbox":[72,73,560,26]}
+{"kind":"textbox","id":"sh/wryd0ni5","slide":1,"text":"Wearlytics","textPreview":"Wearlytics","textChars":10,"textLines":1,"bbox":[72,143,560,75]}
+{"kind":"textbox","id":"sh/hs7e9sjq","slide":1,"text":"AI Powered Wardrobe and\nOutfit Recommendation System","textPreview":"AI Powered Wardrobe and | Outfit Recommendation System","textChars":52,"textLines":2,"bbox":[72,229,540,92]}
+{"kind":"shape","id":"sh/upwvyx0f","slide":1,"bbox":[72,370,308,1]}
+{"kind":"textbox","id":"sh/vq5w7i10","slide":1,"text":"Anchana R P  |  Master of Computer Applications","textPreview":"Anchana R P  |  Master of Computer Applications","textChars":47,"textLines":1,"bbox":[72,397,500,25]}
+{"kind":"textbox","id":"sh/gnixcrip","slide":1,"text":"College Name  •  Guide Name","textPreview":"College Name  •  Guide Name","textChars":27,"textLines":1,"bbox":[72,433,420,22]}
+{"kind":"textbox","id":"sh/58b6xwvy","slide":1,"text":"WEARLYTICS","textPreview":"WEARLYTICS","textChars":10,"textLines":1,"bbox":[72,678,200,16]}
+{"kind":"textbox","id":"sh/4n25orud","slide":1,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[1160,678,50,16]}
+{"kind":"image","id":"im/0f65cjmt","slide":1,"name":"","geometry":"roundRect","alt":"Modern wardrobe and AI outfit illustration","bbox":[655,70,560,570]}
+{"kind":"notes","id":"nt/e5x4dy","slide":1,"text":""}
+{"kind":"slide","id":"sl/r3v4cd","slide":2,"title":"PROJECT INTRODUCTION","textShapes":18}
+{"kind":"textbox","id":"sh/0j254b2x","slide":2,"text":"PROJECT INTRODUCTION","textPreview":"PROJECT INTRODUCTION","textChars":20,"textLines":1,"bbox":[70,50,360,22]}
+{"kind":"textbox","id":"sh/zit4b6ls","slide":2,"text":"A smarter way to understand your wardrobe","textPreview":"A smarter way to understand your wardrobe","textChars":41,"textLines":1,"bbox":[70,82,980,94]}
+{"kind":"textbox","id":"sh/yhk321k7","slide":2,"text":"Wearlytics brings clothing, planning, and recommendations into one digital experience.","textPreview":"Wearlytics brings clothing, planning, and recommendations into one digital experience.","textChars":86,"textLines":1,"bbox":[70,184,1040,28]}
+{"kind":"shape","id":"sh/dgbm9w3m","slide":2,"bbox":[70,672,1140,1]}
+{"kind":"textbox","id":"sh/cf2l0r21","slide":2,"text":"WEARLYTICS  /  MCA MINI PROJECT","textPreview":"WEARLYTICS  /  MCA MINI PROJECT","textChars":31,"textLines":1,"bbox":[70,683,360,17]}
+{"kind":"textbox","id":"sh/bet476lg","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1160,683,50,17]}
+{"kind":"shape","id":"sh/qdk3y1kv","slide":2,"bbox":[78,233,10,10]}
+{"kind":"textbox","id":"sh/pcrm5w3a","slide":2,"text":"Digitally organize every clothing item","textPreview":"Digitally organize every clothing item","textChars":38,"textLines":1,"bbox":[99,225,509,34]}
+{"kind":"shape","id":"sh/obilwr25","slide":2,"bbox":[78,289,10,10]}
+{"kind":"textbox","id":"sh/itw7ypgb","slide":2,"text":"Upload wardrobe images for easy reference","textPreview":"Upload wardrobe images for easy reference","textChars":41,"textLines":1,"bbox":[99,281,509,34]}
+{"kind":"shape","id":"sh/3up8ruxw","slide":2,"bbox":[78,345,10,10]}
+{"kind":"textbox","id":"sh/4vyp0zyh","slide":2,"text":"Receive AI-based outfit recommendations","textPreview":"Receive AI-based outfit recommendations","textChars":39,"textLines":1,"bbox":[99,337,509,34]}
+{"kind":"shape","id":"sh/5w7qt4f2","slide":2,"bbox":[78,401,10,10]}
+{"kind":"textbox","id":"sh/u5w7upgf","slide":2,"text":"Track wardrobe insights and usage patterns","textPreview":"Track wardrobe insights and usage patterns","textChars":42,"textLines":1,"bbox":[99,393,509,34]}
+{"kind":"shape","id":"sh/v658nux0","slide":2,"bbox":[78,457,10,10]}
+{"kind":"textbox","id":"sh/grepwzyl","slide":2,"text":"Plan looks for the upcoming week","textPreview":"Plan looks for the upcoming week","textChars":32,"textLines":1,"bbox":[99,449,509,34]}
+{"kind":"shape","id":"sh/hsnqp4f6","slide":2,"bbox":[700,210,430,330]}
+{"kind":"textbox","id":"sh/61c7q5gj","slide":2,"text":"YOUR DIGITAL WARDROBE","textPreview":"YOUR DIGITAL WARDROBE","textChars":21,"textLines":1,"bbox":[740,246,290,20]}
+{"kind":"shape","id":"sh/725ojaxo","slide":2,"bbox":[740,292,44,44]}
+{"kind":"textbox","id":"sh/buhwbm9k","slide":2,"text":"⌕","textPreview":"⌕","textChars":1,"textLines":1,"bbox":[740,299,44,28]}
+{"kind":"shape","id":"sh/at8v2hsz","slide":2,"bbox":[830,292,44,44]}
+{"kind":"textbox","id":"sh/xwzedwra","slide":2,"text":"✦","textPreview":"✦","textChars":1,"textLines":1,"bbox":[830,299,44,28]}
+{"kind":"shape","id":"sh/cvqd4rap","slide":2,"bbox":[920,292,44,44]}
+{"kind":"textbox","id":"sh/zy1wfm9g","slide":2,"text":"▦","textPreview":"▦","textChars":1,"textLines":1,"bbox":[920,299,44,28]}
+{"kind":"shape","id":"sh/yxsv61sv","slide":2,"bbox":[740,374,318,92]}
+{"kind":"textbox","id":"sh/l0jehwrm","slide":2,"text":"One place for clothes, ideas, and plans.","textPreview":"One place for clothes, ideas, and plans.","textChars":40,"textLines":1,"bbox":[766,398,270,45]}
+{"kind":"shape","id":"sh/kzad8ra1","slide":2,"bbox":[740,488,91,31]}
+{"kind":"textbox","id":"sh/f2xc329c","slide":2,"text":"Organize","textPreview":"Organize","textChars":8,"textLines":1,"bbox":[740,495,91,17]}
+{"kind":"shape","id":"sh/e1ovuxsr","slide":2,"bbox":[840,488,91,31]}
+{"kind":"textbox","id":"sh/47mt43qp","slide":2,"text":"Discover","textPreview":"Discover","textChars":8,"textLines":1,"bbox":[840,495,91,17]}
+{"kind":"shape","id":"sh/58vad87u","slide":2,"bbox":[940,488,74,31]}
+{"kind":"textbox","id":"sh/i5kb2t8j","slide":2,"text":"Plan","textPreview":"Plan","textChars":4,"textLines":1,"bbox":[940,495,74,17]}
+{"kind":"notes","id":"nt/r3v4cd","slide":2,"text":""}
+{"kind":"slide","id":"sl/taayoo","slide":3,"title":"PROBLEM STATEMENT","textShapes":18}
+{"kind":"textbox","id":"sh/zehoz6l0","slide":3,"text":"PROBLEM STATEMENT","textPreview":"PROBLEM STATEMENT","textChars":17,"textLines":1,"bbox":[70,50,360,22]}
+{"kind":"textbox","id":"sh/0fqpsrml","slide":3,"text":"Wardrobe decisions are still largely manual","textPreview":"Wardrobe decisions are still largely manual","textChars":43,"textLines":1,"bbox":[70,82,980,94]}
+{"kind":"textbox","id":"sh/1gj61w36","slide":3,"text":"The lack of a single digital view creates friction before the day even begins.","textPreview":"The lack of a single digital view creates friction before the day even begins.","textChars":78,"textLines":1,"bbox":[70,184,1040,28]}
+{"kind":"shape","id":"sh/mhs7u1kr","slide":3,"bbox":[70,672,1140,1]}
+{"kind":"textbox","id":"sh/ni1o36lw","slide":3,"text":"WEARLYTICS  /  MCA MINI PROJECT","textPreview":"WEARLYTICS  /  MCA MINI PROJECT","textChars":31,"textLines":1,"bbox":[70,683,360,17]}
+{"kind":"textbox","id":"sh/ojapwb2h","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1160,683,50,17]}
+{"kind":"shape","id":"sh/9kj65g32","slide":3,"bbox":[70,230,525,118]}
+{"kind":"shape","id":"sh/2lonih47","slide":3,"bbox":[93,255,44,44]}
+{"kind":"textbox","id":"sh/3mxormls","slide":3,"text":"↯","textPreview":"↯","textChars":1,"textLines":1,"bbox":[93,262,44,28]}
+{"kind":"textbox","id":"sh/ba1or698","slide":3,"text":"Manual tracking","textPreview":"Manual tracking","textChars":15,"textLines":1,"bbox":[155,256,330,25]}
+{"kind":"textbox","id":"sh/q9sny1sn","slide":3,"text":"Clothes are difficult to catalogue and retrieve.","textPreview":"Clothes are difficult to catalogue and retrieve.","textChars":48,"textLines":1,"bbox":[155,291,390,38]}
+{"kind":"shape","id":"sh/dwj6tgre","slide":3,"bbox":[645,230,525,118]}
+{"kind":"shape","id":"sh/cba50bat","slide":3,"bbox":[668,255,44,44]}
+{"kind":"textbox","id":"sh/36honmtc","slide":3,"text":"◌","textPreview":"◌","textChars":1,"textLines":1,"bbox":[668,262,44,28]}
+{"kind":"textbox","id":"sh/258nu1sr","slide":3,"text":"Matching effort","textPreview":"Matching effort","textChars":15,"textLines":1,"bbox":[730,256,330,25]}
+{"kind":"textbox","id":"sh/p8z6pwr2","slide":3,"text":"Choosing compatible outfits takes time.","textPreview":"Choosing compatible outfits takes time.","textChars":39,"textLines":1,"bbox":[730,291,390,38]}
+{"kind":"shape","id":"sh/o7q5wrah","slide":3,"bbox":[70,380,525,118]}
+{"kind":"shape","id":"sh/f2hojmt0","slide":3,"bbox":[93,405,44,44]}
+{"kind":"textbox","id":"sh/e1onqhsf","slide":3,"text":"⊙","textPreview":"⊙","textChars":1,"textLines":1,"bbox":[93,412,44,28]}
+{"kind":"textbox","id":"sh/ido72hcn","slide":3,"text":"Repeated purchases","textPreview":"Repeated purchases","textChars":18,"textLines":1,"bbox":[155,406,330,25]}
+{"kind":"textbox","id":"sh/jexobmds","slide":3,"text":"Items already owned are easy to overlook.","textPreview":"Items already owned are easy to overlook.","textChars":41,"textLines":1,"bbox":[155,441,390,38]}
+{"kind":"shape","id":"sh/4z6p4rud","slide":3,"bbox":[645,380,525,118]}
+{"kind":"shape","id":"sh/50f6dcvy","slide":3,"bbox":[668,405,44,44]}
+{"kind":"textbox","id":"sh/61o76hcj","slide":3,"text":"⌁","textPreview":"⌁","textChars":1,"textLines":1,"bbox":[668,412,44,28]}
+{"kind":"textbox","id":"sh/r2hofmd4","slide":3,"text":"No insight","textPreview":"No insight","textChars":10,"textLines":1,"bbox":[730,406,330,25]}
+{"kind":"textbox","id":"sh/s3qp8rup","slide":3,"text":"Wardrobe usage and gaps remain invisible.","textPreview":"Wardrobe usage and gaps remain invisible.","textChars":41,"textLines":1,"bbox":[730,441,390,38]}
+{"kind":"textbox","id":"sh/t4zqhwva","slide":3,"text":"The outcome: time-consuming choices and a wardrobe that is underused.","textPreview":"The outcome: time-consuming choices and a wardrobe that is underused.","textChars":69,"textLines":1,"bbox":[70,564,1020,35]}
+{"kind":"notes","id":"nt/taayoo","slide":3,"text":""}
+{"kind":"slide","id":"sl/tj9wsd","slide":4,"title":"PROPOSED SYSTEM","textShapes":23}
+{"kind":"textbox","id":"sh/14vet0ru","slide":4,"text":"PROPOSED SYSTEM","textPreview":"PROPOSED SYSTEM","textChars":15,"textLines":1,"bbox":[70,50,360,22]}
+{"kind":"textbox","id":"sh/eh4vils3","slide":4,"text":"Wearlytics turns wardrobe data into daily decisions","textPreview":"Wearlytics turns wardrobe data into daily decisions","textChars":51,"textLines":1,"bbox":[70,82,980,94]}
+{"kind":"textbox","id":"sh/z2dwrq9o","slide":4,"text":"A connected workflow replaces manual browsing with smart, personalized guidance.","textPreview":"A connected workflow replaces manual browsing with smart, personalized guidance.","textChars":80,"textLines":1,"bbox":[70,184,1040,28]}
+{"kind":"shape","id":"sh/o76xoval","slide":4,"bbox":[70,672,1140,1]}
+{"kind":"textbox","id":"sh/98fex0rq","slide":4,"text":"WEARLYTICS  /  MCA MINI PROJECT","textPreview":"WEARLYTICS  /  MCA MINI PROJECT","textChars":31,"textLines":1,"bbox":[70,683,360,17]}
+{"kind":"textbox","id":"sh/m54vm5sf","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1160,683,50,17]}
+{"kind":"shape","id":"sh/n6xwva90","slide":4,"bbox":[70,222,325,300]}
+{"kind":"textbox","id":"sh/4b2dcba1","slide":4,"text":"Existing System","textPreview":"Existing System","textChars":15,"textLines":1,"bbox":[104,257,220,28]}
+{"kind":"shape","id":"sh/pcbelgrm","slide":4,"bbox":[105,322,10,10]}
+{"kind":"textbox","id":"sh/don218z2","slide":4,"text":"Manual selection","textPreview":"Manual selection","textChars":16,"textLines":1,"bbox":[126,314,209,34]}
+{"kind":"shape","id":"sh/snels3yh","slide":4,"bbox":[105,374,10,10]}
+{"kind":"textbox","id":"sh/rm5kzyhw","slide":4,"text":"No digital record","textPreview":"No digital record","textChars":17,"textLines":1,"bbox":[126,366,209,34]}
+{"kind":"shape","id":"sh/qlw3qt0b","slide":4,"bbox":[105,426,10,10]}
+{"kind":"textbox","id":"sh/1s7258zy","slide":4,"text":"No recommendations","textPreview":"No recommendations","textChars":18,"textLines":1,"bbox":[126,418,209,34]}
+{"kind":"textbox","id":"sh/0rylw3yt","slide":4,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[420,348,100,26]}
+{"kind":"shape","id":"sh/fqpk3yh8","slide":4,"bbox":[540,202,590,340]}
+{"kind":"textbox","id":"sh/epw3udgn","slide":4,"text":"Wearlytics","textPreview":"Wearlytics","textChars":10,"textLines":1,"bbox":[580,240,300,30]}
+{"kind":"shape","id":"sh/pg729sza","slide":4,"bbox":[580,300,44,44]}
+{"kind":"textbox","id":"sh/ofyl0nyp","slide":4,"text":"✦","textPreview":"✦","textChars":1,"textLines":1,"bbox":[580,307,44,28]}
+{"kind":"textbox","id":"sh/8bqdsvax","slide":4,"text":"AI Outfit Recommendation","textPreview":"AI Outfit Recommendation","textChars":24,"textLines":1,"bbox":[636,312,186,28]}
+{"kind":"shape","id":"sh/9wzelgbi","slide":4,"bbox":[840,300,44,44]}
+{"kind":"textbox","id":"sh/m98vqls7","slide":4,"text":"▦","textPreview":"▦","textChars":1,"textLines":1,"bbox":[840,307,44,28]}
+{"kind":"textbox","id":"sh/7ahwjqts","slide":4,"text":"Digital Wardrobe","textPreview":"Digital Wardrobe","textChars":16,"textLines":1,"bbox":[896,312,186,28]}
+{"kind":"shape","id":"sh/wzadwva9","slide":4,"bbox":[580,368,44,44]}
+{"kind":"textbox","id":"sh/h0jep0bu","slide":4,"text":"◷","textPreview":"◷","textChars":1,"textLines":1,"bbox":[580,375,44,28]}
+{"kind":"textbox","id":"sh/ux8vuls3","slide":4,"text":"Weekly Planner","textPreview":"Weekly Planner","textChars":14,"textLines":1,"bbox":[636,380,186,28]}
+{"kind":"shape","id":"sh/vy1wnqto","slide":4,"bbox":[840,368,44,44]}
+{"kind":"textbox","id":"sh/c36dkba5","slide":4,"text":"◫","textPreview":"◫","textChars":1,"textLines":1,"bbox":[840,375,44,28]}
+{"kind":"textbox","id":"sh/x4fedwba","slide":4,"text":"Analytics Dashboard","textPreview":"Analytics Dashboard","textChars":19,"textLines":1,"bbox":[896,380,186,28]}
+{"kind":"shape","id":"sh/fy5gjeds","slide":4,"bbox":[580,436,44,44]}
+{"kind":"textbox","id":"sh/exwzq9cn","slide":4,"text":"⌕","textPreview":"⌕","textChars":1,"textLines":1,"bbox":[580,443,44,28]}
+{"kind":"textbox","id":"sh/10nyl4vy","slide":4,"text":"Smart Search","textPreview":"Smart Search","textChars":12,"textLines":1,"bbox":[636,448,186,28]}
+{"kind":"shape","id":"sh/0zehsjud","slide":4,"bbox":[840,436,44,44]}
+{"kind":"textbox","id":"sh/rulgfudw","slide":4,"text":"◉","textPreview":"◉","textChars":1,"textLines":1,"bbox":[840,443,44,28]}
+{"kind":"textbox","id":"sh/qtczmpcb","slide":4,"text":"User Authentication","textPreview":"User Authentication","textChars":19,"textLines":1,"bbox":[896,448,186,28]}
+{"kind":"notes","id":"nt/tj9wsd","slide":4,"text":""}
+{"kind":"slide","id":"sl/nq0oix","slide":5,"title":"SYSTEM WORKFLOW","textShapes":23}
+{"kind":"textbox","id":"sh/xcnqdk3q","slide":5,"text":"SYSTEM WORKFLOW","textPreview":"SYSTEM WORKFLOW","textChars":15,"textLines":1,"bbox":[70,50,360,22]}
+{"kind":"textbox","id":"sh/a9wri54f","slide":5,"text":"From wardrobe upload to actionable outfit insight","textPreview":"From wardrobe upload to actionable outfit insight","textChars":49,"textLines":1,"bbox":[70,82,980,94]}
+{"kind":"textbox","id":"sh/va58bal0","slide":5,"text":"Each step builds a reliable picture of the user’s clothing and preferences.","textPreview":"Each step builds a reliable picture of the user’s clothing and preferences.","textChars":75,"textLines":1,"bbox":[70,184,1040,28]}
+{"kind":"shape","id":"sh/kfy9ofmh","slide":5,"bbox":[70,672,1140,1]}
+{"kind":"textbox","id":"sh/5g7ahk32","slide":5,"text":"WEARLYTICS  /  MCA MINI PROJECT","textPreview":"WEARLYTICS  /  MCA MINI PROJECT","textChars":31,"textLines":1,"bbox":[70,683,360,17]}
+{"kind":"textbox","id":"sh/idgrmp4b","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1160,683,50,17]}
+{"kind":"shape","id":"sh/jepsfulw","slide":5,"bbox":[72,282,155,148]}
+{"kind":"textbox","id":"sh/0ju9cvmx","slide":5,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[90,300,54,28]}
+{"kind":"textbox","id":"sh/1k3ql03i","slide":5,"text":"User Login","textPreview":"User Login","textChars":10,"textLines":1,"bbox":[86,349,128,56]}
+{"kind":"textbox","id":"sh/dczml4ba","slide":5,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[227,338,33,26]}
+{"kind":"shape","id":"sh/sbqlczup","slide":5,"bbox":[260,282,155,148]}
+{"kind":"textbox","id":"sh/rqh4jut4","slide":5,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[278,300,54,28]}
+{"kind":"textbox","id":"sh/6p83apcj","slide":5,"text":"Upload Clothing","textPreview":"Upload Clothing","textChars":15,"textLines":1,"bbox":[274,349,128,56]}
+{"kind":"textbox","id":"sh/1gjmpob6","slide":5,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[415,338,33,26]}
+{"kind":"shape","id":"sh/0falgjul","slide":5,"bbox":[448,282,155,148]}
+{"kind":"textbox","id":"sh/fe14net0","slide":5,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[466,300,54,28]}
+{"kind":"textbox","id":"sh/eds3e9cv","slide":5,"text":"Store in Database","textPreview":"Store in Database","textChars":17,"textLines":1,"bbox":[462,349,128,56]}
+{"kind":"textbox","id":"sh/pkjmtobi","slide":5,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[603,338,33,26]}
+{"kind":"shape","id":"sh/ojalkjax","slide":5,"bbox":[636,282,155,148]}
+{"kind":"textbox","id":"sh/8ni5g7it","slide":5,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[654,300,54,28]}
+{"kind":"textbox","id":"sh/9or6psje","slide":5,"text":"AI Processing","textPreview":"AI Processing","textChars":13,"textLines":1,"bbox":[650,349,128,56]}
+{"kind":"textbox","id":"sh/ml0nex03","slide":5,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[791,338,33,26]}
+{"kind":"shape","id":"sh/nm9on21o","slide":5,"bbox":[824,282,155,148]}
+{"kind":"textbox","id":"sh/wr25k7i5","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[842,300,54,28]}
+{"kind":"textbox","id":"sh/xsb6tcjq","slide":5,"text":"Outfit\nSuggestions","textPreview":"Outfit | Suggestions","textChars":18,"textLines":2,"bbox":[838,349,128,56]}
+{"kind":"textbox","id":"sh/apknix0z","slide":5,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[979,338,33,26]}
+{"kind":"shape","id":"sh/vqtor21k","slide":5,"bbox":[1012,282,155,148]}
+{"kind":"textbox","id":"sh/cvy58ni1","slide":5,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1030,300,54,28]}
+{"kind":"textbox","id":"sh/dw76h8j6","slide":5,"text":"Dashboard & Analytics","textPreview":"Dashboard & Analytics","textChars":21,"textLines":1,"bbox":[1026,349,128,56]}
+{"kind":"textbox","id":"sh/fax8nqlo","slide":5,"text":"Secure access  →  Structured data  →  Intelligent suggestions  →  Better daily decisions","textPreview":"Secure access  →  Structured data  →  Intelligent suggestions  →  Better daily decisions","textChars":88,"textLines":1,"bbox":[168,500,950,26]}
+{"kind":"notes","id":"nt/nq0oix","slide":5,"text":""}
+{"kind":"slide","id":"sl/f5okxc","slide":6,"title":"METHODS USED","textShapes":20}
+{"kind":"textbox","id":"sh/wjy1ofe9","slide":6,"text":"METHODS USED","textPreview":"METHODS USED","textChars":12,"textLines":1,"bbox":[70,50,360,22]}
+{"kind":"textbox","id":"sh/bipkfaxo","slide":6,"text":"A practical web stack supports the current build and future AI layer","textPreview":"A practical web stack supports the current build and future AI layer","textChars":68,"textLines":1,"bbox":[70,82,980,94]}
+{"kind":"textbox","id":"sh/ahwjm5w3","slide":6,"text":"The architecture uses familiar, maintainable technologies for a smooth implementation path.","textPreview":"The architecture uses familiar, maintainable technologies for a smooth implementation path.","textChars":91,"textLines":1,"bbox":[70,184,1040,28]}
+{"kind":"shape","id":"sh/9gn2d0fi","slide":6,"bbox":[70,672,1140,1]}
+{"kind":"textbox","id":"sh/ove1kfed","slide":6,"text":"WEARLYTICS  /  MCA MINI PROJECT","textPreview":"WEARLYTICS  /  MCA MINI PROJECT","textChars":31,"textLines":1,"bbox":[70,683,360,17]}
+{"kind":"textbox","id":"sh/nu5kbaxs","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1160,683,50,17]}
+{"kind":"shape","id":"sh/mtwji5w7","slide":6,"bbox":[70,224,345,126]}
+{"kind":"textbox","id":"sh/tcr2p4f2","slide":6,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[92,242,48,28]}
+{"kind":"textbox","id":"sh/8rilwzeh","slide":6,"text":"Frontend","textPreview":"Frontend","textChars":8,"textLines":1,"bbox":[92,275,260,26]}
+{"kind":"textbox","id":"sh/i5w3q587","slide":6,"text":"HTML  •  CSS  •  Bootstrap  •  JavaScript","textPreview":"HTML  •  CSS  •  Bootstrap  •  JavaScript","textChars":41,"textLines":1,"bbox":[92,308,294,30]}
+{"kind":"shape","id":"sh/365kjaps","slide":6,"bbox":[448,224,345,126]}
+{"kind":"textbox","id":"sh/4relsfqd","slide":6,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[470,242,48,28]}
+{"kind":"textbox","id":"sh/5sn2lk7y","slide":6,"text":"Backend","textPreview":"Backend","textChars":7,"textLines":1,"bbox":[470,275,260,26]}
+{"kind":"textbox","id":"sh/u1cjml8b","slide":6,"text":"Python Flask","textPreview":"Python Flask","textChars":12,"textLines":1,"bbox":[470,308,294,30]}
+{"kind":"shape","id":"sh/v2lkfq9w","slide":6,"bbox":[826,224,345,126]}
+{"kind":"textbox","id":"sh/g3u1ovq1","slide":6,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[848,242,48,28]}
+{"kind":"textbox","id":"sh/h4n2h0rm","slide":6,"text":"Database","textPreview":"Database","textChars":8,"textLines":1,"bbox":[848,275,260,26]}
+{"kind":"textbox","id":"sh/exg3yp8f","slide":6,"text":"MySQL  •  SQLAlchemy","textPreview":"MySQL  •  SQLAlchemy","textChars":20,"textLines":1,"bbox":[848,308,294,30]}
+{"kind":"shape","id":"sh/fypkrup0","slide":6,"bbox":[70,392,345,126]}
+{"kind":"textbox","id":"sh/bqx83il0","slide":6,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[92,410,48,28]}
+{"kind":"textbox","id":"sh/q5oruxkv","slide":6,"text":"Authentication","textPreview":"Authentication","textChars":14,"textLines":1,"bbox":[92,443,260,26]}
+{"kind":"textbox","id":"sh/dszq5s36","slide":6,"text":"Flask-Login  •  Werkzeug hashing","textPreview":"Flask-Login  •  Werkzeug hashing","textChars":32,"textLines":1,"bbox":[92,476,294,30]}
+{"kind":"shape","id":"sh/crq9wn2l","slide":6,"bbox":[448,392,345,126]}
+{"kind":"textbox","id":"sh/zuh8721c","slide":6,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[470,410,48,28]}
+{"kind":"textbox","id":"sh/yt8ryxkr","slide":6,"text":"Future AI","textPreview":"Future AI","textChars":9,"textLines":1,"bbox":[470,443,260,26]}
+{"kind":"textbox","id":"sh/lwzq9cji","slide":6,"text":"Computer Vision  •  Recommendation System","textPreview":"Computer Vision  •  Recommendation System","textChars":41,"textLines":1,"bbox":[470,476,294,30]}
+{"kind":"notes","id":"nt/f5okxc","slide":6,"text":""}
+{"kind":"slide","id":"sl/bbzj7f","slide":7,"title":"CURRENT BUILD","textShapes":25}
+{"kind":"textbox","id":"sh/xgjahgnq","slide":7,"text":"CURRENT BUILD","textPreview":"CURRENT BUILD","textChars":13,"textLines":1,"bbox":[70,50,360,22]}
+{"kind":"textbox","id":"sh/adsb61of","slide":7,"text":"The core product foundation is already in place","textPreview":"The core product foundation is already in place","textChars":47,"textLines":1,"bbox":[70,82,980,94]}
+{"kind":"textbox","id":"sh/be1sf650","slide":7,"text":"The first interim milestone demonstrates a working Flask application with persistent user accounts.","textPreview":"The first interim milestone demonstrates a working Flask application with persistent user accounts.","textChars":99,"textLines":1,"bbox":[70,184,1040,28]}
+{"kind":"shape","id":"sh/orq94r69","slide":7,"bbox":[70,672,1140,1]}
+{"kind":"textbox","id":"sh/9sjadwnu","slide":7,"text":"WEARLYTICS  /  MCA MINI PROJECT","textPreview":"WEARLYTICS  /  MCA MINI PROJECT","textChars":31,"textLines":1,"bbox":[70,683,360,17]}
+{"kind":"textbox","id":"sh/mp8r21o3","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1160,683,50,17]}
+{"kind":"shape","id":"sh/nqhsbm5o","slide":7,"bbox":[70,220,510,46]}
+{"kind":"shape","id":"sh/snutgv6d","slide":7,"bbox":[84,232,22,22]}
+{"kind":"textbox","id":"sh/t83ap0ny","slide":7,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[84,234,22,16]}
+{"kind":"textbox","id":"sh/9kra5gzu","slide":7,"text":"Authentication","textPreview":"Authentication","textChars":14,"textLines":1,"bbox":[121,233,380,20]}
+{"kind":"shape","id":"sh/8ji9wbi9","slide":7,"bbox":[625,220,510,46]}
+{"kind":"shape","id":"sh/7ips36ho","slide":7,"bbox":[639,232,22,22]}
+{"kind":"textbox","id":"sh/mhgrul03","slide":7,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[639,234,22,16]}
+{"kind":"textbox","id":"sh/lg7a1gzi","slide":7,"text":"Registration","textPreview":"Registration","textChars":12,"textLines":1,"bbox":[676,233,380,20]}
+{"kind":"shape","id":"sh/kfy9sbid","slide":7,"bbox":[70,281,510,46]}
+{"kind":"shape","id":"sh/zepsz6hs","slide":7,"bbox":[84,293,22,22]}
+{"kind":"textbox","id":"sh/ytgrq107","slide":7,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[84,295,22,16]}
+{"kind":"textbox","id":"sh/5cbad0z2","slide":7,"text":"Login & Logout","textPreview":"Login & Logout","textChars":14,"textLines":1,"bbox":[121,294,380,20]}
+{"kind":"shape","id":"sh/4b294vih","slide":7,"bbox":[625,281,510,46]}
+{"kind":"shape","id":"sh/o7alw3ap","slide":7,"bbox":[639,293,22,22]}
+{"kind":"textbox","id":"sh/ps32p8ba","slide":7,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[639,295,22,16]}
+{"kind":"textbox","id":"sh/25s3utsz","slide":7,"text":"Dashboard UI","textPreview":"Dashboard UI","textChars":12,"textLines":1,"bbox":[676,294,380,20]}
+{"kind":"shape","id":"sh/361knyt4","slide":7,"bbox":[70,342,510,46]}
+{"kind":"shape","id":"sh/g3als3at","slide":7,"bbox":[84,354,22,22]}
+{"kind":"textbox","id":"sh/14j2lobe","slide":7,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[84,356,22,16]}
+{"kind":"textbox","id":"sh/e1s3qtsn","slide":7,"text":"Sidebar Navigation","textPreview":"Sidebar Navigation","textChars":18,"textLines":1,"bbox":[121,355,380,20]}
+{"kind":"shape","id":"sh/f21kjyt8","slide":7,"bbox":[625,342,510,46]}
+{"kind":"shape","id":"sh/szqlojah","slide":7,"bbox":[639,354,22,22]}
+{"kind":"textbox","id":"sh/t0z2hob2","slide":7,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[639,356,22,16]}
+{"kind":"textbox","id":"sh/vah4red4","slide":7,"text":"Upload Page Design","textPreview":"Upload Page Design","textChars":18,"textLines":1,"bbox":[676,355,380,20]}
+{"kind":"shape","id":"sh/u9o3y9wj","slide":7,"bbox":[70,403,510,46]}
+{"kind":"shape","id":"sh/hwzmtovu","slide":7,"bbox":[84,415,22,22]}
+{"kind":"textbox","id":"sh/wvql0jep","slide":7,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[84,417,22,16]}
+{"kind":"textbox","id":"sh/jyh4vyd0","slide":7,"text":"Analytics UI","textPreview":"Analytics UI","textChars":12,"textLines":1,"bbox":[121,416,380,20]}
+{"kind":"shape","id":"sh/ix832twf","slide":7,"bbox":[625,403,510,46]}
+{"kind":"shape","id":"sh/50zmxov6","slide":7,"bbox":[639,415,22,22]}
+{"kind":"textbox","id":"sh/4zql4jel","slide":7,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[639,417,22,16]}
+{"kind":"textbox","id":"sh/r214zydc","slide":7,"text":"Responsive Design","textPreview":"Responsive Design","textChars":17,"textLines":1,"bbox":[676,416,380,20]}
+{"kind":"shape","id":"sh/61s36twr","slide":7,"bbox":[70,464,510,46]}
+{"kind":"shape","id":"sh/q50n2xkn","slide":7,"bbox":[84,476,22,22]}
+{"kind":"textbox","id":"sh/r69ob2l8","slide":7,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[84,478,22,16]}
+{"kind":"textbox","id":"sh/c7i5472t","slide":7,"text":"MySQL Connection","textPreview":"MySQL Connection","textChars":16,"textLines":1,"bbox":[121,477,380,20]}
+{"kind":"shape","id":"sh/d8r6dc3e","slide":7,"bbox":[625,464,510,46]}
+{"kind":"shape","id":"sh/e9076hkz","slide":7,"bbox":[639,476,22,22]}
+{"kind":"textbox","id":"sh/za9ofmlk","slide":7,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[639,478,22,16]}
+{"kind":"textbox","id":"sh/0bip8r25","slide":7,"text":"Flask Structure","textPreview":"Flask Structure","textChars":15,"textLines":1,"bbox":[676,477,380,20]}
+{"kind":"notes","id":"nt/bbzj7f","slide":7,"text":""}
+{"kind":"slide","id":"sl/wuymq9","slide":8,"title":"PROJECT ARCHITECTURE","textShapes":16}
+{"kind":"textbox","id":"sh/uhwji9cv","slide":8,"text":"PROJECT ARCHITECTURE","textPreview":"PROJECT ARCHITECTURE","textChars":20,"textLines":1,"bbox":[70,50,360,22]}
+{"kind":"textbox","id":"sh/hk72d4b6","slide":8,"text":"A modular architecture separates the user experience from data and intelligence","textPreview":"A modular architecture separates the user experience from data and intelligence","textChars":79,"textLines":1,"bbox":[70,82,980,94]}
+{"kind":"textbox","id":"sh/wje1kjul","slide":8,"text":"The current application is ready to extend with AI processing without redesigning the core.","textPreview":"The current application is ready to extend with AI processing without redesigning the core.","textChars":91,"textLines":1,"bbox":[70,184,1040,28]}
+{"kind":"shape","id":"sh/jmpkfetc","slide":8,"bbox":[70,672,1140,1]}
+{"kind":"textbox","id":"sh/ilgjm9cr","slide":8,"text":"WEARLYTICS  /  MCA MINI PROJECT","textPreview":"WEARLYTICS  /  MCA MINI PROJECT","textChars":31,"textLines":1,"bbox":[70,683,360,17]}
+{"kind":"textbox","id":"sh/5872hobi","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1160,683,50,17]}
+{"kind":"shape","id":"sh/47y1ojux","slide":8,"bbox":[70,290,155,105]}
+{"kind":"textbox","id":"sh/rapkjyto","slide":8,"text":"User","textPreview":"User","textChars":4,"textLines":1,"bbox":[80,322,135,46]}
+{"kind":"textbox","id":"sh/69g3qts3","slide":8,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[225,329,30,26]}
+{"kind":"shape","id":"sh/oj214byx","slide":8,"bbox":[255,290,200,105]}
+{"kind":"textbox","id":"sh/pkb2xgfi","slide":8,"text":"Frontend\nHTML • CSS • Bootstrap","textPreview":"Frontend | HTML • CSS • Bootstrap","textChars":31,"textLines":2,"bbox":[265,322,180,46]}
+{"kind":"textbox","id":"sh/2hkj2lgr","slide":8,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[455,329,55,26]}
+{"kind":"shape","id":"sh/nitkvqxc","slide":8,"bbox":[510,290,155,105]}
+{"kind":"textbox","id":"sh/c7218vyt","slide":8,"text":"Flask Backend","textPreview":"Flask Backend","textChars":13,"textLines":1,"bbox":[520,322,135,46]}
+{"kind":"textbox","id":"sh/x8b210fe","slide":8,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[665,329,30,26]}
+{"kind":"shape","id":"sh/alkj6lg3","slide":8,"bbox":[750,290,155,105]}
+{"kind":"textbox","id":"sh/b6tkzqx8","slide":8,"text":"SQLAlchemy","textPreview":"SQLAlchemy","textChars":10,"textLines":1,"bbox":[760,322,135,46]}
+{"kind":"textbox","id":"sh/kbm1cvy5","slide":8,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[905,329,30,26]}
+{"kind":"shape","id":"sh/lcv250fq","slide":8,"bbox":[945,290,155,105]}
+{"kind":"textbox","id":"sh/9g7a9g3i","slide":8,"text":"MySQL Database","textPreview":"MySQL Database","textChars":14,"textLines":1,"bbox":[955,322,135,46]}
+{"kind":"shape","id":"sh/8fyt0bmx","slide":8,"bbox":[422,488,420,83]}
+{"kind":"textbox","id":"sh/7ups76lc","slide":8,"text":"Future AI Module  →  Outfit Recommendation Engine","textPreview":"Future AI Module  →  Outfit Recommendation Engine","textChars":49,"textLines":1,"bbox":[450,516,366,25]}
+{"kind":"textbox","id":"sh/mtgry14r","slide":8,"text":"Future extension layer","textPreview":"Future extension layer","textChars":22,"textLines":1,"bbox":[559,454,150,20]}
+{"kind":"notes","id":"nt/wuymq9","slide":8,"text":""}
+{"kind":"slide","id":"sl/bb6prz","slide":9,"title":"INTERFACE PREVIEW","textShapes":13}
+{"kind":"textbox","id":"sh/o7y9o7al","slide":9,"text":"INTERFACE PREVIEW","textPreview":"INTERFACE PREVIEW","textChars":17,"textLines":1,"bbox":[70,50,360,22]}
+{"kind":"textbox","id":"sh/n6psv29g","slide":9,"text":"The product experience is designed around a calm, guided wardrobe workflow","textPreview":"The product experience is designed around a calm, guided wardrobe workflow","textChars":74,"textLines":1,"bbox":[70,82,980,94]}
+{"kind":"textbox","id":"sh/m5grmxsv","slide":9,"text":"Add final application screenshots here before the presentation.","textPreview":"Add final application screenshots here before the presentation.","textChars":63,"textLines":1,"bbox":[70,184,1040,28]}
+{"kind":"shape","id":"sh/xwra1cri","slide":9,"bbox":[70,672,1140,1]}
+{"kind":"textbox","id":"sh/wbi9s7ax","slide":9,"text":"WEARLYTICS  /  MCA MINI PROJECT","textPreview":"WEARLYTICS  /  MCA MINI PROJECT","textChars":31,"textLines":1,"bbox":[70,683,360,17]}
+{"kind":"textbox","id":"sh/vapsz29c","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1160,683,50,17]}
+{"kind":"shape","id":"sh/a9grqxsr","slide":9,"bbox":[70,220,230,260]}
+{"kind":"shape","id":"sh/50ra5cre","slide":9,"bbox":[82,232,206,30]}
+{"kind":"shape","id":"sh/kzi9wrat","slide":9,"bbox":[94,281,182,132]}
+{"kind":"textbox","id":"sh/a14nqhw3","slide":9,"text":"+","textPreview":"+","textChars":1,"textLines":1,"bbox":[171,320,28,35]}
+{"kind":"textbox","id":"sh/v2dojmdo","slide":9,"text":"Login Page","textPreview":"Login Page","textChars":10,"textLines":1,"bbox":[88,436,194,22]}
+{"kind":"shape","id":"sh/w3m5sret","slide":9,"bbox":[325,220,230,260]}
+{"kind":"shape","id":"sh/x4v6lcve","slide":9,"bbox":[337,232,206,30]}
+{"kind":"shape","id":"sh/i54nuhwz","slide":9,"bbox":[349,281,182,132]}
+{"kind":"textbox","id":"sh/j6donmdk","slide":9,"text":"+","textPreview":"+","textChars":1,"textLines":1,"bbox":[426,320,28,35]}
+{"kind":"textbox","id":"sh/k7m5wru5","slide":9,"text":"Registration Page","textPreview":"Registration Page","textChars":17,"textLines":1,"bbox":[343,436,194,22]}
+{"kind":"shape","id":"sh/58f6pwvq","slide":9,"bbox":[580,220,290,260]}
+{"kind":"shape","id":"sh/y9knixwv","slide":9,"bbox":[592,232,266,30]}
+{"kind":"shape","id":"sh/zat4b2dg","slide":9,"bbox":[604,281,242,132]}
+{"kind":"shape","id":"sh/3epkjyt8","slide":9,"bbox":[619,300,70,74]}
+{"kind":"shape","id":"sh/2dg3qtcn","slide":9,"bbox":[702,300,70,74]}
+{"kind":"shape","id":"sh/pg72loby","slide":9,"bbox":[785,300,50,74]}
+{"kind":"textbox","id":"sh/ofyls3ud","slide":9,"text":"Dashboard","textPreview":"Dashboard","textChars":9,"textLines":1,"bbox":[598,436,254,22]}
+{"kind":"shape","id":"sh/fapkfetw","slide":9,"bbox":[895,220,230,260]}
+{"kind":"shape","id":"sh/e9wjm9cb","slide":9,"bbox":[907,232,206,30]}
+{"kind":"shape","id":"sh/1c72hob2","slide":9,"bbox":[919,281,182,132]}
+{"kind":"textbox","id":"sh/gbylojuh","slide":9,"text":"+","textPreview":"+","textChars":1,"textLines":1,"bbox":[996,320,28,35]}
+{"kind":"textbox","id":"sh/z69kritg","slide":9,"text":"Analytics","textPreview":"Analytics","textChars":9,"textLines":1,"bbox":[913,436,194,22]}
+{"kind":"textbox","id":"sh/y503ydcv","slide":9,"text":"Replace these labelled frames with your own final screenshots.","textPreview":"Replace these labelled frames with your own final screenshots.","textChars":62,"textLines":1,"bbox":[70,532,1080,24]}
+{"kind":"notes","id":"nt/bb6prz","slide":9,"text":""}
+{"kind":"slide","id":"sl/5ukkdy","slide":10,"title":"CURRENT STATUS","textShapes":28}
+{"kind":"textbox","id":"sh/b2h8vetc","slide":10,"text":"CURRENT STATUS","textPreview":"CURRENT STATUS","textChars":14,"textLines":1,"bbox":[70,50,360,22]}
+{"kind":"textbox","id":"sh/c3qpozux","slide":10,"text":"The foundation is complete; intelligence comes next","textPreview":"The foundation is complete; intelligence comes next","textChars":51,"textLines":1,"bbox":[70,82,980,94]}
+{"kind":"textbox","id":"sh/d4zqx4b2","slide":10,"text":"The project is progressing from a reliable web product to an AI-enabled wardrobe companion.","textPreview":"The project is progressing from a reliable web product to an AI-enabled wardrobe companion.","textChars":91,"textLines":1,"bbox":[70,184,1040,28]}
+{"kind":"shape","id":"sh/2xo7ypcf","slide":10,"bbox":[70,672,1140,1]}
+{"kind":"textbox","id":"sh/3yx8rut0","slide":10,"text":"WEARLYTICS  /  MCA MINI PROJECT","textPreview":"WEARLYTICS  /  MCA MINI PROJECT","textChars":31,"textLines":1,"bbox":[70,683,360,17]}
+{"kind":"textbox","id":"sh/oz6pkzul","slide":10,"text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[1160,683,50,17]}
+{"kind":"textbox","id":"sh/p0fqt4b6","slide":10,"text":"Completed","textPreview":"Completed","textChars":9,"textLines":1,"bbox":[115,228,190,30]}
+{"kind":"textbox","id":"sh/mtsrutsz","slide":10,"text":"Upcoming","textPreview":"Upcoming","textChars":8,"textLines":1,"bbox":[735,228,190,30]}
+{"kind":"shape","id":"sh/nu183ytk","slide":10,"bbox":[110,280,410,39]}
+{"kind":"textbox","id":"sh/fe9gvqt0","slide":10,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[128,290,22,18]}
+{"kind":"textbox","id":"sh/et0zmlcf","slide":10,"text":"UI Completed","textPreview":"UI Completed","textChars":12,"textLines":1,"bbox":[161,288,315,19]}
+{"kind":"shape","id":"sh/1gbyx0b6","slide":10,"bbox":[110,332,410,39]}
+{"kind":"textbox","id":"sh/gfihovul","slide":10,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[128,342,22,18]}
+{"kind":"textbox","id":"sh/3itgzqtw","slide":10,"text":"Authentication Completed","textPreview":"Authentication Completed","textChars":24,"textLines":1,"bbox":[161,340,315,19]}
+{"kind":"shape","id":"sh/2hkzq5cr","slide":10,"bbox":[110,384,410,39]}
+{"kind":"textbox","id":"sh/pkby10b2","slide":10,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[128,394,22,18]}
+{"kind":"textbox","id":"sh/oj2hsvuh","slide":10,"text":"Dashboard Completed","textPreview":"Dashboard Completed","textChars":19,"textLines":1,"bbox":[161,392,315,19]}
+{"kind":"shape","id":"sh/bmt03at8","slide":10,"bbox":[110,436,410,39]}
+{"kind":"textbox","id":"sh/qlkzu5cn","slide":10,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[128,446,22,18]}
+{"kind":"textbox","id":"sh/mhoj29wv","slide":10,"text":"Database Connected","textPreview":"Database Connected","textChars":18,"textLines":1,"bbox":[161,444,315,19]}
+{"kind":"shape","id":"sh/7ixkvedg","slide":10,"bbox":[110,488,410,39]}
+{"kind":"textbox","id":"sh/8j614je1","slide":10,"text":"✓","textPreview":"✓","textChars":1,"textLines":1,"bbox":[128,498,22,18]}
+{"kind":"textbox","id":"sh/94f2xovm","slide":10,"text":"Flask Structure Ready","textPreview":"Flask Structure Ready","textChars":21,"textLines":1,"bbox":[161,496,315,19]}
+{"kind":"shape","id":"sh/yd4jypwz","slide":10,"bbox":[730,280,410,39]}
+{"kind":"textbox","id":"sh/zedkrud4","slide":10,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[748,286,38,28]}
+{"kind":"textbox","id":"sh/kfm10zep","slide":10,"text":"AI Recommendation","textPreview":"AI Recommendation","textChars":17,"textLines":1,"bbox":[792,288,315,19]}
+{"kind":"shape","id":"sh/lgf2t4va","slide":10,"bbox":[730,332,410,39]}
+{"kind":"textbox","id":"sh/i983atc3","slide":10,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[748,338,38,28]}
+{"kind":"textbox","id":"sh/jahk3ydo","slide":10,"text":"Upload Processing","textPreview":"Upload Processing","textChars":17,"textLines":1,"bbox":[792,340,315,19]}
+{"kind":"shape","id":"sh/t4jmtsfq","slide":10,"bbox":[730,384,410,39]}
+{"kind":"textbox","id":"sh/s3a50ne5","slide":10,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[748,390,38,28]}
+{"kind":"textbox","id":"sh/r214rixk","slide":10,"text":"Wardrobe Management","textPreview":"Wardrobe Management","textChars":19,"textLines":1,"bbox":[792,392,315,19]}
+{"kind":"shape","id":"sh/61snydgz","slide":10,"bbox":[730,436,410,39]}
+{"kind":"textbox","id":"sh/50jmpsfu","slide":10,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[748,442,38,28]}
+{"kind":"textbox","id":"sh/4za5wny9","slide":10,"text":"Analytics Logic","textPreview":"Analytics Logic","textChars":15,"textLines":1,"bbox":[792,444,315,19]}
+{"kind":"shape","id":"sh/jyh4nixo","slide":10,"bbox":[730,488,410,39]}
+{"kind":"textbox","id":"sh/id83udg3","slide":10,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[748,494,38,28]}
+{"kind":"textbox","id":"sh/pw361cfy","slide":10,"text":"Final Testing","textPreview":"Final Testing","textChars":13,"textLines":1,"bbox":[792,496,315,19]}
+{"kind":"shape","id":"sh/ovu587ed","slide":10,"bbox":[580,270,2,284]}
+{"kind":"shape","id":"sh/wfids7e9","slide":10,"bbox":[568,340,26,26]}
+{"kind":"textbox","id":"sh/xgru1cfe","slide":10,"text":"NEXT","textPreview":"NEXT","textChars":4,"textLines":1,"bbox":[568,347,26,13]}
+{"kind":"notes","id":"nt/5ukkdy","slide":10,"text":""}
+{"kind":"slide","id":"sl/x7hqls","slide":11,"title":"W","textShapes":5}
+{"kind":"shape","id":"sh/7a5o7atk","slide":11,"bbox":[-150,-100,400,400]}
+{"kind":"shape","id":"sh/8be50fu5","slide":11,"bbox":[990,420,410,410]}
+{"kind":"shape","id":"sh/tcn690bq","slide":11,"bbox":[570,183,140,140]}
+{"kind":"textbox","id":"sh/y5cnulc3","slide":11,"text":"W","textPreview":"W","textChars":1,"textLines":1,"bbox":[570,207,140,75]}
+{"kind":"textbox","id":"sh/j65o3qto","slide":11,"text":"THANK YOU","textPreview":"THANK YOU","textChars":9,"textLines":1,"bbox":[200,380,880,72]}
+{"kind":"textbox","id":"sh/k7e5wvut","slide":11,"text":"Questions?","textPreview":"Questions?","textChars":10,"textLines":1,"bbox":[200,470,880,40]}
+{"kind":"textbox","id":"sh/l8n650be","slide":11,"text":"Wearlytics  •  AI Powered Wardrobe and Outfit Recommendation System","textPreview":"Wearlytics  •  AI Powered Wardrobe and Outfit Recommendation System","textChars":67,"textLines":1,"bbox":[180,610,920,24]}
+{"kind":"textbox","id":"sh/ahcnqlcr","slide":11,"text":"11","textPreview":"11","textChars":2,"textLines":1,"bbox":[1160,678,50,16]}
+{"kind":"notes","id":"nt/x7hqls","slide":11,"text":""}

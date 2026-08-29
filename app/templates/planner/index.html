@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Weekly Planner | Wearlytics{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Schedule</p>
+    <h1>Weekly Outfit Planner</h1>
+    <p>Plan your daily looks for the week ahead to stay organized and stylish.</p>
+  </div>
+</div>
+
+<div class="planner-grid">
+  {% for entry in schedule %}
+  <div class="planner-day-card {% if entry.plan and entry.plan.outfit %}has-outfit{% endif %}">
+    <div class="day-header">
+      <span class="day-name">{{ entry.day }}</span>
+      {% if entry.plan and entry.plan.outfit %}
+        <span class="badge-assigned">Assigned</span>
+      {% else %}
+        <span class="badge-empty">Unplanned</span>
+      {% endif %}
+    </div>
+
+    {% if entry.plan and entry.plan.outfit %}
+      <div class="assigned-outfit-box">
+        <h4>{{ entry.plan.outfit.title }}</h4>
+        <p class="meta-info">{{ entry.plan.outfit.occasion }} &bull; {{ entry.plan.outfit.items|length }} items</p>
+        
+        <div class="items-mini-thumbnails">
+          {% for item in entry.plan.outfit.items %}
+            <img src="{{ item.image_url }}" alt="{{ item.name }}" title="{{ item.name }}">
+          {% endfor %}
+        </div>
+
+        {% if entry.plan.notes %}
+          <p class="planner-notes">📝 {{ entry.plan.notes }}</p>
+        {% endif %}
+
+        <form action="{{ url_for('planner.clear_day', plan_id=entry.plan.id) }}" method="post" style="margin-top:8px;">
+          <button type="submit" class="btn w-100" style="background:#fff0f2;color:#d63031;border:1px solid #ffd6d8;border-radius:8px;font-size:12px;font-weight:800;padding:6px;cursor:pointer;">✕ Clear Day</button>
+        </form>
+      </div>
+    {% else %}
+      <div class="planner-empty-box">
+        <p>No outfit planned for this day.</p>
+      </div>
+    {% endif %}
+
+    <!-- Assignment Form -->
+    <form action="{{ url_for('planner.assign_outfit') }}" method="post" class="planner-form mt-2">
+      <input type="hidden" name="day_of_week" value="{{ entry.day }}">
+      <div class="mb-2">
+        <select name="outfit_id" class="form-select-custom form-select-sm">
+          <option value="">-- Choose Outfit --</option>
+          {% for outfit in outfits %}
+            <option value="{{ outfit.id }}" {% if entry.plan and entry.plan.outfit_id == outfit.id %}selected{% endif %}>
+              {{ outfit.title }} ({{ outfit.occasion }})
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-2">
+        <input type="text" name="notes" class="form-input-custom form-input-sm" placeholder="Add note (e.g. Work presentation)" value="{{ entry.plan.notes if entry.plan else '' }}">
+      </div>
+      <button type="submit" class="btn primary-button btn-sm w-100">Save {{ entry.day }}</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

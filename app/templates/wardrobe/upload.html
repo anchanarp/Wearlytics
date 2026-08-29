@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Clothing | Wearlytics{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Add Garment</p>
+    <h1>Upload Clothing Item</h1>
+    <p>Add a new piece to your digital wardrobe with attributes and photos.</p>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-12 col-lg-7">
+    <div class="custom-card-box">
+      <form action="{{ url_for('wardrobe.upload') }}" method="post" enctype="multipart/form-data" class="upload-form">
+        <div class="form-group mb-3">
+          <label for="name" class="form-label-custom">Item Name <span class="text-danger">*</span></label>
+          <input type="text" id="name" name="name" class="form-input-custom" placeholder="e.g. Classic White Linen Shirt" required>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-sm-6">
+            <label for="category" class="form-label-custom">Category</label>
+            <select id="category" name="category" class="form-select-custom">
+              <option value="Tops">Tops</option>
+              <option value="Bottoms">Bottoms</option>
+              <option value="Shoes">Shoes</option>
+              <option value="Outerwear">Outerwear</option>
+              <option value="Accessories">Accessories</option>
+              <option value="Dresses">Dresses</option>
+            </select>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label for="season" class="form-label-custom">Season</label>
+            <select id="season" name="season" class="form-select-custom">
+              <option value="All Seasons">All Seasons</option>
+              <option value="Summer">Summer</option>
+              <option value="Winter">Winter</option>
+              <option value="Spring/Fall">Spring/Fall</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-sm-6">
+            <label for="color" class="form-label-custom">Primary Color</label>
+            <input type="text" id="color" name="color" class="form-input-custom" placeholder="e.g. White, Black, Navy, Denim">
+          </div>
+          <div class="col-12 col-sm-6">
+            <label for="brand" class="form-label-custom">Brand / Store</label>
+            <input type="text" id="brand" name="brand" class="form-input-custom" placeholder="e.g. Uniqlo, Levi's, ZARA">
+          </div>
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="form-label-custom">Choose Image Method</label>
+          <div class="upload-dropzone" id="dropzone">
+            <input type="file" id="image_file" name="image_file" accept="image/*" class="file-input-hidden" onchange="previewUploadImage(this)">
+            <label for="image_file" class="dropzone-label">
+              <div class="upload-icon">📸</div>
+              <strong>Click to upload an image</strong>
+              <span>Supports PNG, JPG, WEBP</span>
+            </label>
+            <div id="imagePreview" class="image-preview-box d-none">
+              <img id="previewImg" src="#" alt="Upload preview">
+            </div>
+          </div>
+        </div>
+
+        <input type="hidden" id="preset_url" name="preset_url" value="">
+
+        <div class="form-check mb-4">
+          <input type="checkbox" id="is_favorite" name="is_favorite" class="form-check-input">
+          <label for="is_favorite" class="form-check-label">Add to Favorites ★</label>
+        </div>
+
+        <button type="submit" class="btn primary-button w-100 py-3">Save to Wardrobe</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-5">
+    <div class="custom-card-box">
+      <h3>Or Select Stock Presets</h3>
+      <p class="text-muted small mb-3">Don't have a photo ready? Pick from our high-resolution preset gallery:</p>
+      
+      <div class="preset-gallery-grid">
+        {% for preset in preset_images %}
+        <div class="preset-card" onclick="selectPreset('{{ preset.url }}', this)">
+          <img src="{{ preset.url }}" alt="{{ preset.label }}">
+          <span>{{ preset.label }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

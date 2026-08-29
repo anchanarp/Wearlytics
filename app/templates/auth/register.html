@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Create account | Wearlytics{% endblock %}
+
+{% block auth_content %}
+<main class="auth-page">
+  <section class="auth-card" aria-labelledby="register-heading">
+    <a class="auth-brand" href="{{ url_for('auth.login') }}"><span>W</span>Wearlytics</a>
+    <div class="auth-intro">
+      <p>Start your style journey</p>
+      <h1 id="register-heading">Create your account</h1>
+      <span>Bring your wardrobe together in one smart place.</span>
+    </div>
+    {% include "auth/_messages.html" %}
+    <form method="post" class="auth-form">
+      <label for="name">Full name</label>
+      <input id="name" name="name" type="text" autocomplete="name" value="{{ request.form.get('name', '') }}" required autofocus>
+      
+      <label for="email">Email address</label>
+      <input id="email" name="email" type="email" autocomplete="email" value="{{ request.form.get('email', '') }}" required>
+      
+      <label for="password">Password <small>Minimum 8 characters</small></label>
+      <input id="password" name="password" type="password" autocomplete="new-password" required>
+      
+      <label for="confirm-password">Confirm password</label>
+      <input id="confirm-password" name="confirm_password" type="password" autocomplete="new-password" required>
+      
+      <button class="auth-submit" type="submit">Create account <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="auth-switch">Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a></p>
+  </section>
+</main>
+{% endblock %}

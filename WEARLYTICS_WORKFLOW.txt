@@ -1,0 +1,139 @@
+================================================================================
+                        WEARLYTICS — PROJECT WORKFLOW
+================================================================================
+
+1. END-TO-END USER JOURNEY WORKFLOW
+--------------------------------------------------------------------------------
+The standard user workflow in Wearlytics follows 6 key stages:
+
+  [1. Register / Sign In] ---> [2. Dashboard Overview] ---> [3. Add / Upload Garments]
+                                                                    |
+  [6. Analytics & Profile] <--- [5. Schedule Weekly Plan] <--- [4. Generate AI Outfits]
+
+
+2. WORKFLOW 1: AUTHENTICATION & INITIAL SEEDING
+--------------------------------------------------------------------------------
+Step 1: User navigates to /auth/register and enters Name, Email, and Password.
+Step 2: Backend validates:
+        - All fields are populated.
+        - Password length >= 8 characters.
+        - Password matches confirmation.
+        - Email is unique in the 'users' table.
+Step 3: User password is hashed using Werkzeug generate_password_hash.
+Step 4: User record is inserted into MySQL, and session is started via login_user().
+Step 5: User is redirected to Dashboard ('/').
+Step 6: Dashboard home route checks:
+        if current_user.clothing_items.count() == 0:
+            seed_user_wardrobe(current_user)
+        This automatically populates starter clothes, outfits, and weekly plans 
+        so the user immediately sees a populated closet.
+
+
+3. WORKFLOW 2: CLOTHING ITEM UPLOAD & INGESTION
+--------------------------------------------------------------------------------
+Step 1: User clicks "+ Add Clothing" or opens '/wardrobe/upload'.
+Step 2: User provides Item Name, Category (Tops, Bottoms, Shoes, Outerwear, etc.), 
+        Primary Color, Season, Brand, and optional Favorite flag.
+Step 3: Image Acquisition (Dual Method):
+        - Method A (Custom Photo Upload): User drops or selects an image file. 
+          Backend validates extension (PNG, JPG, WEBP), generates a UUID prefix 
+          filename (uuid.hex_filename.jpg), saves to /app/static/uploads/, and 
+          sets image_url to '/static/uploads/uuid.hex_filename.jpg'.
+        - Method B (Preset Gallery Selection): User clicks a stock garment card. 
+          JavaScript populates hidden field #preset_url, and backend uses this 
+          high-resolution stock URL.
+Step 4: ClothingItem record is created in database, and success toast alert 
+        notifies the user.
+
+
+4. WORKFLOW 3: WARDROBE EXPLORATION & WEAR LOGGING
+--------------------------------------------------------------------------------
+Step 1: User opens '/wardrobe'.
+Step 2: User can apply filters simultaneously:
+        - Search query (matches item name, brand, or color).
+        - Category Pill selection (Tops, Bottoms, Shoes, Outerwear, etc.).
+        - Season filter dropdown (Summer, Winter, Spring/Fall, All Seasons).
+        - Favorites filter toggle ("★ Favorites Only").
+Step 3: User clicks "+1 Wear" button on a garment card:
+        - POST request sent to '/wardrobe/<id>/wear'.
+        - Backend increments item.wear_count by 1.
+        - Database commits, and flash toast shows: "Logged wear for [Item Name]".
+Step 4: User clicks Star icon on a card to toggle Favorite status:
+        - POST request sent to '/wardrobe/<id>/favorite'.
+        - Backend toggles item.is_favorite between True and False.
+
+
+5. WORKFLOW 4: AI OUTFIT GENERATION ENGINE
+--------------------------------------------------------------------------------
+Step 1: User opens '/outfits' and selects Occasion (Casual, Work, Formal, Sporty, Date Night) 
+        and Season (Summer, Winter, Spring/Fall, All Seasons).
+Step 2: User clicks "✦ Generate".
+Step 3: Backend execution algorithm:
+        a. Query user's available items from database:
+           - tops = items where category in ['Tops', 'Dresses']
+           - bottoms = items where category == 'Bottoms'
+           - shoes = items where category == 'Shoes'
+           - outerwear = items where category in ['Outerwear', 'Accessories']
+        b. Validation check: If tops is empty OR (bottoms is empty AND no dresses present), 
+           abort with error flash.
+        c. Pick random Top or Dress.
+        d. If selected piece is NOT a dress, pick random Bottom.
+        e. If shoes exist, pick random Shoes.
+        f. Randomly include Outerwear/Accessory piece for layering.
+        g. Generate dynamic title (e.g. "Smart Casual Navy Ensemble").
+        h. Instantiate Outfit record, link chosen items via outfit_items table, 
+           and commit to DB.
+Step 4: New generated outfit appears immediately at the top of the collection.
+
+
+6. WORKFLOW 5: WEEKLY OUTFIT SCHEDULING
+--------------------------------------------------------------------------------
+Step 1: User opens '/planner'.
+Step 2: System renders 7 day cards for Monday through Sunday.
+Step 3: For each day, user can:
+        - Select a saved outfit from dropdown menu.
+        - Enter a custom context note (e.g., "Team presentation & lunch").
+        - Click "Save [Day]".
+Step 4: POST request sent to '/planner/assign'.
+Step 5: Backend checks if a WeeklyPlan entry already exists for current_user + day_of_week:
+        - If exists: update outfit_id and notes.
+        - If not: create new WeeklyPlan record.
+Step 6: UI highlights the day card with a green "Assigned" badge and item thumbnails.
+
+
+7. WORKFLOW 6: WARDROBE ANALYTICS & SUSTAINABILITY CALCULATION
+--------------------------------------------------------------------------------
+Step 1: User opens '/analytics'.
+Step 2: Backend aggregates closet data:
+        - total_items = count of clothing_items
+        - total_wears = sum of wear_count across all items
+        - avg_wears = total_wears / total_items
+        - category_breakdown = Counter(item.category for item in items)
+        - color_breakdown = Counter(item.color for item in items)
+        - most_worn = top 4 items sorted by wear_count descending
+        - least_worn = bottom 4 items where wear_count == 0
+        - utilization_rate = (count of items with wear_count > 0) / total_items * 100
+        - sustainability_score = min(100, (utilization_rate * 0.6) + (min(avg_wears, 20) * 2))
+Step 3: UI renders visual progress bars for categories, color swatches, metric cards, 
+        and staple vs underutilized item callouts.
+
+
+8. SYSTEM DATA FLOW ARCHITECTURE (TEXT DIAGRAM)
+--------------------------------------------------------------------------------
++-------------------+     HTTP Request     +-----------------------------------+
+|  Browser / Client | -------------------> | Flask Router / Controller Blueprints|
++-------------------+                      +-----------------------------------+
+         ^                                                   |
+         |                                                   v
+  HTML / CSS Rendered                                 Domain Logic /
+    Response View                                    Validation Helpers
+         |                                                   |
+         |                                                   v
++-------------------+     ORM Mapping      +-----------------------------------+
+|  Jinja2 Templates | <------------------- |  SQLAlchemy Database Models       |
++-------------------+                      +-----------------------------------+
+                                                             |
+                                                             v
+                                                   +-------------------+
+                                                   | MySQL Database DB |
+                                                   +-------------------+

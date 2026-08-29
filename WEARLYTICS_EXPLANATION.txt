@@ -1,0 +1,213 @@
+================================================================================
+                       WEARLYTICS — PROJECT EXPLANATION
+================================================================================
+
+1. PROJECT OVERVIEW & PURPOSE
+--------------------------------------------------------------------------------
+Wearlytics is an AI-powered digital wardrobe management, styling, and analytics 
+platform. It empowers users to digitize their closet, track clothing wear 
+frequency, generate AI-curated outfit recommendations based on color harmony and 
+category balance, schedule weekly outfit plans, and gain actionable analytics 
+on wardrobe utilization and sustainability.
+
+
+2. TECHNOLOGY STACK
+--------------------------------------------------------------------------------
+* Backend Framework: Python 3.14+ / Flask 3.1.3+
+  - Application Factory pattern (create_app) for modularity and isolation.
+  - Flask Blueprints for clean domain separation (Auth, Main, Wardrobe, Outfits, 
+    Planner, Analytics, Profile).
+
+* Database & ORM: Flask-SQLAlchemy 3.1.1+ / SQLAlchemy 2.0+ / PyMySQL 1.2+
+  - Relational database schema hosted on MySQL (mysql+pymysql).
+  - Object-Relational Mapping with cascading deletes, foreign keys, and indexes.
+
+* Database Migrations: Flask-Migrate 4.1+ / Alembic 1.19+
+  - Version-controlled database schema evolution scripts stored in /migrations.
+
+* Authentication & Security: Flask-Login 0.6.3+ / Werkzeug 3.1+
+  - Password security via PBKDF2/SHA256 salted hashing.
+  - Session state management via secure HTTP-only cookies.
+  - Defense against Open Redirect vulnerabilities on login redirects.
+
+* Frontend Interface: Jinja2 Templates / Bootstrap 5.3.8 / Custom CSS3
+  - Google Fonts (Plus Jakarta Sans).
+  - Mobile-first responsive design system using CSS Grid, Flexbox, and CSS Variables.
+  - Interactive client-side enhancements via vanilla JS (no heavy external dependencies).
+
+
+3. PROJECT DIRECTORY STRUCTURE
+--------------------------------------------------------------------------------
+Wearlytics/
+├── app/
+│   ├── analytics/
+│   │   ├── __init__.py          # Analytics blueprint declaration
+│   │   └── routes.py            # Sustainability & wear analytics logic
+│   ├── auth/
+│   │   ├── __init__.py          # Authentication blueprint declaration
+│   │   └── routes.py            # Login, registration, and logout routes
+│   ├── main/
+│   │   ├── __init__.py          # Core application blueprint
+│   │   └── routes.py            # Dashboard home route & seeder trigger
+│   ├── models/
+│   │   ├── __init__.py          # Models export package
+│   │   ├── clothing.py          # ClothingItem database entity
+│   │   ├── outfit.py            # Outfit database entity & junction table
+│   │   ├── planner.py           # WeeklyPlan database entity
+│   │   └── user.py              # User database entity & password methods
+│   ├── outfits/
+│   │   ├── __init__.py          # Outfits blueprint declaration
+│   │   └── routes.py            # AI outfit generator & favorites engine
+│   ├── planner/
+│   │   ├── __init__.py          # Planner blueprint declaration
+│   │   └── routes.py            # 7-day weekly schedule assignment routes
+│   ├── profile/
+│   │   ├── __init__.py          # Profile blueprint declaration
+│   │   └── routes.py            # User account settings & credentials route
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── main.css         # Master stylesheet & responsive design system
+│   │   ├── js/
+│   │   │   └── main.js          # Image preview, preset selector & alerts JS
+│   │   └── uploads/             # Directory storing user-uploaded clothing photos
+│   ├── templates/
+│   │   ├── analytics/
+│   │   │   └── index.html       # Analytics & sustainability dashboard template
+│   │   ├── auth/
+│   │   │   ├── _messages.html   # Flash alert partial
+│   │   │   ├── login.html       # User login view
+│   │   │   └── register.html    # User registration view
+│   │   ├── outfits/
+│   │   │   └── index.html       # AI generator & saved outfit cards view
+│   │   ├── planner/
+│   │   │   └── index.html       # 7-day schedule & outfit picker view
+│   │   ├── profile/
+│   │   │   └── index.html       # User settings & styling stats view
+│   │   ├── wardrobe/
+│   │   │   ├── index.html       # Wardrobe gallery, search & filter view
+│   │   │   └── upload.html      # Garment ingestion & stock preset form
+│   │   ├── base.html            # Main HTML shell with desktop & mobile nav
+│   │   └── index.html           # Main dashboard template
+│   ├── utils/
+│   │   └── seeder.py            # Starter wardrobe seeder utility
+│   └── extensions.py            # Shared SQLAlchemy, Migrate, Login instances
+│   └── __init__.py              # Application factory function (create_app)
+├── migrations/                  # Alembic migration scripts directory
+├── config.py                    # App configuration (DB URI, SECRET_KEY)
+├── requirements.txt             # Python dependencies manifest
+└── run.py                       # Application execution entry point
+
+
+4. DATABASE ARCHITECTURE & ENTITY RELATIONSHIPS (ER)
+--------------------------------------------------------------------------------
+The database schema consists of 5 interrelated tables:
+
+[ users ]
+  - id (INTEGER, Primary Key, Auto Increment)
+  - name (VARCHAR 120, NOT NULL)
+  - email (VARCHAR 255, UNIQUE, NOT NULL, INDEXED)
+  - password_hash (VARCHAR 256, NOT NULL)
+  - created_at (DATETIME, UTC, NOT NULL)
+
+[ clothing_items ]
+  - id (INTEGER, Primary Key, Auto Increment)
+  - user_id (INTEGER, Foreign Key -> users.id, NOT NULL, INDEXED)
+  - name (VARCHAR 120, NOT NULL)
+  - category (VARCHAR 50, Tops/Bottoms/Shoes/Outerwear/Accessories/Dresses)
+  - color (VARCHAR 50, NOT NULL)
+  - season (VARCHAR 50, All Seasons/Summer/Winter/Spring/Fall)
+  - brand (VARCHAR 100, NULLABLE)
+  - image_url (VARCHAR 500, NOT NULL)
+  - wear_count (INTEGER, DEFAULT 0, NOT NULL)
+  - is_favorite (BOOLEAN, DEFAULT False, NOT NULL)
+  - created_at (DATETIME, UTC, NOT NULL)
+
+[ outfits ]
+  - id (INTEGER, Primary Key, Auto Increment)
+  - user_id (INTEGER, Foreign Key -> users.id, NOT NULL, INDEXED)
+  - title (VARCHAR 120, NOT NULL)
+  - description (TEXT, NULLABLE)
+  - occasion (VARCHAR 50, Casual/Work/Formal/Sporty/Date Night)
+  - season (VARCHAR 50, NOT NULL)
+  - is_favorite (BOOLEAN, DEFAULT False, NOT NULL)
+  - created_at (DATETIME, UTC, NOT NULL)
+
+[ outfit_items ] (Junction Table for Many-to-Many Outfit <-> ClothingItem)
+  - outfit_id (INTEGER, Foreign Key -> outfits.id, Primary Key)
+  - clothing_item_id (INTEGER, Foreign Key -> clothing_items.id, Primary Key)
+
+[ weekly_plans ]
+  - id (INTEGER, Primary Key, Auto Increment)
+  - user_id (INTEGER, Foreign Key -> users.id, NOT NULL, INDEXED)
+  - day_of_week (VARCHAR 20, Monday..Sunday, NOT NULL)
+  - outfit_id (INTEGER, Foreign Key -> outfits.id, SET NULL, NULLABLE)
+  - notes (VARCHAR 255, NULLABLE)
+  - updated_at (DATETIME, UTC, NOT NULL)
+
+
+5. MODULE & BLUEPRINT ARCHITECTURE
+--------------------------------------------------------------------------------
+1. Auth Blueprint (/auth)
+   Handles user onboarding, authentication, session state initialization, and 
+   secure sign out. Includes password length enforcement (>= 8 chars) and email 
+   uniqueness verification.
+
+2. Main Blueprint (/)
+   Renders the primary executive dashboard. Checks if the user's closet is empty 
+   and automatically calls app.utils.seeder.seed_user_wardrobe to populate initial 
+   high-quality items if needed. Displays dynamic count statistics.
+
+3. Wardrobe Blueprint (/wardrobe)
+   Provides complete CRUD operations for clothing items. Supports substring search 
+   on name, brand, or color, multi-category pill filtering, season dropdowns, 
+   favorite toggling, wear count incrementing, and item deletion.
+
+4. Outfits Blueprint (/outfits)
+   Encapsulates the AI Styling Engine. Analyzes the user's available garments, 
+   verifies requirements (at least 1 top/dress + 1 bottom), and generates 
+   balanced outfit ensembles styled for specific occasions.
+
+5. Planner Blueprint (/planner)
+   Manages a 7-day schedule (Monday to Sunday). Users can assign saved outfits 
+   to specific days and add context notes (e.g., "Client presentation").
+
+6. Analytics Blueprint (/analytics)
+   Computes closet statistics: category percentage breakdown, dominant color 
+   palette distribution, most worn vs zero-wear garments, and a Wardrobe 
+   Sustainability Index score (0-100).
+
+7. Profile Blueprint (/profile)
+   Allows users to update their name and password, view personal style stats, 
+   and manage credentials.
+
+
+6. RESPONSIVE DESIGN SYSTEM
+--------------------------------------------------------------------------------
+The front-end is engineered to provide an optimal user experience across all device 
+viewports:
+
+- Desktop Viewports (>= 992px):
+  - Fixed left sidebar navigation (width: 260px) with active state indicators.
+  - Sticky header with integrated search and profile quick-access.
+  - Multi-column card grids (4 columns for wardrobe items, 3 for outfits).
+
+- Tablet Viewports (768px - 991px):
+  - Adaptive grids scaling to 2 or 3 columns.
+  - Responsive search wrap expanding to full top navbar width.
+
+- Mobile Viewports (< 768px):
+  - Fixed Mobile Bottom Navigation Bar (.mobile-nav) pinned to the viewport bottom.
+  - Contains 5 key touch targets: Home, Wardrobe, Floating Center (+) Add Button, 
+    AI Outfits, and Planner.
+  - Touch-friendly tap targets (minimum 44px x 44px) and stacked full-width forms.
+
+
+7. SECURITY AND DATA PROTECTION
+--------------------------------------------------------------------------------
+- Password Hashing: Plaintext passwords are never stored. Werkzeug's 
+  generate_password_hash creates salted hashes.
+- Open Redirect Prevention: Redirect parameters on login routes are validated via 
+  _safe_next_url() to ensure targets stay within the same host network.
+- File Upload Sanitization: Uploaded image filenames pass through Werkzeug's 
+  secure_filename() and receive a unique 32-character Hex UUID prefix to prevent 
+  filename collisions and directory traversal attacks.

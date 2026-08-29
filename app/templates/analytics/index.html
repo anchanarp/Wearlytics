@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Wardrobe Analytics | Wearlytics{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Insights & Metrics</p>
+    <h1>Wardrobe Analytics</h1>
+    <p>Understand your wear habits, category breakdown, and color utilization.</p>
+  </div>
+</div>
+
+<!-- Overview Metrics Cards -->
+<div class="row g-3 g-xl-4 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon clothes-icon">👕</div>
+      <div>
+        <p>Total Clothes</p>
+        <strong>{{ total_items }}</strong>
+        <span class="trend positive">{{ total_outfits }} saved looks</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon plan-icon">🔄</div>
+      <div>
+        <p>Total Wears Logged</p>
+        <strong>{{ total_wears }}</strong>
+        <span class="trend positive">Avg {{ avg_wears }} wears/item</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon ai-icon">📊</div>
+      <div>
+        <p>Active Utilization</p>
+        <strong>{{ utilization_rate }}%</strong>
+        <span class="trend positive">Items worn > 0 times</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon favorite-icon">🌱</div>
+      <div>
+        <p>Sustainability Score</p>
+        <strong>{{ sustainability_score }} / 100</strong>
+        <span class="trend positive">Higher wear density</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Category Split Chart/Progress -->
+  <div class="col-12 col-lg-6">
+    <div class="custom-card-box h-100">
+      <h3>Category Distribution</h3>
+      <p class="text-muted small mb-4">Breakdown of items across categories in your closet:</p>
+      
+      <div class="progress-bar-list">
+        {% for cat in categories_data %}
+        <div class="progress-item mb-3">
+          <div class="d-flex justify-content-between font-weight-bold mb-1">
+            <span>{{ cat.category }}</span>
+            <span class="text-muted">{{ cat.count }} items ({{ cat.percentage }}%)</span>
+          </div>
+          <div class="progress custom-progress">
+            <div class="progress-bar bg-purple" role="progressbar" style="width: {{ cat.percentage }}%;" aria-valuenow="{{ cat.percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Color Palette Analysis -->
+  <div class="col-12 col-lg-6">
+    <div class="custom-card-box h-100">
+      <h3>Color Palette Balance</h3>
+      <p class="text-muted small mb-4">Top colors dominating your wardrobe:</p>
+
+      <div class="color-swatch-list">
+        {% for col in colors_data %}
+        <div class="color-swatch-item">
+          <div class="color-dot" style="background-color: {{ col.color.lower() if col.color.lower() not in ['denim', 'multicolor'] else '#4a777a' }};"></div>
+          <div class="flex-grow-1">
+            <strong>{{ col.color }}</strong>
+            <span class="text-muted small">({{ col.count }} pieces)</span>
+          </div>
+          <span class="badge-percentage">{{ col.percentage }}%</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Most Worn vs Underutilized -->
+<div class="row g-4">
+  <div class="col-12 col-lg-6">
+    <div class="custom-card-box">
+      <h3>🔥 Most Worn Garments</h3>
+      <p class="text-muted small mb-3">Your go-to wardrobe staples:</p>
+      <div class="row g-2">
+        {% for item in most_worn %}
+        <div class="col-6">
+          <div class="mini-item-card">
+            <img src="{{ item.image_url }}" alt="{{ item.name }}">
+            <div>
+              <strong>{{ item.name }}</strong>
+              <small>Worn {{ item.wear_count }} times</small>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6">
+    <div class="custom-card-box">
+      <h3>💡 Underutilized Items</h3>
+      <p class="text-muted small mb-3">Pieces waiting for their first wear or styling:</p>
+      <div class="row g-2">
+        {% for item in least_worn %}
+        <div class="col-6">
+          <div class="mini-item-card">
+            <img src="{{ item.image_url }}" alt="{{ item.name }}">
+            <div>
+              <strong>{{ item.name }}</strong>
+              <small class="text-danger">0 wears logged</small>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

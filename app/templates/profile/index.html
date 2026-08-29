@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile | Wearlytics{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Account Settings</p>
+    <h1>User Profile</h1>
+    <p>Manage your account settings, credentials, and wardrobe profile.</p>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-12 col-lg-4">
+    <div class="profile-summary-card">
+      <div class="profile-avatar-large">
+        {{ current_user.name[:2].upper() if current_user.name else 'US' }}
+      </div>
+      <h2>{{ current_user.name }}</h2>
+      <p class="text-muted">{{ current_user.email }}</p>
+      <span class="chip">Style Enthusiast</span>
+
+      <div class="profile-stats-row">
+        <div>
+          <strong>{{ items_count }}</strong>
+          <span>Clothes</span>
+        </div>
+        <div>
+          <strong>{{ outfits_count }}</strong>
+          <span>Outfits</span>
+        </div>
+        <div>
+          <strong>{{ favorites_count }}</strong>
+          <span>Favorites</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-8">
+    <div class="custom-card-box">
+      <h3>Edit Account Details</h3>
+      <form action="{{ url_for('profile.index') }}" method="post" class="mt-3">
+        <div class="mb-3">
+          <label for="name" class="form-label-custom">Full Name</label>
+          <input type="text" id="name" name="name" class="form-input-custom" value="{{ current_user.name }}" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label-custom">Email Address</label>
+          <input type="email" id="email" class="form-input-custom" value="{{ current_user.email }}" disabled readonly>
+          <small class="text-muted">Email address cannot be changed.</small>
+        </div>
+
+        <hr class="my-4">
+
+        <h4>Change Password (Optional)</h4>
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-sm-6">
+            <label for="new_password" class="form-label-custom">New Password</label>
+            <input type="password" id="new_password" name="new_password" class="form-input-custom" placeholder="Min 8 characters">
+          </div>
+          <div class="col-12 col-sm-6">
+            <label for="confirm_password" class="form-label-custom">Confirm New Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" class="form-input-custom" placeholder="Re-type new password">
+          </div>
+        </div>
+
+        <button type="submit" class="btn primary-button py-2 px-4">Update Profile</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

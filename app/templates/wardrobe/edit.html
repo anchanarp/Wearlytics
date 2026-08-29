@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ item.name }} | Wearlytics{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Edit Garment</p>
+    <h1>Edit Clothing Item</h1>
+    <p>Update the details for <strong>{{ item.name }}</strong>.</p>
+  </div>
+  <a href="{{ url_for('wardrobe.index') }}" class="btn light-button">← Back to Wardrobe</a>
+</div>
+
+<div class="row g-4">
+  <div class="col-12 col-lg-7">
+    <div class="custom-card-box">
+      <form action="{{ url_for('wardrobe.edit_item', item_id=item.id) }}" method="post" enctype="multipart/form-data" class="upload-form">
+
+        <div class="form-group mb-3">
+          <label for="name" class="form-label-custom">Item Name <span class="text-danger">*</span></label>
+          <input type="text" id="name" name="name" class="form-input-custom"
+                 value="{{ item.name }}" required>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-sm-6">
+            <label for="category" class="form-label-custom">Category</label>
+            <select id="category" name="category" class="form-select-custom">
+              {% for cat in ['Tops','Bottoms','Shoes','Outerwear','Accessories','Dresses'] %}
+                <option value="{{ cat }}" {% if item.category == cat %}selected{% endif %}>{{ cat }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label for="season" class="form-label-custom">Season</label>
+            <select id="season" name="season" class="form-select-custom">
+              {% for s in ['All Seasons','Summer','Winter','Spring/Fall'] %}
+                <option value="{{ s }}" {% if item.season == s %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-sm-6">
+            <label for="color" class="form-label-custom">Primary Color</label>
+            <input type="text" id="color" name="color" class="form-input-custom"
+                   value="{{ item.color }}" placeholder="e.g. White, Black, Navy">
+          </div>
+          <div class="col-12 col-sm-6">
+            <label for="brand" class="form-label-custom">Brand / Store</label>
+            <input type="text" id="brand" name="brand" class="form-input-custom"
+                   value="{{ item.brand or '' }}" placeholder="e.g. Uniqlo, Levi's">
+          </div>
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="form-label-custom">Current Image</label>
+          <div class="d-flex align-items-center gap-3 mb-2">
+            <img src="{{ item.image_url }}" alt="{{ item.name }}"
+                 style="width:72px;height:72px;border-radius:12px;object-fit:cover;border:1px solid var(--line);">
+            <span class="text-muted small">Upload a new image below to replace it, or leave empty to keep existing.</span>
+          </div>
+          <div class="upload-dropzone" id="dropzone">
+            <input type="file" id="image_file" name="image_file" accept="image/*"
+                   class="file-input-hidden" onchange="previewUploadImage(this)">
+            <label for="image_file" class="dropzone-label">
+              <div class="upload-icon">📸</div>
+              <strong>Click to upload a new image</strong>
+              <span>Supports PNG, JPG, WEBP</span>
+            </label>
+            <div id="imagePreview" class="image-preview-box d-none">
+              <img id="previewImg" src="#" alt="Upload preview">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-check mb-4">
+          <input type="checkbox" id="is_favorite" name="is_favorite" class="form-check-input"
+                 {% if item.is_favorite %}checked{% endif %}>
+          <label for="is_favorite" class="form-check-label">Mark as Favorite ★</label>
+        </div>
+
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn primary-button flex-grow-1 py-3">Save Changes</button>
+          <a href="{{ url_for('wardrobe.index') }}" class="btn light-button py-3 px-4">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-5">
+    <div class="custom-card-box">
+      <h3>Item Statistics</h3>
+      <div class="d-flex flex-column gap-3 mt-3">
+        <div class="mini-item-card">
+          <img src="{{ item.image_url }}" alt="{{ item.name }}">
+          <div>
+            <strong>{{ item.name }}</strong>
+            <small>{{ item.category }} &bull; {{ item.season }}</small>
+          </div>
+        </div>
+        <div class="color-swatch-item">
+          <span>🔄</span>
+          <span><strong>Worn:</strong> {{ item.wear_count }} times</span>
+        </div>
+        <div class="color-swatch-item">
+          <span>⭐</span>
+          <span><strong>Favorite:</strong> {{ 'Yes' if item.is_favorite else 'No' }}</span>
+        </div>
+        <div class="color-swatch-item">
+          <span>📅</span>
+          <span><strong>Added:</strong> {{ item.created_at.strftime('%b %d, %Y') }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="custom-card-box mt-4" style="border-left: 3px solid #e74c3c;">
+      <h3 style="color:#e74c3c;">Danger Zone</h3>
+      <p class="text-muted small">Permanently remove this item from your wardrobe.</p>
+      <form action="{{ url_for('wardrobe.delete_item', item_id=item.id) }}" method="post"
+            onsubmit="return confirm('Permanently delete this item? This cannot be undone.')">
+        <button type="submit" class="btn w-100 py-2"
+                style="background:#fff0f0;color:#e74c3c;border:1px solid #ffd6d6;font-weight:800;border-radius:10px;">
+          🗑 Delete This Item
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
