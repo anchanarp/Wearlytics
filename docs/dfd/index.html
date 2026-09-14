@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DFD Diagrams - Level 0, Level 1 (User & Admin)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2d6a4f;
+      --primary-light: #e8f5e9;
+      --accent: #80b918;
+      --dark: #0f172a;
+      --slate: #475569;
+      --border: #e2e8f0;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--dark);
+      line-height: 1.6;
+      padding: 30px 20px;
+    }
+    .header-banner {
+      max-width: 1200px;
+      margin: 0 auto 30px auto;
+      background: white;
+      padding: 28px 32px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05);
+    }
+    .accent-strip {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .accent-bar-1 { width: 140px; height: 6px; background: #2d6a4f; border-radius: 3px; }
+    .accent-bar-2 { width: 140px; height: 6px; background: #80b918; border-radius: 3px; }
+    .accent-bar-3 { width: 140px; height: 6px; background: #94a3b8; border-radius: 3px; }
+    h1 { font-size: 26px; font-weight: 800; color: var(--dark); margin-bottom: 6px; }
+    p.sub { font-size: 14px; color: var(--slate); font-weight: 500; }
+    
+    .tabs {
+      display: flex;
+      gap: 10px;
+      max-width: 1200px;
+      margin: 0 auto 24px auto;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: white;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--slate);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover { background: #f1f5f9; color: var(--dark); }
+    .tab-btn.active {
+      background: #1b4332;
+      color: white;
+      border-color: #1b4332;
+      box-shadow: 0 4px 12px rgba(27, 67, 50, 0.25);
+    }
+    .tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: #e2e8f0;
+      color: var(--slate);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .tab-btn.active .tag {
+      background: #80b918;
+      color: white;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 30px;
+      box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+    .card-title h2 { font-size: 20px; font-weight: 800; color: #1e293b; }
+    .card-title span { font-size: 13px; color: var(--slate); font-weight: 500; }
+    .btn-group { display: flex; gap: 8px; }
+    .action-btn {
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: white;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .action-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+    .svg-wrapper {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #edf2f7;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      min-height: 480px;
+    }
+    .svg-wrapper img, .svg-wrapper object {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .explanation-box {
+      margin-top: 24px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .explanation-box h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      font-weight: 700;
+      color: #334155;
+    }
+    td code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: #e2e8f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+    .notation-legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .legend-item {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 12px;
+    }
+    .legend-item strong { display: block; margin-bottom: 4px; color: #1e293b; }
+
+    .diagram-panel { display: none; }
+    .diagram-panel.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="header-banner">
+    <div class="accent-strip">
+      <div class="accent-bar-1"></div>
+      <div class="accent-bar-2"></div>
+      <div class="accent-bar-3"></div>
+    </div>
+    <h1>Data Flow Diagrams (DFD) — Level 0 & Level 1</h1>
+    <p class="sub">Generated with standard notation matching the reference specification: Entities (Rectangles), Processes (Ovals), Data Stores (Open-ended Left-Divided [ | ]), and Directed Labeled Data Flows.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('wear-l0')">
+      <span class="tag">Primary</span> Level 0 Context (Wearlytics)
+    </button>
+    <button class="tab-btn" onclick="switchTab('wear-user-l1')">
+      <span class="tag">Level 1</span> User DFD (Wearlytics)
+    </button>
+    <button class="tab-btn" onclick="switchTab('wear-admin-l1')">
+      <span class="tag">Level 1</span> Admin DFD (Wearlytics)
+    </button>
+    <button class="tab-btn" onclick="switchTab('wear-all-l1')">
+      <span class="tag">System</span> Overall Level 1 (Wearlytics)
+    </button>
+    <button class="tab-btn" onclick="switchTab('law-l0')">
+      <span class="tag">Reference</span> Level 0 (Law Firm)
+    </button>
+    <button class="tab-btn" onclick="switchTab('law-admin-l1')">
+      <span class="tag">Reference</span> Level 1 Admin (Law Firm)
+    </button>
+  </div>
+
+  <div class="container">
+
+    <!-- 1. WEARLYTICS LEVEL 0 -->
+    <div id="wear-l0" class="diagram-panel active">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title">
+            <h2>Wearlytics — Level 0 Context Diagram</h2>
+            <span>High-level boundary diagram showing boundary interactions between actors and the system</span>
+          </div>
+          <div class="btn-group">
+            <a href="wearlytics_dfd_level_0.svg" download="wearlytics_dfd_level_0.svg" class="action-btn">📥 Download SVG</a>
+            <a href="wearlytics_dfd_level_0.svg" target="_blank" class="action-btn">🔍 Full Screen</a>
+          </div>
+        </div>
+        <div class="svg-wrapper">
+          <img src="wearlytics_dfd_level_0.svg" alt="Wearlytics Level 0 Context Diagram">
+        </div>
+        <div class="explanation-box">
+          <h3>📌 Context Diagram Description</h3>
+          <table>
+            <tr><th>Component</th><th>Notation</th><th>Details</th></tr>
+            <tr><td><strong>External Entity</strong></td><td>Sharp Rectangle</td><td><code>User / Admin</code> (Wardrobe Owner, Fashion Client, System Admin)</td></tr>
+            <tr><td><strong>System Process</strong></td><td>Center Oval / Circle</td><td><code>(0.0) Wearlytics System</code></td></tr>
+            <tr><td><strong>Inflow Arrow</strong></td><td>Directed Arrow (<code>request</code>)</td><td>User credentials, garment uploads, styling filters, weekly schedule choices, feedback ratings, admin configuration.</td></tr>
+            <tr><td><strong>Outflow Arrow</strong></td><td>Directed Arrow (<code>response</code>)</td><td>Auth tokens, categorized wardrobe catalog, AI generated outfits, weekly schedule view, wear analytics charts.</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. WEARLYTICS LEVEL 1 USER -->
+    <div id="wear-user-l1" class="diagram-panel">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title">
+            <h2>Wearlytics — Level 1 User DFD</h2>
+            <span>Detailed functional decomposition of user actions matching screenshot notations</span>
+          </div>
+          <div class="btn-group">
+            <a href="wearlytics_dfd_level_1_user.svg" download="wearlytics_dfd_level_1_user.svg" class="action-btn">📥 Download SVG</a>
+            <a href="wearlytics_dfd_level_1_user.svg" target="_blank" class="action-btn">🔍 Full Screen</a>
+          </div>
+        </div>
+        <div class="svg-wrapper">
+          <img src="wearlytics_dfd_level_1_user.svg" alt="Wearlytics Level 1 User DFD">
+        </div>
+        <div class="explanation-box">
+          <h3>📌 Process & Data Store Breakdown</h3>
+          <table>
+            <tr><th>Process (Oval)</th><th>Input From</th><th>Data Store [ | ]</th><th>Inflow (add/update)</th><th>Outflow (get/query)</th></tr>
+            <tr><td><code>Login</code></td><td>User (credentials)</td><td><code>users</code></td><td>username query</td><td>password validation / user object</td></tr>
+            <tr><td><code>Manage Wardrobe</code></td><td>Login (valid user)</td><td><code>clothing_items</code></td><td>add/wear details (image, name, category, wear count)</td><td>get clothes details (user closet items)</td></tr>
+            <tr><td><code>AI Outfit Generator</code></td><td>Login (valid user)</td><td><code>outfits</code></td><td>generate outfit (scored pairing, items link)</td><td>get outfit catalog (saved combinations)</td></tr>
+            <tr><td><code>Weekly Planner</code></td><td>Login (valid user)</td><td><code>weekly_plans</code></td><td>assign schedule (day of week, outfit ID, notes)</td><td>get weekly plan (7-day itinerary)</td></tr>
+            <tr><td><code>Wardrobe Analytics</code></td><td>Login (valid user)</td><td><code>clothing_items</code></td><td>log wear count (+1 wear update)</td><td>get utilization stats (cost per wear, charts)</td></tr>
+            <tr><td><code>Outfit Feedback</code></td><td>Login (valid user)</td><td><code>outfit_feedback</code></td><td>submit rating (rating 1-5, thumbs, feedback note)</td><td>get feedback data (past ratings)</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. WEARLYTICS LEVEL 1 ADMIN -->
+    <div id="wear-admin-l1" class="diagram-panel">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title">
+            <h2>Wearlytics — Level 1 Admin DFD</h2>
+            <span>Administrator management and oversight functional flows matching reference layout</span>
+          </div>
+          <div class="btn-group">
+            <a href="wearlytics_dfd_level_1_admin.svg" download="wearlytics_dfd_level_1_admin.svg" class="action-btn">📥 Download SVG</a>
+            <a href="wearlytics_dfd_level_1_admin.svg" target="_blank" class="action-btn">🔍 Full Screen</a>
+          </div>
+        </div>
+        <div class="svg-wrapper">
+          <img src="wearlytics_dfd_level_1_admin.svg" alt="Wearlytics Level 1 Admin DFD">
+        </div>
+        <div class="explanation-box">
+          <h3>📌 Administrator Functional Flows</h3>
+          <table>
+            <tr><th>Admin Process</th><th>Input Flow</th><th>Data Store</th><th>Write Flow</th><th>Read Flow</th></tr>
+            <tr><td><code>Login</code></td><td>Admin credentials</td><td><code>login</code></td><td>username</td><td>password verification</td></tr>
+            <tr><td><code>Manage Users</code></td><td>valid user</td><td><code>users</code></td><td>add / update user status</td><td>get user details</td></tr>
+            <tr><td><code>Manage Clothes & Presets</code></td><td>valid user</td><td><code>clothing_items</code></td><td>add preset items (starter wardrobe images/categories)</td><td>get clothing data</td></tr>
+            <tr><td><code>Manage AI Models & Rules</code></td><td>valid user</td><td><code>outfits</code></td><td>configure rules (color harmony weights, occasion rules)</td><td>get outfit metrics</td></tr>
+            <tr><td><code>Feedback & Analytics Log</code></td><td>valid user</td><td><code>outfit_feedback</code></td><td>log audit action</td><td>get feedback stats & satisfaction rates</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. WEARLYTICS OVERALL LEVEL 1 -->
+    <div id="wear-all-l1" class="diagram-panel">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title">
+            <h2>Wearlytics — Overall Level 1 System DFD</h2>
+            <span>Integrated system view linking both User and Admin to shared data persistence</span>
+          </div>
+          <div class="btn-group">
+            <a href="wearlytics_dfd_level_1_overall.svg" download="wearlytics_dfd_level_1_overall.svg" class="action-btn">📥 Download SVG</a>
+            <a href="wearlytics_dfd_level_1_overall.svg" target="_blank" class="action-btn">🔍 Full Screen</a>
+          </div>
+        </div>
+        <div class="svg-wrapper">
+          <img src="wearlytics_dfd_level_1_overall.svg" alt="Wearlytics Overall Level 1 DFD">
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. LAW FIRM LEVEL 0 -->
+    <div id="law-l0" class="diagram-panel">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title">
+            <h2>Law Firm System — Level 0 Context Diagram (From Screenshot)</h2>
+            <span>Exact high-definition recreation of the reference context diagram</span>
+          </div>
+          <div class="btn-group">
+            <a href="lawfirm_dfd_level_0.svg" download="lawfirm_dfd_level_0.svg" class="action-btn">📥 Download SVG</a>
+            <a href="lawfirm_dfd_level_0.svg" target="_blank" class="action-btn">🔍 Full Screen</a>
+          </div>
+        </div>
+        <div class="svg-wrapper">
+          <img src="lawfirm_dfd_level_0.svg" alt="Law Firm Level 0 Context Diagram">
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. LAW FIRM LEVEL 1 ADMIN -->
+    <div id="law-admin-l1" class="diagram-panel">
+      <div class="card">
+        <div class="card-top">
+          <div class="card-title">
+            <h2>Law Firm System — Level 1 Admin (From Screenshot)</h2>
+            <span>Exact 1:1 vector replica of the reference screenshot diagram</span>
+          </div>
+          <div class="btn-group">
+            <a href="lawfirm_dfd_level_1_admin.svg" download="lawfirm_dfd_level_1_admin.svg" class="action-btn">📥 Download SVG</a>
+            <a href="lawfirm_dfd_level_1_admin.svg" target="_blank" class="action-btn">🔍 Full Screen</a>
+          </div>
+        </div>
+        <div class="svg-wrapper">
+          <img src="lawfirm_dfd_level_1_admin.svg" alt="Law Firm Level 1 Admin DFD">
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.diagram-panel').forEach(p => p.classList.remove('active'));
+      
+      const targetBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+      if (targetBtn) targetBtn.classList.add('active');
+      
+      const panel = document.getElementById(tabId);
+      if (panel) panel.classList.add('active');
+    }
+  </script>
+</body>
+</html>

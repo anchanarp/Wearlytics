@@ -13,56 +13,97 @@
 
 <div class="planner-grid">
   {% for entry in schedule %}
-  <div class="planner-day-card {% if entry.plan and entry.plan.outfit %}has-outfit{% endif %}">
+  {% set plan = entry.plan %}
+  {% set has_custom = plan and plan.custom_outfit %}
+  {% set has_ai = plan and plan.outfit %}
+  <div class="planner-day-card {% if has_custom or has_ai %}has-outfit{% endif %}">
     <div class="day-header">
       <span class="day-name">{{ entry.day }}</span>
-      {% if entry.plan and entry.plan.outfit %}
+      {% if has_custom or has_ai %}
         <span class="badge-assigned">Assigned</span>
       {% else %}
         <span class="badge-empty">Unplanned</span>
       {% endif %}
     </div>
 
-    {% if entry.plan and entry.plan.outfit %}
-      <div class="assigned-outfit-box">
-        <h4>{{ entry.plan.outfit.title }}</h4>
-        <p class="meta-info">{{ entry.plan.outfit.occasion }} &bull; {{ entry.plan.outfit.items|length }} items</p>
-        
+    {# ── Custom Outfit block ── #}
+    {% if has_custom %}
+      <div class="assigned-outfit-box" style="border-left: 4px solid #7c3aed;">
+        <p class="eyebrow" style="font-size:10px;color:#7c3aed;margin-bottom:2px;">✏️ Custom Outfit</p>
+        <h4>{{ plan.custom_outfit.name or 'My Custom Outfit' }}</h4>
+        {% if plan.custom_outfit.note %}
+          <p class="planner-notes">📝 {{ plan.custom_outfit.note }}</p>
+        {% endif %}
         <div class="items-mini-thumbnails">
-          {% for item in entry.plan.outfit.items %}
+          {% for item in plan.custom_outfit.items %}
             <img src="{{ item.image_url }}" alt="{{ item.name }}" title="{{ item.name }}">
           {% endfor %}
         </div>
+        <div class="d-flex gap-2 mt-2">
+          <a href="{{ url_for('planner.edit_custom_outfit', outfit_id=plan.custom_outfit.id) }}"
+             class="btn btn-sm" style="background:#f0eaff;color:#7c3aed;border:1px solid #c4b5fd;border-radius:8px;font-size:12px;font-weight:700;padding:5px 10px;flex:1;text-align:center;">
+            ✏️ Edit
+          </a>
+          <form action="{{ url_for('planner.delete_custom_outfit', outfit_id=plan.custom_outfit.id) }}" method="post" style="flex:1;">
+            <button type="submit" class="btn w-100" onclick="return confirm('Remove this custom outfit?')"
+              style="background:#fff0f2;color:#d63031;border:1px solid #ffd6d8;border-radius:8px;font-size:12px;font-weight:700;padding:5px;cursor:pointer;">
+              🗑 Delete
+            </button>
+          </form>
+        </div>
+      </div>
 
-        {% if entry.plan.notes %}
-          <p class="planner-notes">📝 {{ entry.plan.notes }}</p>
+    {# ── AI / Recommended Outfit block ── #}
+    {% elif has_ai %}
+      <div class="assigned-outfit-box">
+        <h4>{{ plan.outfit.title }}</h4>
+        <p class="meta-info">{{ plan.outfit.occasion }} &bull; {{ plan.outfit.items|length }} items</p>
+        <div class="items-mini-thumbnails">
+          {% for item in plan.outfit.items %}
+            <img src="{{ item.image_url }}" alt="{{ item.name }}" title="{{ item.name }}">
+          {% endfor %}
+        </div>
+        {% if plan.notes %}
+          <p class="planner-notes">📝 {{ plan.notes }}</p>
         {% endif %}
-
-        <form action="{{ url_for('planner.clear_day', plan_id=entry.plan.id) }}" method="post" style="margin-top:8px;">
-          <button type="submit" class="btn w-100" style="background:#fff0f2;color:#d63031;border:1px solid #ffd6d8;border-radius:8px;font-size:12px;font-weight:800;padding:6px;cursor:pointer;">✕ Clear Day</button>
+        <form action="{{ url_for('planner.clear_day', plan_id=plan.id) }}" method="post" style="margin-top:8px;">
+          <button type="submit" class="btn w-100"
+            style="background:#fff0f2;color:#d63031;border:1px solid #ffd6d8;border-radius:8px;font-size:12px;font-weight:800;padding:6px;cursor:pointer;">
+            ✕ Clear Day
+          </button>
         </form>
       </div>
+
     {% else %}
       <div class="planner-empty-box">
         <p>No outfit planned for this day.</p>
       </div>
     {% endif %}
 
-    <!-- Assignment Form -->
+    {# ── Create My Own Outfit button ── #}
+    <a href="{{ url_for('planner.custom_outfit_page', day=entry.day) }}"
+       class="btn btn-outline-primary btn-sm w-100 mb-2"
+       style="margin-top:10px;">
+      {% if has_custom %}✏️ Change Custom Outfit{% else %}✨ Create My Own Outfit{% endif %}
+    </a>
+
+    {# ── AI Outfit assignment form ── #}
     <form action="{{ url_for('planner.assign_outfit') }}" method="post" class="planner-form mt-2">
       <input type="hidden" name="day_of_week" value="{{ entry.day }}">
       <div class="mb-2">
         <select name="outfit_id" class="form-select-custom form-select-sm">
-          <option value="">-- Choose Outfit --</option>
+          <option value="">-- Choose AI Outfit --</option>
           {% for outfit in outfits %}
-            <option value="{{ outfit.id }}" {% if entry.plan and entry.plan.outfit_id == outfit.id %}selected{% endif %}>
+            <option value="{{ outfit.id }}" {% if plan and plan.outfit_id == outfit.id %}selected{% endif %}>
               {{ outfit.title }} ({{ outfit.occasion }})
             </option>
           {% endfor %}
         </select>
       </div>
       <div class="mb-2">
-        <input type="text" name="notes" class="form-input-custom form-input-sm" placeholder="Add note (e.g. Work presentation)" value="{{ entry.plan.notes if entry.plan else '' }}">
+        <input type="text" name="notes" class="form-input-custom form-input-sm"
+          placeholder="Add note (e.g. Work presentation)"
+          value="{{ plan.notes if plan else '' }}">
       </div>
       <button type="submit" class="btn primary-button btn-sm w-100">Save {{ entry.day }}</button>
     </form>

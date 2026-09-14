@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" width="100%" height="100%" style="background:#ffffff; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Arrow marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#1e293b" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#2d6a4f" />
+    </marker>
+    <!-- Drop shadows for modern presentation -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Academic Report Slide Accent Bars matching reference -->
+  <rect x="40" y="25" width="220" height="7" fill="#2d6a4f" rx="2"/>
+  <rect x="270" y="25" width="220" height="7" fill="#80b918" rx="2"/>
+  <rect x="500" y="25" width="220" height="7" fill="#94a3b8" rx="2"/>
+
+  <!-- Title -->
+  <text x="40" y="65" font-size="19" font-weight="800" fill="#1e293b" letter-spacing="1">LEVEL 0 CONTEXT DIAGRAM</text>
+  <text x="40" y="88" font-size="13" font-weight="500" fill="#64748b">Law Firm Management System — Context Flow</text>
+
+    <!-- Left Entity: Admin/Advocate/Petitioner/Court officer/Assistant -->
+    <g class="entity">
+      <rect x="60" y="180" width="200" height="100" fill="#ffffff" stroke="#1e293b" stroke-width="1.8" filter="url(#shadow)"/>
+      <text x="160.0" y="218" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">Admin/Advocate/Pe</text>
+      <text x="160.0" y="236" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">titioner/Court</text>
+      <text x="160.0" y="254" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">officer/Assistant</text>
+    </g>
+    
+    <!-- Process: Law Firm System -->
+    <g class="process">
+      <ellipse cx="450" cy="230" rx="85" ry="80" fill="#ffffff" stroke="#1e293b" stroke-width="1.8" filter="url(#shadow)"/>
+      <text x="450" y="222" font-size="15" font-weight="600" fill="#0f172a" text-anchor="middle">Law Firm</text>
+      <text x="450" y="244" font-size="15" font-weight="600" fill="#0f172a" text-anchor="middle">System</text>
+    </g>
+    
+    <!-- Right Entity: Admin/Advocate/Petitioner/Court officer/Assistant -->
+    <g class="entity">
+      <rect x="640" y="180" width="200" height="100" fill="#ffffff" stroke="#1e293b" stroke-width="1.8" filter="url(#shadow)"/>
+      <text x="740.0" y="218" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">Admin/Advocate/P</text>
+      <text x="740.0" y="236" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">etitioner/Court</text>
+      <text x="740.0" y="254" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">officer/Assistant</text>
+    </g>
+    
+    <!-- Arrow Left -> Center ('request') -->
+    <path d="M 260 230 L 361 230" fill="none" stroke="#1e293b" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <text x="312" y="246" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">request</text>
+
+    <!-- Arrow Center -> Right ('response') -->
+    <path d="M 539 230 L 638 230" fill="none" stroke="#1e293b" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <text x="588" y="246" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">response</text>
+    </svg>

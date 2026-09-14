@@ -22,3 +22,13 @@ instance/
 .vscode/
 .idea/
 .DS_Store
+
+# Deep Learning model weights (large files — regenerate with train_classifier.py)
+app/services/*.pt
+app/services/*.pth
+app/services/*.onnx
+
+# Large datasets and external repositories
+data/
+social-feed-platform/
+

@@ -31,6 +31,13 @@ class Outfit(db.Model):
         nullable=False,
     )
 
+    # --- AI-enhanced fields ---
+    compatibility_score = db.Column(db.Float, nullable=True)
+    """Weighted compatibility score (0–100) calculated by the recommendation engine."""
+
+    recommendation_type = db.Column(db.String(30), nullable=True, default="ai_random")
+    """How this outfit was created: 'ai_smart' / 'ai_random' / 'manual'."""
+
     # Relationships
     user = db.relationship("User", backref=db.backref("outfits", lazy="dynamic", cascade="all, delete-orphan"))
     items = db.relationship(

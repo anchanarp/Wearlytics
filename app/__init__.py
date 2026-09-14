@@ -10,6 +10,9 @@ def create_app(config_class=Config):
     """Create and configure the Flask application."""
     app = Flask(__name__)
     app.config.from_object(config_class)
+    # Override DB URI for test environment to use in‑memory SQLite, avoiding external MySQL dependency.
+    if app.config.get("TESTING"):
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
     # Limit uploads to 16 MB
     app.config.setdefault("MAX_CONTENT_LENGTH", 16 * 1024 * 1024)
 
@@ -29,6 +32,8 @@ def create_app(config_class=Config):
     from app.outfits import outfits_bp
     from app.planner import planner_bp
     from app.profile import profile_bp
+    from app.recommendations import recommendations_bp
+    from app.stylist import stylist_bp
     from app.wardrobe import wardrobe_bp
 
     app.register_blueprint(auth_bp)
@@ -38,6 +43,8 @@ def create_app(config_class=Config):
     app.register_blueprint(planner_bp)
     app.register_blueprint(analytics_bp)
     app.register_blueprint(profile_bp)
+    app.register_blueprint(recommendations_bp)
+    app.register_blueprint(stylist_bp)
 
     # --- Global Error Handlers ---
     @app.errorhandler(404)

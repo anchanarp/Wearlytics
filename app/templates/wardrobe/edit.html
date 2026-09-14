@@ -55,6 +55,27 @@
           </div>
         </div>
 
+        <!-- AI-Enhanced Fields -->
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-sm-6">
+            <label for="style" class="form-label-custom">Style <span class="ai-tag">✦ Smart</span></label>
+            <select id="style" name="style" class="form-select-custom">
+              {% for s in all_styles %}
+                <option value="{{ s }}" {% if (item.style or 'Casual') == s %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label for="clothing_type" class="form-label-custom">Clothing Type <span class="ai-tag">✦ AI</span></label>
+            <input type="text" id="clothing_type" name="clothing_type" class="form-input-custom"
+                   value="{{ item.clothing_type or '' }}"
+                   placeholder="e.g. T-Shirt, Jeans, Sneakers">
+            {% if item.detected_color_hex %}
+            <small class="form-hint">AI detected color: <span style="display:inline-block;width:12px;height:12px;background:{{ item.detected_color_hex }};border-radius:3px;border:1px solid #ccc;vertical-align:middle;"></span> {{ item.color }}</small>
+            {% endif %}
+          </div>
+        </div>
+
         <div class="form-group mb-3">
           <label class="form-label-custom">Current Image</label>
           <div class="d-flex align-items-center gap-3 mb-2">

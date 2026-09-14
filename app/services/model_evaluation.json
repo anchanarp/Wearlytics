@@ -1,0 +1,143 @@
+{
+  "best_val_accuracy": 0.9188,
+  "test_accuracy": 0.8919,
+  "epochs_trained": 15,
+  "class_names": [
+    "Accessories",
+    "Bottoms",
+    "Dresses",
+    "Outerwear",
+    "Shoes",
+    "Tops"
+  ],
+  "per_class_metrics": {
+    "Accessories": {
+      "precision": 0.8,
+      "recall": 0.889,
+      "f1": 0.842,
+      "support": 9
+    },
+    "Bottoms": {
+      "precision": 0.915,
+      "recall": 0.973,
+      "f1": 0.943,
+      "support": 110
+    },
+    "Dresses": {
+      "precision": 0.763,
+      "recall": 0.69,
+      "f1": 0.725,
+      "support": 42
+    },
+    "Outerwear": {
+      "precision": 0.872,
+      "recall": 0.63,
+      "f1": 0.731,
+      "support": 54
+    },
+    "Shoes": {
+      "precision": 0.942,
+      "recall": 1.0,
+      "f1": 0.97,
+      "support": 49
+    },
+    "Tops": {
+      "precision": 0.897,
+      "recall": 0.927,
+      "f1": 0.912,
+      "support": 245
+    }
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "tr_loss": 0.895,
+      "tr_acc": 0.6879,
+      "val_acc": 0.805
+    },
+    {
+      "epoch": 2,
+      "tr_loss": 0.621,
+      "tr_acc": 0.773,
+      "val_acc": 0.8272
+    },
+    {
+      "epoch": 3,
+      "tr_loss": 0.5864,
+      "tr_acc": 0.7847,
+      "val_acc": 0.8325
+    },
+    {
+      "epoch": 4,
+      "tr_loss": 0.5526,
+      "tr_acc": 0.7941,
+      "val_acc": 0.8154
+    },
+    {
+      "epoch": 5,
+      "tr_loss": 0.5267,
+      "tr_acc": 0.7996,
+      "val_acc": 0.8377
+    },
+    {
+      "epoch": 6,
+      "tr_loss": 0.5155,
+      "tr_acc": 0.8117,
+      "val_acc": 0.8495
+    },
+    {
+      "epoch": 7,
+      "tr_loss": 0.4944,
+      "tr_acc": 0.8159,
+      "val_acc": 0.839
+    },
+    {
+      "epoch": 8,
+      "tr_loss": 0.4513,
+      "tr_acc": 0.8339,
+      "val_acc": 0.8861
+    },
+    {
+      "epoch": 9,
+      "tr_loss": 0.3243,
+      "tr_acc": 0.8737,
+      "val_acc": 0.9005
+    },
+    {
+      "epoch": 10,
+      "tr_loss": 0.3053,
+      "tr_acc": 0.888,
+      "val_acc": 0.9058
+    },
+    {
+      "epoch": 11,
+      "tr_loss": 0.2526,
+      "tr_acc": 0.9074,
+      "val_acc": 0.8992
+    },
+    {
+      "epoch": 12,
+      "tr_loss": 0.2167,
+      "tr_acc": 0.9221,
+      "val_acc": 0.9188
+    },
+    {
+      "epoch": 13,
+      "tr_loss": 0.1946,
+      "tr_acc": 0.9275,
+      "val_acc": 0.911
+    },
+    {
+      "epoch": 14,
+      "tr_loss": 0.1846,
+      "tr_acc": 0.9315,
+      "val_acc": 0.9162
+    },
+    {
+      "epoch": 15,
+      "tr_loss": 0.1834,
+      "tr_acc": 0.9325,
+      "val_acc": 0.911
+    }
+  ]
+}

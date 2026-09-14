@@ -6,19 +6,24 @@
 <div class="page-heading">
   <div>
     <p class="eyebrow">Account Settings</p>
-    <h1>User Profile</h1>
-    <p>Manage your account settings, credentials, and wardrobe profile.</p>
+    <h1>Your Profile</h1>
+    <p>Manage your account, preferences, and style settings.</p>
   </div>
 </div>
 
 <div class="row g-4">
+  <!-- Left Column: Avatar & Stats -->
   <div class="col-12 col-lg-4">
     <div class="profile-summary-card">
-      <div class="profile-avatar-large">
+      <!-- Avatar with customizable color -->
+      <div class="profile-avatar-large" style="background: {{ current_user.avatar_color or '#6c5ce7' }};">
         {{ current_user.name[:2].upper() if current_user.name else 'US' }}
       </div>
       <h2>{{ current_user.name }}</h2>
-      <p class="text-muted">{{ current_user.email }}</p>
+      <p class="text-muted mb-1">{{ current_user.email }}</p>
+      {% if current_user.bio %}
+      <p class="profile-bio">{{ current_user.bio }}</p>
+      {% endif %}
       <span class="chip">Style Enthusiast</span>
 
       <div class="profile-stats-row">
@@ -34,14 +39,21 @@
           <strong>{{ favorites_count }}</strong>
           <span>Favorites</span>
         </div>
+        <div>
+          <strong>{{ laundry_count }}</strong>
+          <span>In Laundry</span>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- Right Column: Edit Forms -->
   <div class="col-12 col-lg-8">
-    <div class="custom-card-box">
-      <h3>Edit Account Details</h3>
+    <!-- Edit Profile -->
+    <div class="custom-card-box mb-4">
+      <h3>Edit Profile</h3>
       <form action="{{ url_for('profile.index') }}" method="post" class="mt-3">
+        <input type="hidden" name="action" value="profile">
         <div class="mb-3">
           <label for="name" class="form-label-custom">Full Name</label>
           <input type="text" id="name" name="name" class="form-input-custom" value="{{ current_user.name }}" required>
@@ -53,23 +65,128 @@
           <small class="text-muted">Email address cannot be changed.</small>
         </div>
 
-        <hr class="my-4">
+        <div class="mb-3">
+          <label for="bio" class="form-label-custom">Short Bio <small class="text-muted">(optional)</small></label>
+          <input type="text" id="bio" name="bio" class="form-input-custom" 
+                 value="{{ current_user.bio or '' }}" placeholder="e.g. Fashion lover, minimalist style" maxlength="200">
+        </div>
 
-        <h4>Change Password (Optional)</h4>
-        <div class="row g-3 mb-4">
-          <div class="col-12 col-sm-6">
-            <label for="new_password" class="form-label-custom">New Password</label>
-            <input type="password" id="new_password" name="new_password" class="form-input-custom" placeholder="Min 8 characters">
-          </div>
-          <div class="col-12 col-sm-6">
-            <label for="confirm_password" class="form-label-custom">Confirm New Password</label>
-            <input type="password" id="confirm_password" name="confirm_password" class="form-input-custom" placeholder="Re-type new password">
+        <div class="mb-3">
+          <label class="form-label-custom">Avatar Color</label>
+          <div class="avatar-color-picker">
+            {% for color in ['#6c5ce7','#fd79a8','#00b894','#e17055','#0984e3','#fdcb6e','#6c757d','#2d3436'] %}
+            <label class="avatar-color-swatch" title="{{ color }}">
+              <input type="radio" name="avatar_color" value="{{ color }}" 
+                     {% if (current_user.avatar_color or '#6c5ce7') == color %}checked{% endif %}
+                     style="display:none;" onchange="updateAvatarPreview('{{ color }}')">
+              <span class="color-dot" style="background:{{ color }}; {% if (current_user.avatar_color or '#6c5ce7') == color %}box-shadow: 0 0 0 3px #fff, 0 0 0 5px {{ color }};{% endif %}"></span>
+            </label>
+            {% endfor %}
           </div>
         </div>
 
         <button type="submit" class="btn primary-button py-2 px-4">Update Profile</button>
       </form>
     </div>
+
+    <!-- Change Password -->
+    <div class="custom-card-box mb-4">
+      <h3>Change Password</h3>
+      <form action="{{ url_for('profile.index') }}" method="post" class="mt-3">
+        <input type="hidden" name="action" value="password">
+        <div class="mb-3">
+          <label for="current_password" class="form-label-custom">Current Password</label>
+          <input type="password" id="current_password" name="current_password" class="form-input-custom" required>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-sm-6">
+            <label for="new_password" class="form-label-custom">New Password</label>
+            <input type="password" id="new_password" name="new_password" class="form-input-custom" placeholder="Min 8 characters" required>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label for="confirm_password" class="form-label-custom">Confirm New Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" class="form-input-custom" placeholder="Re-type new password" required>
+          </div>
+        </div>
+        <button type="submit" class="btn primary-button py-2 px-4">Change Password</button>
+      </form>
+    </div>
+
+    <!-- Style Preferences -->
+    <div class="custom-card-box mb-4">
+      <h3>Style Preferences</h3>
+      <p class="text-muted mb-3" style="font-size:0.88rem;">Select your preferred styles, occasions, and seasons to improve recommendations.</p>
+      <form action="{{ url_for('profile.index') }}" method="post">
+        <input type="hidden" name="action" value="preferences">
+
+        <div class="mb-3">
+          <label class="form-label-custom">Preferred Styles</label>
+          <div class="pref-chips-wrap">
+            {% for style in all_styles %}
+            <label class="pref-chip">
+              <input type="checkbox" name="styles" value="{{ style }}"
+                     {% if style in prefs.preferred_styles_list %}checked{% endif %}>
+              <span>{{ style }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label-custom">Preferred Occasions</label>
+          <div class="pref-chips-wrap">
+            {% for occ in all_occasions %}
+            <label class="pref-chip">
+              <input type="checkbox" name="occasions" value="{{ occ }}"
+                     {% if occ in prefs.preferred_occasions_list %}checked{% endif %}>
+              <span>{{ occ }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label-custom">Preferred Seasons</label>
+          <div class="pref-chips-wrap">
+            {% for s in all_seasons %}
+            <label class="pref-chip">
+              <input type="checkbox" name="seasons" value="{{ s }}"
+                     {% if s in prefs.preferred_seasons_list %}checked{% endif %}>
+              <span>{{ s }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <button type="submit" class="btn primary-button py-2 px-4">Save Preferences</button>
+      </form>
+    </div>
+
+    <!-- Logout -->
+    <div class="custom-card-box">
+      <h3>Account Actions</h3>
+      <p class="text-muted" style="font-size:0.88rem;">Sign out of your Wearlytics account on this device.</p>
+      <form action="{{ url_for('auth.logout') }}" method="post">
+        <button type="submit" class="btn" style="background:#fff0f0;color:#e74c3c;border:1px solid #ffcccc;padding:10px 22px;border-radius:10px;font-weight:700;cursor:pointer;">
+          Sign Out
+        </button>
+      </form>
+    </div>
   </div>
 </div>
+
+<script>
+function updateAvatarPreview(color) {
+  const avatarEl = document.querySelector('.profile-avatar-large');
+  if (avatarEl) avatarEl.style.background = color;
+  // Update ring on selected swatch
+  document.querySelectorAll('.color-dot').forEach(dot => {
+    dot.style.boxShadow = '';
+  });
+  const checked = document.querySelector('input[name="avatar_color"]:checked');
+  if (checked) {
+    checked.nextElementSibling.style.boxShadow = `0 0 0 3px #fff, 0 0 0 5px ${color}`;
+  }
+}
+</script>
 {% endblock %}

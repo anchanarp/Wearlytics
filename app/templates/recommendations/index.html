@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Recommendations | Wearlytics{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">✦ AI-Powered</p>
+    <h1>Smart Outfit Recommendations</h1>
+    <p>Personalised outfit combinations scored for color harmony, style &amp; season.</p>
+  </div>
+  <a href="{{ url_for('recommendations.preferences') }}" class="btn light-button">⚙ My Style Prefs</a>
+</div>
+
+<!-- Filters -->
+<div class="custom-card-box mb-4">
+  <form method="get" action="{{ url_for('recommendations.index') }}" class="d-flex flex-wrap gap-3 align-items-end">
+    <div>
+      <label class="form-label-custom">Occasion</label>
+      <div class="occasion-selector" style="position:relative; min-width:150px;">
+        <input type="text" id="occasion-input" class="form-select-custom" placeholder="Any Occasion" autocomplete="off" />
+        <input type="hidden" name="occasion" id="occasion-hidden" value="{{ selected_occasion or '' }}" />
+        <div id="occasion-dropdown" class="dropdown-menu" style="position:absolute; top:100%; left:0; right:0; z-index:1000; display:none; max-height:200px; overflow-y:auto; background:#fff; border:1px solid var(--line);"></div>
+        <script type="application/json" id="occasions-data">{{ occasions|tojson }}</script>
+        <script>
+          const COMMON_OCCASIONS = ["Casual", "Work / Business", "College / Campus", "Formal", "Party", "Date Night", "Sporty / Workout"];
+        </script>
+      </div>
+
+      <!-- Modal for full options -->
+      <div id="more-options-modal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+        <div class="modal-content" style="background:#fff; padding:20px; border-radius:8px; max-width:400px; width:90%; max-height:80vh; overflow:auto;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h3 style="margin:0;">Select Occasion</h3>
+            <button id="modal-close" type="button" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
+          </div>
+          <input type="text" id="more-options-search" placeholder="Search..." style="width:100%; padding:6px; margin-bottom:10px;" autocomplete="off" />
+          <div id="more-options-list" style="max-height:60vh; overflow-y:auto; border:1px solid var(--line);"></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <label class="form-label-custom">Season</label>
+      <select name="season" class="form-select-custom" style="min-width:140px;">
+        <option value="">All Seasons</option>
+        {% for s in seasons %}
+          <option value="{{ s }}" {% if selected_season == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn primary-button px-4 py-2">🔍 Find Outfits</button>
+    {% if selected_occasion or selected_season %}
+      <a href="{{ url_for('recommendations.index') }}" class="btn light-button px-4 py-2">✕ Clear</a>
+    {% endif %}
+  </form>
+  <script src="{{ url_for('static', filename='js/occasion_selector.js') }}"></script>
+</div>
+
+<!-- Personalization learning banner -->
+{% if liked_count > 0 or disliked_count > 0 %}
+<div class="ai-learning-banner mb-4">
+  <span>🧠 Learning from your feedback — </span>
+  <strong>{{ liked_count }} liked</strong>, <strong>{{ disliked_count }} disliked</strong> outfits recorded.
+  Recommendations improve with every reaction.
+</div>
+{% endif %}
+
+<!-- Wardrobe gap hints -->
+{% if wardrobe_gaps %}
+<div class="custom-card-box mb-4" style="border-left:3px solid var(--accent,#7C3AED);">
+  <p class="eyebrow" style="margin-bottom:6px;">💡 Wardrobe Suggestions</p>
+  <ul style="margin:0;padding-left:18px;">
+    {% for hint in wardrobe_gaps %}
+    <li style="margin-bottom:4px;font-size:0.92rem;">{{ hint }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if recommendations %}
+  <!-- Top 3 Recommendation Cards -->
+  <div class="rec-cards-grid">
+    {% for rec in recommendations %}
+    <div class="rec-card {% if loop.first %}rec-card--top{% endif %}">
+
+      <!-- Rank badge -->
+      <div class="rec-rank-badge">
+        {% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% else %}🥉{% endif %}
+        Rank #{{ loop.index }}
+      </div>
+
+      <!-- Total Compatibility Score Bar -->
+      <div class="compatibility-score-wrap">
+        <div class="score-label">
+          <span>Compatibility Score</span>
+          <strong class="score-value {% if rec.score >= 75 %}score-high{% elif rec.score >= 50 %}score-mid{% else %}score-low{% endif %}">
+            {{ rec.score }}/100
+          </strong>
+        </div>
+        <div class="score-bar-track">
+          <div class="score-bar-fill {% if rec.score >= 75 %}fill-high{% elif rec.score >= 50 %}fill-mid{% else %}fill-low{% endif %}"
+               style="width: {{ rec.score }}%;"></div>
+        </div>
+      </div>
+
+      <!-- Score Breakdown Mini Bars -->
+      {% if rec.breakdown %}
+      <div class="score-breakdown" style="margin:10px 0 4px;display:flex;flex-direction:column;gap:5px;">
+        {% set bd = rec.breakdown %}
+        {% for label, val, icon in [
+            ('Color Harmony',   bd.color,      '🎨'),
+            ('Category',        bd.category,   '👔'),
+            ('Occasion',        bd.occasion,   '📅'),
+            ('Season',          bd.season,     '🌤'),
+            ('Personalisation', bd.preference, '⭐'),
+            ('Novelty',         bd.novelty,    '✨')
+        ] %}
+        <div style="display:flex;align-items:center;gap:6px;font-size:0.78rem;">
+          <span style="width:110px;color:var(--text-secondary,#888);">{{ icon }} {{ label }}</span>
+          <div style="flex:1;height:6px;background:var(--line,#eee);border-radius:3px;overflow:hidden;">
+            <div style="width:{{ val }}%;height:100%;background:{% if val >= 75 %}#22c55e{% elif val >= 50 %}#f59e0b{% else %}#ef4444{% endif %};border-radius:3px;transition:width .4s;"></div>
+          </div>
+          <span style="width:34px;text-align:right;color:var(--text-secondary,#888);">{{ val }}%</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Item Thumbnails -->
+      <div class="rec-thumbnails">
+        {% for item in rec.clothing_items %}
+        <div class="rec-thumb-wrap">
+          <img src="{{ item.image_url }}" alt="{{ item.name }}" class="rec-thumb-img">
+          <div class="rec-thumb-info">
+            <strong>{{ item.name }}</strong>
+            <small>{{ item.category }}{% if item.clothing_type %} · {{ item.clothing_type }}{% endif %}</small>
+            <small class="color-tag" style="background:{{ item.detected_color_hex or 'transparent' }};border:1px solid var(--line);">
+              {{ item.color }}
+            </small>
+            {% if item.is_favorite %}<small style="color:#f59e0b;">★ Favourite</small>{% endif %}
+            {% if item.wear_count == 0 %}<small style="color:#7C3AED;">New</small>{% elif item.wear_count <= 2 %}<small style="color:#22c55e;">Rarely worn</small>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Metadata pills -->
+      <div class="rec-meta-row">
+        <span class="meta-pill">📅 {{ rec.season }}</span>
+        <span class="meta-pill">👔 {{ rec.occasion }}</span>
+        <span class="meta-pill">🎨 {{ rec.color_breakdown | join(', ') }}</span>
+        <span class="meta-pill cat-pill">{{ rec.category_summary }}</span>
+      </div>
+
+      <!-- "Why this outfit?" explanation -->
+      {% if rec.breakdown %}
+      <details class="why-outfit-details" style="margin:12px 0 4px;">
+        <summary class="why-outfit-summary">💡 Why this outfit?</summary>
+        <div class="why-outfit-body">
+          {% set bd = rec.breakdown %}
+          {% if bd.color >= 70 %}
+          <div class="why-item why-good">✓ Excellent color combination</div>
+          {% elif bd.color >= 50 %}
+          <div class="why-item why-ok">~ Good color pairing</div>
+          {% else %}
+          <div class="why-item why-weak">✗ Color contrast could be improved</div>
+          {% endif %}
+
+          {% if bd.category >= 70 %}
+          <div class="why-item why-good">✓ Well-balanced clothing categories</div>
+          {% elif bd.category >= 40 %}
+          <div class="why-item why-ok">~ Category balance is acceptable</div>
+          {% endif %}
+
+          {% if rec.occasion != 'Any' and bd.occasion >= 60 %}
+          <div class="why-item why-good">✓ Suitable for {{ rec.occasion }} occasion</div>
+          {% elif rec.occasion != 'Any' and bd.occasion < 40 %}
+          <div class="why-item why-weak">✗ Not ideal for {{ rec.occasion }}</div>
+          {% endif %}
+
+          {% if rec.season != 'All Seasons' and bd.season >= 70 %}
+          <div class="why-item why-good">✓ Suitable for {{ rec.season }}</div>
+          {% elif rec.season != 'All Seasons' and bd.season < 40 %}
+          <div class="why-item why-weak">✗ May not suit {{ rec.season }}</div>
+          {% endif %}
+
+          {% if bd.preference >= 60 %}
+          <div class="why-item why-good">✓ Matches your style preferences</div>
+          {% endif %}
+
+          {% if bd.favourite > 0 %}
+          <div class="why-item why-good">✓ Includes your favourite pieces</div>
+          {% endif %}
+
+          {% if bd.novelty >= 60 %}
+          <div class="why-item why-good">✓ Good wardrobe variety — rarely worn items</div>
+          {% elif bd.novelty < 30 %}
+          <div class="why-item why-ok">~ These items are frequently worn</div>
+          {% endif %}
+
+          <div class="why-score-line">
+            Compatibility Score: <strong class="{% if rec.score >= 75 %}score-high{% elif rec.score >= 50 %}score-mid{% else %}score-low{% endif %}">{{ rec.score | round(1) }}/100</strong>
+          </div>
+        </div>
+      </details>
+      {% endif %}
+
+      <div class="rec-actions">
+
+        <!-- Like -->
+        <form method="post" action="{{ url_for('recommendations.submit_feedback') }}">
+          <input type="hidden" name="reaction" value="liked">
+          <input type="hidden" name="occasion" value="{{ rec.occasion }}">
+          <input type="hidden" name="season" value="{{ rec.season }}">
+          <input type="hidden" name="score" value="{{ rec.score }}">
+          <input type="hidden" name="title" value="Liked Outfit (Score: {{ rec.score }})">
+          {% for item in rec.clothing_items %}
+            <input type="hidden" name="item_ids" value="{{ item.id }}">
+          {% endfor %}
+          <button type="submit" class="rec-action-btn btn-like" title="Like this outfit">👍 Like</button>
+        </form>
+
+        <!-- Dislike -->
+        <form method="post" action="{{ url_for('recommendations.submit_feedback') }}">
+          <input type="hidden" name="reaction" value="disliked">
+          <input type="hidden" name="occasion" value="{{ rec.occasion }}">
+          <input type="hidden" name="season" value="{{ rec.season }}">
+          <input type="hidden" name="score" value="{{ rec.score }}">
+          <input type="hidden" name="title" value="Disliked Outfit">
+          {% for item in rec.clothing_items %}
+            <input type="hidden" name="item_ids" value="{{ item.id }}">
+          {% endfor %}
+          <button type="submit" class="rec-action-btn btn-dislike" title="Not for me">👎 Dislike</button>
+        </form>
+
+        <!-- Favorite + Save -->
+        <form method="post" action="{{ url_for('recommendations.submit_feedback') }}">
+          <input type="hidden" name="reaction" value="favorited">
+          <input type="hidden" name="occasion" value="{{ rec.occasion }}">
+          <input type="hidden" name="season" value="{{ rec.season }}">
+          <input type="hidden" name="score" value="{{ rec.score }}">
+          <input type="hidden" name="title" value="★ Outfit (Score: {{ rec.score }})">
+          {% for item in rec.clothing_items %}
+            <input type="hidden" name="item_ids" value="{{ item.id }}">
+          {% endfor %}
+          <button type="submit" class="rec-action-btn btn-fav" title="Save as favorite">⭐ Favorite</button>
+        </form>
+
+        <!-- Save to Outfits collection -->
+        <form method="post" action="{{ url_for('recommendations.save_outfit') }}">
+          <input type="hidden" name="occasion" value="{{ rec.occasion }}">
+          <input type="hidden" name="season" value="{{ rec.season }}">
+          <input type="hidden" name="score" value="{{ rec.score }}">
+          <input type="hidden" name="title" value="AI Smart Outfit — Score {{ rec.score }}">
+          {% for item in rec.clothing_items %}
+            <input type="hidden" name="item_ids" value="{{ item.id }}">
+          {% endfor %}
+          <button type="submit" class="rec-action-btn btn-save" title="Save to Outfits">💾 Save</button>
+        </form>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+{% else %}
+  <!-- Empty state -->
+  <div class="empty-state-box">
+    <div style="font-size:64px;margin-bottom:16px;">🤔</div>
+    <h2>No Recommendations Yet</h2>
+    {% if selected_occasion or selected_season %}
+      <p>No matching outfits for the selected filters. Try a different occasion or season.</p>
+      <a href="{{ url_for('recommendations.index') }}" class="btn primary-button mt-3">View All Recommendations</a>
+    {% else %}
+      <p>Add more clothing items to your wardrobe — you need at least a top and a bottom (or dress) to get recommendations.</p>
+      <a href="{{ url_for('wardrobe.upload') }}" class="btn primary-button mt-3">+ Add Clothing</a>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}

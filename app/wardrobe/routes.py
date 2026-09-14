@@ -2,13 +2,14 @@
 
 import os
 import uuid
-from flask import current_app, flash, redirect, render_template, request, url_for
+from flask import current_app, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 
 from app.extensions import db
 from app.models.clothing import ClothingItem
 from app.wardrobe import wardrobe_bp
+from app.services import clothing_classifier, color_detector
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp", "gif"}
 
@@ -30,13 +31,64 @@ PRESET_IMAGES = [
 
 
 def _save_uploaded_image(file):
-    """Save an uploaded image file and return its static URL."""
+    """Save an uploaded image file and return its static URL AND absolute disk path."""
     filename = secure_filename(file.filename)
     unique_filename = f"{uuid.uuid4().hex}_{filename}"
     upload_dir = os.path.join(current_app.static_folder, "uploads")
     os.makedirs(upload_dir, exist_ok=True)
-    file.save(os.path.join(upload_dir, unique_filename))
-    return url_for("static", filename=f"uploads/{unique_filename}")
+    abs_path = os.path.join(upload_dir, unique_filename)
+    file.save(abs_path)
+    static_url = url_for("static", filename=f"uploads/{unique_filename}")
+    return static_url, abs_path
+
+
+@wardrobe_bp.post("/analyze")
+# Authentication handled manually to return JSON 401.
+def analyze_image():
+    """
+    AJAX endpoint — receive an uploaded image, run AI analysis, return JSON.
+    Used by the upload form to show live AI suggestions before saving.
+
+    Returns JSON:
+        {success, category, clothing_type, confidence, source, color_hex, color_name}
+    """
+    if not current_user.is_authenticated:
+        return jsonify({"success": False, "error": "Session expired"}), 401
+    file = request.files.get("image_file")
+    if not file or not file.filename or not allowed_file(file.filename):
+        return jsonify({"success": False, "error": "No valid image provided."})
+
+    try:
+        # Save temporarily to run AI analysis
+        _, abs_path = _save_uploaded_image(file)
+
+        result = {"success": True, "category": "Tops", "clothing_type": "",
+                  "confidence": 0.0, "source": "fallback",
+                  "color_hex": "", "color_name": ""}
+
+        # --- Clothing classification ---
+        try:
+            clf = clothing_classifier.classify(abs_path)
+            result["category"]      = clf.get("category", "Tops")
+            result["clothing_type"] = clf.get("clothing_type", "")
+            result["confidence"]    = round(clf.get("confidence", 0.0) * 100, 1)
+            result["source"]        = clf.get("source", "fallback")
+        except Exception:
+            pass
+
+        # --- Color detection ---
+        try:
+            col = color_detector.extract_color(abs_path)
+            if col:
+                result["color_hex"]  = col.get("hex", "")
+                result["color_name"] = col.get("name", "")
+        except Exception:
+            pass
+
+        return jsonify(result)
+
+    except Exception as exc:
+        return jsonify({"success": False, "error": str(exc)})
 
 
 @wardrobe_bp.route("/")
@@ -86,12 +138,17 @@ def index():
 @login_required
 def upload():
     """Form to add a new clothing item to the user's wardrobe."""
+    # AI prediction to pre-fill the form (GET only)
+    ai_prediction = None
+
     if request.method == "POST":
         name = request.form.get("name", "").strip()
         category = request.form.get("category", "Tops")
         color = request.form.get("color", "Black").strip() or "Black"
         season = request.form.get("season", "All Seasons")
         brand = request.form.get("brand", "").strip()
+        style = request.form.get("style", "Casual").strip() or "Casual"
+        clothing_type = request.form.get("clothing_type", "").strip()
         is_favorite = request.form.get("is_favorite") == "on"
         preset_url = request.form.get("preset_url", "").strip()
 
@@ -100,13 +157,39 @@ def upload():
             return redirect(url_for("wardrobe.upload"))
 
         image_url = ""
+        abs_path = None
         file = request.files.get("image_file")
         if file and file.filename and allowed_file(file.filename):
-            image_url = _save_uploaded_image(file)
+            image_url, abs_path = _save_uploaded_image(file)
         elif preset_url:
             image_url = preset_url
         else:
             image_url = "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600&auto=format&fit=crop&q=80"
+
+        # --- AI Analysis (non-blocking) ---
+        detected_hex = None
+        ai_confidence = None
+        detected_color_name = None
+        if abs_path:
+            try:
+                color_result = color_detector.extract_color(abs_path)
+                if color_result:
+                    detected_hex = color_result["hex"]
+                    detected_color_name = color_result["name"]
+                    # Auto-fill color if user left it as default
+                    if color in ("Black", "") and detected_color_name:
+                        color = detected_color_name
+            except Exception:
+                pass
+
+            try:
+                clf_result = clothing_classifier.classify(abs_path)
+                ai_confidence = clf_result.get("confidence", 0.0)
+                # Auto-fill category if AI is confident enough and user left default
+                if ai_confidence >= 0.6 and clf_result.get("category") and not clothing_type:
+                    clothing_type = clf_result.get("clothing_type", "")
+            except Exception:
+                pass
 
         item = ClothingItem(
             user_id=current_user.id,
@@ -117,13 +200,32 @@ def upload():
             brand=brand,
             image_url=image_url,
             is_favorite=is_favorite,
+            style=style,
+            clothing_type=clothing_type or None,
+            detected_color_hex=detected_hex,
+            ai_confidence=ai_confidence,
         )
         db.session.add(item)
         db.session.commit()
-        flash(f"'{name}' added to your wardrobe!", "success")
+
+        if detected_color_name and detected_hex:
+            flash(
+                f"✦ AI detected dominant color: {detected_color_name} ({detected_hex}). "
+                f"'{name}' added to your wardrobe!",
+                "success",
+            )
+        else:
+            flash(f"'{name}' added to your wardrobe!", "success")
         return redirect(url_for("wardrobe.index"))
 
-    return render_template("wardrobe/upload.html", preset_images=PRESET_IMAGES)
+    return render_template(
+        "wardrobe/upload.html",
+        preset_images=PRESET_IMAGES,
+        all_styles=clothing_classifier.ALL_STYLES,
+        all_occasions=clothing_classifier.ALL_OCCASIONS,
+        all_seasons=clothing_classifier.ALL_SEASONS,
+        ai_prediction=ai_prediction,
+    )
 
 
 @wardrobe_bp.route("/<int:item_id>/edit", methods=["GET", "POST"])
@@ -144,29 +246,43 @@ def edit_item(item_id):
         item.season = request.form.get("season", item.season)
         item.brand = request.form.get("brand", "").strip() or None
         item.is_favorite = request.form.get("is_favorite") == "on"
+        item.style = request.form.get("style", item.style or "Casual")
+        item.clothing_type = request.form.get("clothing_type", "").strip() or item.clothing_type
 
         # Only replace image if a new file was uploaded
         file = request.files.get("image_file")
         if file and file.filename and allowed_file(file.filename):
-            item.image_url = _save_uploaded_image(file)
+            item.image_url, _ = _save_uploaded_image(file)
 
         db.session.commit()
         flash(f"'{item.name}' updated successfully!", "success")
         return redirect(url_for("wardrobe.index"))
 
-    return render_template("wardrobe/edit.html", item=item)
+    return render_template(
+        "wardrobe/edit.html",
+        item=item,
+        all_styles=clothing_classifier.ALL_STYLES,
+        all_types=clothing_classifier.get_types_for_category(item.category),
+        all_seasons=clothing_classifier.ALL_SEASONS,
+    )
 
 
 @wardrobe_bp.post("/<int:item_id>/wear")
 @login_required
 def wear_item(item_id):
-    """Increment the wear count for a clothing item. Returns JSON for AJAX requests."""
+    """Increment the wear count and record the date for a clothing item. Returns JSON for AJAX requests."""
+    from datetime import datetime, timezone as tz
     item = ClothingItem.query.filter_by(id=item_id, user_id=current_user.id).first_or_404()
     item.wear_count += 1
+    item.last_worn_at = datetime.now(tz.utc)
     db.session.commit()
 
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-        return jsonify({"success": True, "wear_count": item.wear_count})
+        return jsonify({
+            "success": True,
+            "wear_count": item.wear_count,
+            "last_worn_at": item.last_worn_at.strftime("%d %b %Y") if item.last_worn_at else None,
+        })
 
     flash(f"Logged wear for '{item.name}'. (Total: {item.wear_count})", "success")
     return redirect(request.referrer or url_for("wardrobe.index"))
@@ -188,6 +304,22 @@ def toggle_favorite(item_id):
     return redirect(request.referrer or url_for("wardrobe.index"))
 
 
+@wardrobe_bp.post("/<int:item_id>/laundry")
+@login_required
+def toggle_laundry(item_id):
+    """Toggle the laundry/availability status of a clothing item."""
+    item = ClothingItem.query.filter_by(id=item_id, user_id=current_user.id).first_or_404()
+    item.is_in_laundry = not item.is_in_laundry
+    db.session.commit()
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return jsonify({"success": True, "is_in_laundry": item.is_in_laundry})
+
+    status = "moved to laundry 🧺" if item.is_in_laundry else "marked as available ✅"
+    flash(f"'{item.name}' {status}.", "info")
+    return redirect(request.referrer or url_for("wardrobe.index"))
+
+
 @wardrobe_bp.post("/<int:item_id>/delete")
 @login_required
 def delete_item(item_id):
@@ -198,3 +330,4 @@ def delete_item(item_id):
     db.session.commit()
     flash(f"'{item_name}' removed from your wardrobe.", "success")
     return redirect(url_for("wardrobe.index"))
+

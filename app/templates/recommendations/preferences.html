@@ -1,0 +1,473 @@
+{% extends "base.html" %}
+{% block title %}⚙️ My Preferences | Wearlytics{% endblock %}
+
+{% block content %}
+
+{# ── Page Header ─────────────────────────────────────────────────────────── #}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">✦ Personalisation</p>
+    <h1>⚙️ My Preferences</h1>
+    <p>Personalise your AI Stylist to match your style and preferences.</p>
+  </div>
+  <a href="{{ url_for('stylist.index') }}" class="btn light-button">← Back to AI Stylist</a>
+</div>
+
+<div class="prefs-layout">
+
+  {# ═══ LEFT COLUMN ══════════════════════════════════════════════════════ #}
+  <div class="prefs-main">
+
+    {# ── 👤 Style Profile Card ──────────────────────────────────────────── #}
+    <div class="custom-card-box prefs-profile-card mb-4">
+      <div class="prefs-profile-row">
+        <div>
+          <p class="eyebrow mb-1">👤 Your Style Profile</p>
+          <div class="prefs-profile-summary">
+            <span class="profile-chip">{{ prefs.gender or '—' }}</span>
+            {% if prefs.height_cm %}<span class="profile-chip">{{ prefs.height_cm }} cm</span>{% endif %}
+            {% if prefs.clothing_size %}<span class="profile-chip">{{ prefs.clothing_size }}</span>{% endif %}
+            {% if prefs.body_shape %}<span class="profile-chip">{{ prefs.body_shape }}</span>{% endif %}
+            {% if prefs.fit_preference %}<span class="profile-chip">{{ prefs.fit_preference }}</span>{% endif %}
+          </div>
+        </div>
+        <button type="button" class="btn light-button" id="edit-profile-btn">✏️ Edit Profile</button>
+      </div>
+
+      <div id="edit-profile-section" class="prefs-edit-profile" style="display:none;">
+        <hr class="prefs-divider">
+        <div class="prefs-edit-grid">
+          <div class="prefs-edit-field">
+            <label class="form-label-custom" for="ep-gender">Gender</label>
+            <select class="form-select-custom" id="ep-gender" name="gender" form="prefs-form">
+              <option value="">— Select —</option>
+              {% for g in ['Female','Male','Non-binary','Prefer not to say'] %}
+              <option value="{{ g }}" {% if prefs.gender == g %}selected{% endif %}>{{ g }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="prefs-edit-field">
+            <label class="form-label-custom" for="ep-height">Height (cm)</label>
+            <input type="number" class="form-select-custom" id="ep-height" name="height_cm"
+                   form="prefs-form" min="100" max="250"
+                   value="{{ prefs.height_cm or '' }}" placeholder="e.g. 165">
+          </div>
+          <div class="prefs-edit-field">
+            <label class="form-label-custom" for="ep-weight">Weight (kg)</label>
+            <input type="number" class="form-select-custom" id="ep-weight" name="weight_kg"
+                   form="prefs-form" min="30" max="300"
+                   value="{{ prefs.weight_kg or '' }}" placeholder="e.g. 55">
+          </div>
+          <div class="prefs-edit-field">
+            <label class="form-label-custom" for="ep-body-shape">Body Shape</label>
+            <select class="form-select-custom" id="ep-body-shape" name="body_shape" form="prefs-form">
+              <option value="">— Select —</option>
+              {% for bs in ['Pear','Hourglass','Rectangle','Apple','Inverted Triangle','Unknown / Prefer not to specify'] %}
+              <option value="{{ bs }}" {% if prefs.body_shape == bs %}selected{% endif %}>{{ bs }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="prefs-edit-field">
+            <label class="form-label-custom" for="ep-size">Clothing Size</label>
+            <select class="form-select-custom" id="ep-size" name="clothing_size" form="prefs-form">
+              <option value="">— Select —</option>
+              {% for sz in ['XS','S','M','L','XL','XXL','Free Size','Unknown'] %}
+              <option value="{{ sz }}" {% if prefs.clothing_size == sz %}selected{% endif %}>{{ sz }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="prefs-edit-field">
+            <label class="form-label-custom" for="ep-fit">Fit Preference</label>
+            <select class="form-select-custom" id="ep-fit" name="fit_preference" form="prefs-form">
+              <option value="">— Select —</option>
+              {% for fp in ['Slim Fit','Regular Fit','Relaxed Fit','Oversized / Loose','No Preference'] %}
+              <option value="{{ fp }}" {% if prefs.fit_preference == fp %}selected{% endif %}>{{ fp }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="prefs-edit-actions mt-3">
+          <button type="button" class="btn light-button" id="cancel-profile-btn">Cancel</button>
+          <span class="text-muted small">Changes are saved with the form below.</span>
+        </div>
+      </div>
+    </div>
+
+    {# ── ✨ AI Stylist Preferences Form ─────────────────────────────────── #}
+    <div class="custom-card-box">
+      <p class="eyebrow mb-1">✨ AI Stylist Preferences</p>
+      <h3 class="mt-0 mb-4">Preference Settings</h3>
+
+      <form method="post" action="{{ url_for('recommendations.update_preferences') }}" id="prefs-form">
+
+        {# Style #}
+        <div class="pref-toggle-row">
+          <div class="pref-toggle-info">
+            <span class="pref-toggle-label">Style Preferences</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" name="use_style" value="1" id="toggle-style"
+                   {% if prefs.use_style %}checked{% endif %}>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+        <div class="pref-toggle-body" id="body-style"
+             style="{{ '' if prefs.use_style else 'display:none;' }}">
+          <p class="pref-sublabel">Preferred Styles</p>
+          <div class="checkbox-pill-grid">
+            {% for style in all_styles %}
+            <label class="checkbox-pill {% if style in prefs.preferred_styles_list %}checked{% endif %}">
+              <input type="checkbox" name="styles" value="{{ style }}"
+                     {% if style in prefs.preferred_styles_list %}checked{% endif %}>{{ style }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="pref-divider"></div>
+
+        {# Color #}
+        <div class="pref-toggle-row">
+          <div class="pref-toggle-info">
+            <span class="pref-toggle-label">Color Preferences</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" name="use_color" value="1" id="toggle-color"
+                   {% if prefs.use_color %}checked{% endif %}>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+        <div class="pref-toggle-body" id="body-color"
+             style="{{ '' if prefs.use_color else 'display:none;' }}">
+          <p class="pref-sublabel">Preferred Colors</p>
+          <div class="checkbox-pill-grid">
+            {% set colors = ['Black','White','Beige','Navy','Brown','Blue','Grey','Green','Red','Pink','Purple','Yellow','Orange','Cream','Maroon'] %}
+            {% for c in colors %}
+            <label class="checkbox-pill {% if c in prefs.preferred_colors_list %}checked{% endif %}">
+              <input type="checkbox" name="colors" value="{{ c }}"
+                     {% if c in prefs.preferred_colors_list %}checked{% endif %}>{{ c }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="pref-divider"></div>
+
+        {# Occasion #}
+        <div class="pref-toggle-row">
+          <div class="pref-toggle-info">
+            <span class="pref-toggle-label">Occasion Preferences</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" name="use_occasion" value="1" id="toggle-occasion"
+                   {% if prefs.use_occasion %}checked{% endif %}>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+        <div class="pref-toggle-body" id="body-occasion"
+             style="{{ '' if prefs.use_occasion else 'display:none;' }}">
+          <p class="pref-sublabel">Preferred Occasions</p>
+          <div class="checkbox-pill-grid">
+            {% for occ in all_occasions %}
+            <label class="checkbox-pill {% if occ in prefs.preferred_occasions_list %}checked{% endif %}">
+              <input type="checkbox" name="occasions" value="{{ occ }}"
+                     {% if occ in prefs.preferred_occasions_list %}checked{% endif %}>{{ occ }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="pref-divider"></div>
+
+        {# Season #}
+        <div class="pref-toggle-row">
+          <div class="pref-toggle-info">
+            <span class="pref-toggle-label">Season Preferences</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" name="use_season" value="1" id="toggle-season"
+                   {% if prefs.use_season %}checked{% endif %}>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+        <div class="pref-toggle-body" id="body-season"
+             style="{{ '' if prefs.use_season else 'display:none;' }}">
+          <p class="pref-sublabel">Preferred Seasons</p>
+          <div class="checkbox-pill-grid">
+            {% for s in all_seasons %}
+            <label class="checkbox-pill {% if s in prefs.preferred_seasons_list %}checked{% endif %}">
+              <input type="checkbox" name="seasons" value="{{ s }}"
+                     {% if s in prefs.preferred_seasons_list %}checked{% endif %}>{{ s }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="pref-divider"></div>
+
+        {# Body Shape #}
+        <div class="pref-toggle-row">
+          <div class="pref-toggle-info">
+            <span class="pref-toggle-label">Body Shape</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" name="use_body_shape" value="1" id="toggle-body-shape"
+                   {% if prefs.use_body_shape %}checked{% endif %}>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+        <div class="pref-toggle-body" id="body-body-shape"
+             style="{{ '' if prefs.use_body_shape else 'display:none;' }}">
+          <p class="pref-sublabel">Body Shape</p>
+          <div class="checkbox-pill-grid">
+            {% for bs in ['Pear','Hourglass','Rectangle','Apple','Inverted Triangle','Unknown / Prefer not to specify'] %}
+            <label class="checkbox-pill pref-single-select {% if prefs.body_shape == bs %}checked{% endif %}">
+              <input type="radio" name="body_shape_pref" value="{{ bs }}"
+                     {% if prefs.body_shape == bs %}checked{% endif %}>{{ bs }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="pref-divider"></div>
+
+        {# Clothing Size #}
+        <div class="pref-toggle-row">
+          <div class="pref-toggle-info">
+            <span class="pref-toggle-label">Clothing Size</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" name="use_clothing_size" value="1" id="toggle-clothing-size"
+                   {% if prefs.use_clothing_size %}checked{% endif %}>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+        <div class="pref-toggle-body" id="body-clothing-size"
+             style="{{ '' if prefs.use_clothing_size else 'display:none;' }}">
+          <p class="pref-sublabel">Current Clothing Size</p>
+          <div class="checkbox-pill-grid">
+            {% for sz in ['XS','S','M','L','XL','XXL','Free Size','Unknown'] %}
+            <label class="checkbox-pill pref-single-select {% if prefs.clothing_size == sz %}checked{% endif %}">
+              <input type="radio" name="clothing_size_pref" value="{{ sz }}"
+                     {% if prefs.clothing_size == sz %}checked{% endif %}>{{ sz }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="pref-divider"></div>
+
+        {# Fit #}
+        <div class="pref-toggle-row">
+          <div class="pref-toggle-info">
+            <span class="pref-toggle-label">Fit Preference</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" name="use_fit_preference" value="1" id="toggle-fit"
+                   {% if prefs.use_fit_preference %}checked{% endif %}>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+        <div class="pref-toggle-body" id="body-fit"
+             style="{{ '' if prefs.use_fit_preference else 'display:none;' }}">
+          <p class="pref-sublabel">Preferred Fit</p>
+          <div class="checkbox-pill-grid">
+            {% for fp in ['Slim Fit','Regular Fit','Relaxed Fit','Oversized / Loose','No Preference'] %}
+            <label class="checkbox-pill pref-single-select {% if prefs.fit_preference == fp %}checked{% endif %}">
+              <input type="radio" name="fit_preference_pref" value="{{ fp }}"
+                     {% if prefs.fit_preference == fp %}checked{% endif %}>{{ fp }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="pref-divider"></div>
+
+        {# Feedback learning #}
+        <div class="pref-toggle-row">
+          <div class="pref-toggle-info">
+            <span class="pref-toggle-label">Learn From My Feedback</span>
+            <span class="pref-toggle-desc">Let AI Stylist learn from your likes and dislikes.</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" name="use_feedback_learning" value="1" id="toggle-feedback"
+                   {% if prefs.use_feedback_learning %}checked{% endif %}>
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+
+        <div class="mt-5">
+          <button type="submit" class="btn primary-button w-100 py-3" style="font-size:16px;">
+            💾 Save Preferences
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  {# ═══ RIGHT SIDEBAR ════════════════════════════════════════════════════ #}
+  <div class="prefs-sidebar">
+
+    <div class="custom-card-box prefs-learned-card">
+      <p class="eyebrow mb-1">🧠 Learned Preferences</p>
+      <h3 class="mt-0">Auto-Learned</h3>
+      <p class="text-muted small mb-4">Based on your AI Stylist interactions.
+        <strong>{{ feedback_count }}</strong> feedback action{{ 's' if feedback_count != 1 else '' }} recorded.</p>
+
+      <div class="pref-section">
+        <strong class="pref-learned-title">Preferred Colors</strong>
+        <div class="color-pills mt-2">
+          {% for color in prefs.preferred_colors_list %}
+            <span class="color-pill-tag">{{ color }}</span>
+          {% else %}
+            <span class="text-muted small">None yet — like some outfits first!</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="pref-section">
+        <strong class="pref-learned-title">Disliked Colors</strong>
+        <div class="color-pills mt-2">
+          {% for color in prefs.disliked_colors_list %}
+            <span class="color-pill-tag disliked">{{ color }}</span>
+          {% else %}
+            <span class="text-muted small">None yet.</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="pref-section">
+        <strong class="pref-learned-title">Preferred Styles</strong>
+        <div class="color-pills mt-2">
+          {% for style in prefs.preferred_styles_list %}
+            <span class="color-pill-tag">{{ style }}</span>
+          {% else %}
+            <span class="text-muted small">None yet.</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="prefs-learned-actions mt-4">
+        <button type="button" class="btn light-button w-100 mb-2" id="view-details-btn">
+          🔍 View Details
+        </button>
+        <button type="button" class="btn prefs-clear-btn w-100" id="clear-learned-btn">
+            🗑️ Clear Learned Preferences
+          </button>
+        <div id="clear-learned-msg" class="text-muted small mt-2" style="display:none;">
+            Learned preferences will be cleared when this feature is connected.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{# ── Learned Details Modal ────────────────────────────────────────────────── #}
+<div id="learned-details-modal" class="prefs-details-modal" style="display:none;">
+  <div class="prefs-details-box">
+    <div class="prefs-details-header">
+      <h3>🧠 Learned Preference Details</h3>
+      <button type="button" class="stylist-modal-close" id="close-details-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="prefs-details-body">
+      <div class="prefs-detail-section">
+        <strong>Total Feedback Actions</strong>
+        <p class="text-muted small mt-1">{{ feedback_count }} feedback action{{ 's' if feedback_count != 1 else '' }} recorded.
+          The more you like and dislike outfits, the better AI Stylist learns your taste.</p>
+      </div>
+      <div class="prefs-detail-section">
+        <strong>Preferred Colors</strong>
+        <div class="color-pills mt-2">
+          {% for color in prefs.preferred_colors_list %}
+            <span class="color-pill-tag">{{ color }}</span>
+          {% else %}<span class="text-muted small">None yet.</span>{% endfor %}
+        </div>
+      </div>
+      <div class="prefs-detail-section">
+        <strong>Disliked Colors</strong>
+        <div class="color-pills mt-2">
+          {% for color in prefs.disliked_colors_list %}
+            <span class="color-pill-tag disliked">{{ color }}</span>
+          {% else %}<span class="text-muted small">None yet.</span>{% endfor %}
+        </div>
+      </div>
+      <div class="prefs-detail-section">
+        <strong>Preferred Styles</strong>
+        <div class="color-pills mt-2">
+          {% for style in prefs.preferred_styles_list %}
+            <span class="color-pill-tag">{{ style }}</span>
+          {% else %}<span class="text-muted small">None yet.</span>{% endfor %}
+        </div>
+      </div>
+      <p class="text-muted small mt-3" style="font-style:italic;">
+        Automatically updated each time you like or dislike an AI Stylist outfit.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* Per-category toggle expand/collapse */
+  [
+    ['toggle-style',        'body-style'],
+    ['toggle-color',        'body-color'],
+    ['toggle-occasion',     'body-occasion'],
+    ['toggle-season',       'body-season'],
+    ['toggle-body-shape',   'body-body-shape'],
+    ['toggle-clothing-size','body-clothing-size'],
+    ['toggle-fit',          'body-fit'],
+  ].forEach(function (pair) {
+    var t = document.getElementById(pair[0]);
+    var b = document.getElementById(pair[1]);
+    if (!t || !b) return;
+    t.addEventListener('change', function () {
+      b.style.display = t.checked ? '' : 'none';
+    });
+  });
+
+  /* Single-select radio pill visual update */
+  document.querySelectorAll('.pref-single-select input[type="radio"]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      document.querySelectorAll('input[name="' + r.name + '"]').forEach(function (x) {
+        x.closest('label').classList.toggle('checked', x.checked);
+      });
+    });
+  });
+
+  /* Checkbox pill visual sync */
+  document.querySelectorAll('.checkbox-pill input[type="checkbox"]').forEach(function (cb) {
+    cb.addEventListener('change', function () {
+      cb.closest('label').classList.toggle('checked', cb.checked);
+    });
+  });
+
+  /* Edit Profile expand/collapse */
+  var editBtn     = document.getElementById('edit-profile-btn');
+  var cancelBtn   = document.getElementById('cancel-profile-btn');
+  var editSection = document.getElementById('edit-profile-section');
+  if (editBtn) {
+    editBtn.addEventListener('click', function () {
+      var open = editSection.style.display !== 'none';
+      editSection.style.display = open ? 'none' : '';
+      editBtn.textContent = open ? '✏️ Edit Profile' : '✕ Close';
+    });
+  }
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', function () {
+      editSection.style.display = 'none';
+      if (editBtn) editBtn.textContent = '✏️ Edit Profile';
+    });
+  }
+
+  /* Learned Details modal */
+  var viewBtn  = document.getElementById('view-details-btn');
+  var closeBtn = document.getElementById('close-details-btn');
+  var modal    = document.getElementById('learned-details-modal');
+  if (viewBtn && modal)  viewBtn.addEventListener('click',  function () { modal.style.display = 'flex'; });
+  if (closeBtn && modal) closeBtn.addEventListener('click', function () { modal.style.display = 'none'; });
+  if (modal) {
+    modal.addEventListener('click', function (e) { if (e.target === modal) modal.style.display = 'none'; });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') modal.style.display = 'none'; });
+  }
+})();
+</script>
+
+{% endblock %}

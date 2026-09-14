@@ -4,3 +4,13 @@ Flask-Login>=0.6.3
 Flask-Migrate>=4.1.0
 PyMySQL>=1.1.1
 python-dotenv>=1.0.1
+
+# AI / ML dependencies
+numpy>=1.26
+Pillow>=10.0
+opencv-python-headless>=4.9
+scikit-learn>=1.4
+
+# Deep Learning — MobileNetV2 clothing classifier (Python 3.14 compatible)
+torch>=2.14.0
+torchvision>=0.29.0

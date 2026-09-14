@@ -1,10 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" id="html-root">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="description" content="Wearlytics AI-powered wardrobe management and outfit recommendation platform">
     <title>{% block title %}Wearlytics{% endblock %}</title>
+    <!-- Theme init: apply before render to prevent flash -->
+    <script>
+      (function() {
+        var t = localStorage.getItem('wearlytics-theme');
+        if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      })();
+    </script>
 
     <!-- Google Fonts & Bootstrap 5 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,9 +44,9 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13v6H5v-6H3v8h18v-8h-2ZM11 3v8.17L8.41 8.59 7 10l5 5 5-5-1.41-1.41L13 11.17V3h-2Z"/></svg>
             Upload Clothing
           </a>
-          <a class="nav-item {% if request.endpoint == 'outfits.index' %}active{% endif %}" href="{{ url_for('outfits.index') }}">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 1.95 5.05L19 9l-5.05 1.95L12 16l-1.95-5.05L5 9l5.05-1.95L12 2Zm6 13 .94 2.06L21 18l-2.06.94L18 21l-.94-2.06L15 18l2.06-.94L18 15ZM5 14l.7 1.3L7 16l-1.3.7L5 18l-.7-1.3L3 16l1.3-.7L5 14Z"/></svg>
-            AI Outfits
+          <a class="nav-item {% if request.endpoint == 'stylist.index' or request.endpoint == 'outfits.index' or request.endpoint == 'recommendations.index' %}active{% endif %}" href="{{ url_for('stylist.index') }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 1.95 5.05L19 9l-5.05 1.95L12 16l-1.95-5.05L5 9l5.05-1.95L12 2Z"/></svg>
+            ✨ AI Stylist
           </a>
           <a class="nav-item {% if request.endpoint == 'planner.index' %}active{% endif %}" href="{{ url_for('planner.index') }}">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3Zm1 15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8h16v8ZM4 9V7a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2H4Z"/></svg>
@@ -87,13 +94,18 @@
           </form>
 
           <div class="top-actions">
-            <a class="icon-button" href="{{ url_for('outfits.index') }}" title="AI Outfit Recommendations">
+            <!-- Dark Mode Toggle -->
+            <button class="icon-button theme-toggle-btn" id="themeToggle" title="Toggle Dark Mode" type="button" aria-label="Toggle dark mode">
+              <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" style="display:none;"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0v-1a1 1 0 0 1 1-1Zm0-16a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0V4a1 1 0 0 1 1-1Zm10 9a1 1 0 0 1-1 1h-1a1 1 0 0 1 0-2h1a1 1 0 0 1 1 1ZM4 12a1 1 0 0 1-1 1H2a1 1 0 0 1 0-2h1a1 1 0 0 1 1 1Zm15.07-7.07a1 1 0 0 1 0 1.41l-.71.71a1 1 0 0 1-1.41-1.41l.71-.71a1 1 0 0 1 1.41 0ZM6.34 17.66a1 1 0 0 1 0 1.41l-.71.71a1 1 0 1 1-1.41-1.41l.71-.71a1 1 0 0 1 1.41 0Zm12.73 1.41a1 1 0 0 1-1.41 0l-.71-.71a1 1 0 0 1 1.41-1.41l.71.71a1 1 0 0 1 0 1.41ZM6.34 6.34a1 1 0 0 1-1.41 0l-.71-.71a1 1 0 1 1 1.41-1.41l.71.71a1 1 0 0 1 0 1.41Z"/></svg>
+              <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1Z"/></svg>
+            </button>
+            <a class="icon-button" href="{{ url_for('stylist.index') }}" title="AI Outfit Recommendations">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 1.95 5.05L19 9l-5.05 1.95L12 16l-1.95-5.05L5 9l5.05-1.95L12 2Z"/></svg>
               <span class="notification-dot"></span>
             </a>
             <span class="top-divider"></span>
             <a class="profile-button" href="{{ url_for('profile.index') }}">
-              <span class="avatar">{{ current_user.name[:2].upper() if current_user.name else 'US' }}</span>
+              <span class="avatar" style="background: {{ current_user.avatar_color or '#6c5ce7' }}; color: #fff;">{{ current_user.name[:2].upper() if current_user.name else 'US' }}</span>
               <span class="profile-copy">
                 <strong>{{ current_user.name }}</strong>
                 <small>Style Enthusiast</small>
@@ -136,9 +148,9 @@
         <a class="mobile-nav-item mobile-add-btn {% if request.endpoint == 'wardrobe.upload' %}active{% endif %}" href="{{ url_for('wardrobe.upload') }}" title="Add Clothing">
           <span class="add-plus">+</span>
         </a>
-        <a class="mobile-nav-item {% if request.endpoint == 'outfits.index' %}active{% endif %}" href="{{ url_for('outfits.index') }}">
+        <a class="mobile-nav-item {% if request.endpoint == 'stylist.index' or request.endpoint == 'outfits.index' or request.endpoint == 'recommendations.index' or request.endpoint == 'recommendations.preferences' %}active{% endif %}" href="{{ url_for('stylist.index') }}">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 1.95 5.05L19 9l-5.05 1.95L12 16l-1.95-5.05L5 9l5.05-1.95L12 2Z"/></svg>
-          <span>Outfits</span>
+          <span>AI Stylist</span>
         </a>
         <a class="mobile-nav-item {% if request.endpoint == 'planner.index' %}active{% endif %}" href="{{ url_for('planner.index') }}">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3Z"/></svg>

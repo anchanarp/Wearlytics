@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 850" width="100%" height="100%" style="background:#ffffff; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Arrow marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#1e293b" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#2d6a4f" />
+    </marker>
+    <!-- Drop shadows for modern presentation -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Academic Report Slide Accent Bars matching reference -->
+  <rect x="40" y="25" width="220" height="7" fill="#2d6a4f" rx="2"/>
+  <rect x="270" y="25" width="220" height="7" fill="#80b918" rx="2"/>
+  <rect x="500" y="25" width="220" height="7" fill="#94a3b8" rx="2"/>
+
+  <!-- Title -->
+  <text x="40" y="65" font-size="19" font-weight="800" fill="#1e293b" letter-spacing="1">LEVEL 1 OVERALL SYSTEM DFD</text>
+  <text x="40" y="88" font-size="13" font-weight="500" fill="#64748b">Integrated Data Flow Decomposition for Wearlytics (User + Admin)</text>
+
+    <!-- External Entity: User -->
+    <g class="entity">
+      <rect x="50" y="180" width="110" height="60" fill="#ffffff" stroke="#1e293b" stroke-width="2" rx="4" filter="url(#shadow)"/>
+      <text x="105" y="216" font-size="16" font-weight="700" fill="#0f172a" text-anchor="middle">User</text>
+    </g>
+
+    <!-- External Entity: Admin -->
+    <g class="entity">
+      <rect x="50" y="580" width="110" height="60" fill="#ffffff" stroke="#1e293b" stroke-width="2" rx="4" filter="url(#shadow)"/>
+      <text x="105" y="616" font-size="16" font-weight="700" fill="#0f172a" text-anchor="middle">Admin</text>
+    </g>
+
+    <!-- Process 1.0: Authentication -->
+    <ellipse cx="260" cy="380" rx="65" ry="45" fill="#ffffff" stroke="#1e293b" stroke-width="2" filter="url(#shadow)"/>
+    <text x="260" y="373" font-size="14" font-weight="700" fill="#0f172a" text-anchor="middle">1.0 Login /</text>
+    <text x="260" y="393" font-size="14" font-weight="700" fill="#0f172a" text-anchor="middle">Authentication</text>
+
+    <!-- Flows User/Admin to Login -->
+    <path d="M 160 210 L 220 345" fill="none" stroke="#1e293b" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <text x="170" y="270" font-size="11" font-weight="600" fill="#475569">user credentials</text>
+
+    <path d="M 160 610 L 220 415" fill="none" stroke="#1e293b" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <text x="165" y="525" font-size="11" font-weight="600" fill="#475569">admin credentials</text>
+    
+    <!-- Data Store: users -->
+    <g class="data-store">
+      <!-- Background -->
+      <path d="M 330 500 L 190 500 L 190 536 L 330 536" fill="#ffffff" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Vertical divider -->
+      <line x1="215" y1="500" x2="215" y2="536" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Label -->
+      <text x="272.5" y="523.0" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">users</text>
+    </g>
+    
+    <path d="M 240 425 L 240 496" fill="none" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <text x="220" y="465" font-size="10" font-weight="600" fill="#475569">username</text>
+
+    <path d="M 280 496 L 280 427" fill="none" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <text x="305" y="465" font-size="10" font-weight="600" fill="#475569">password</text>
+    
+        <!-- Process 2.0 -->
+        <ellipse cx="570" cy="160" rx="70" ry="40" fill="#ffffff" stroke="#1e293b" stroke-width="1.8" filter="url(#shadow)"/>
+        <text x="570" y="148" font-size="11" font-weight="700" fill="#2d6a4f" text-anchor="middle">2.0</text>
+        <text x="570" y="164" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Manage</text>
+        <text x="570" y="180" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Wardrobe</text>
+
+        <!-- Flow from Login -->
+        <path d="M 325 380 C 390 380, 480 160, 500 160" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        
+    <!-- Data Store: clothing_items -->
+    <g class="data-store">
+      <!-- Background -->
+      <path d="M 1040 142 L 860 142 L 860 178 L 1040 178" fill="#ffffff" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Vertical divider -->
+      <line x1="885" y1="142" x2="885" y2="178" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Label -->
+      <text x="962.5" y="165.0" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">clothing_items</text>
+    </g>
+    
+        <path d="M 640 151 L 858 151" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="750.0" y="147" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">add/update item</text>
+
+        <path d="M 860 169 L 645 169" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="750.0" y="182" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">fetch catalog</text>
+        
+        <!-- Process 3.0 -->
+        <ellipse cx="570" cy="300" rx="70" ry="40" fill="#ffffff" stroke="#1e293b" stroke-width="1.8" filter="url(#shadow)"/>
+        <text x="570" y="288" font-size="11" font-weight="700" fill="#2d6a4f" text-anchor="middle">3.0</text>
+        <text x="570" y="304" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">AI Outfit</text>
+        <text x="570" y="320" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Stylist</text>
+
+        <!-- Flow from Login -->
+        <path d="M 325 380 C 390 380, 480 300, 500 300" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        
+    <!-- Data Store: outfits -->
+    <g class="data-store">
+      <!-- Background -->
+      <path d="M 1040 282 L 860 282 L 860 318 L 1040 318" fill="#ffffff" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Vertical divider -->
+      <line x1="885" y1="282" x2="885" y2="318" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Label -->
+      <text x="962.5" y="305.0" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">outfits</text>
+    </g>
+    
+        <path d="M 640 291 L 858 291" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="750.0" y="287" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">save generated</text>
+
+        <path d="M 860 309 L 645 309" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="750.0" y="322" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">get outfits</text>
+        
+        <!-- Process 4.0 -->
+        <ellipse cx="570" cy="440" rx="70" ry="40" fill="#ffffff" stroke="#1e293b" stroke-width="1.8" filter="url(#shadow)"/>
+        <text x="570" y="428" font-size="11" font-weight="700" fill="#2d6a4f" text-anchor="middle">4.0</text>
+        <text x="570" y="444" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Weekly</text>
+        <text x="570" y="460" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Planner</text>
+
+        <!-- Flow from Login -->
+        <path d="M 325 380 C 390 380, 480 440, 500 440" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        
+    <!-- Data Store: weekly_plans -->
+    <g class="data-store">
+      <!-- Background -->
+      <path d="M 1040 422 L 860 422 L 860 458 L 1040 458" fill="#ffffff" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Vertical divider -->
+      <line x1="885" y1="422" x2="885" y2="458" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Label -->
+      <text x="962.5" y="445.0" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">weekly_plans</text>
+    </g>
+    
+        <path d="M 640 431 L 858 431" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="750.0" y="427" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">save daily plan</text>
+
+        <path d="M 860 449 L 645 449" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="750.0" y="462" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">fetch schedule</text>
+        
+        <!-- Process 5.0 -->
+        <ellipse cx="570" cy="580" rx="70" ry="40" fill="#ffffff" stroke="#1e293b" stroke-width="1.8" filter="url(#shadow)"/>
+        <text x="570" y="568" font-size="11" font-weight="700" fill="#2d6a4f" text-anchor="middle">5.0</text>
+        <text x="570" y="584" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Analytics &</text>
+        <text x="570" y="600" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Feedback</text>
+
+        <!-- Flow from Login -->
+        <path d="M 325 380 C 390 380, 480 580, 500 580" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        
+    <!-- Data Store: outfit_feedback -->
+    <g class="data-store">
+      <!-- Background -->
+      <path d="M 1040 562 L 860 562 L 860 598 L 1040 598" fill="#ffffff" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Vertical divider -->
+      <line x1="885" y1="562" x2="885" y2="598" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Label -->
+      <text x="962.5" y="585.0" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">outfit_feedback</text>
+    </g>
+    
+        <path d="M 640 571 L 858 571" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="750.0" y="567" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">submit rating</text>
+
+        <path d="M 860 589 L 645 589" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="750.0" y="602" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">view stats</text>
+        
+        <!-- Process 6.0 -->
+        <ellipse cx="570" cy="720" rx="70" ry="40" fill="#ffffff" stroke="#1e293b" stroke-width="1.8" filter="url(#shadow)"/>
+        <text x="570" y="708" font-size="11" font-weight="700" fill="#2d6a4f" text-anchor="middle">6.0</text>
+        <text x="570" y="724" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Admin</text>
+        <text x="570" y="740" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Control</text>
+
+        <!-- Flow from Login -->
+        <path d="M 325 380 C 390 380, 480 720, 500 720" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        
+    <!-- Data Store: clothing_items -->
+    <g class="data-store">
+      <!-- Background -->
+      <path d="M 1040 702 L 860 702 L 860 738 L 1040 738" fill="#ffffff" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Vertical divider -->
+      <line x1="885" y1="702" x2="885" y2="738" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Label -->
+      <text x="962.5" y="725.0" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">clothing_items</text>
+    </g>
+    
+        <path d="M 640 711 L 858 711" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="750.0" y="707" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">manage presets</text>
+
+        <path d="M 860 729 L 645 729" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="750.0" y="742" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">system audit</text>
+        </svg>

@@ -14,6 +14,7 @@ class WeeklyPlan(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
     day_of_week = db.Column(db.String(20), nullable=False)  # Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
     outfit_id = db.Column(db.Integer, db.ForeignKey("outfits.id", ondelete="SET NULL"), nullable=True)
+    custom_outfit_id = db.Column(db.Integer, db.ForeignKey("custom_outfits.id"), nullable=True)
     notes = db.Column(db.String(255), nullable=True)
     updated_at = db.Column(
         db.DateTime(timezone=True),
@@ -25,3 +26,4 @@ class WeeklyPlan(db.Model):
     # Relationships
     user = db.relationship("User", backref=db.backref("weekly_plans", lazy="dynamic", cascade="all, delete-orphan"))
     outfit = db.relationship("Outfit", backref=db.backref("weekly_plans", lazy="dynamic"))
+    custom_outfit = db.relationship("CustomOutfit", backref=db.backref("weekly_plans", lazy="dynamic"))

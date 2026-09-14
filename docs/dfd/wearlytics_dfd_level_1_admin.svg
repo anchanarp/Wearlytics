@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 720" width="100%" height="100%" style="background:#ffffff; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Arrow marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#1e293b" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#2d6a4f" />
+    </marker>
+    <!-- Drop shadows for modern presentation -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Academic Report Slide Accent Bars matching reference -->
+  <rect x="40" y="25" width="220" height="7" fill="#2d6a4f" rx="2"/>
+  <rect x="270" y="25" width="220" height="7" fill="#80b918" rx="2"/>
+  <rect x="500" y="25" width="220" height="7" fill="#94a3b8" rx="2"/>
+
+  <!-- Title -->
+  <text x="40" y="65" font-size="19" font-weight="800" fill="#1e293b" letter-spacing="1">LEVEL 1 ADMIN DFD</text>
+  <text x="40" y="88" font-size="13" font-weight="500" fill="#64748b">Decomposition of Administrator Functional Flows in Wearlytics</text>
+
+    <!-- External Entity: Admin -->
+    <g class="entity">
+      <rect x="50" y="310" width="110" height="60" fill="#ffffff" stroke="#1e293b" stroke-width="2" rx="4" filter="url(#shadow)"/>
+      <text x="105.0" y="346" font-size="15" font-weight="700" fill="#0f172a" text-anchor="middle">Admin</text>
+    </g>
+    
+    <!-- Process: Login -->
+    <g class="process">
+      <ellipse cx="270" cy="340" rx="58" ry="42" fill="#ffffff" stroke="#1e293b" stroke-width="1.8" filter="url(#shadow)"/>
+      <text x="270" y="345" font-size="14" font-weight="700" fill="#0f172a" text-anchor="middle">Login</text>
+    </g>
+
+    <!-- Arrow Admin -> Login -->
+    <path d="M 160 340 L 208 340" fill="none" stroke="#1e293b" stroke-width="1.6" marker-end="url(#arrow)"/>
+    <text x="195" y="332" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">credentials</text>
+    
+    <!-- Data Store: login -->
+    <g class="data-store">
+      <!-- Background -->
+      <path d="M 340 480 L 200 480 L 200 516 L 340 516" fill="#ffffff" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Vertical divider -->
+      <line x1="225" y1="480" x2="225" y2="516" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Label -->
+      <text x="282.5" y="503.0" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">login</text>
+    </g>
+    
+    <!-- Login -> login -->
+    <path d="M 245 380 L 245 476" fill="none" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="185" y="425" width="58" height="15" fill="#ffffff"/>
+    <text x="214" y="436" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">username</text>
+
+    <!-- login -> Login -->
+    <path d="M 295 476 L 295 382" fill="none" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="300" y="425" width="58" height="15" fill="#ffffff"/>
+    <text x="329" y="436" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">password</text>
+    
+        <!-- Process: Manage Users -->
+        <g class="process">
+          <ellipse cx="530" cy="160" rx="68" ry="38" fill="#ffffff" stroke="#1e293b" stroke-width="1.8" filter="url(#shadow)"/>
+          <text x="530" y="156" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Manage</text>
+          <text x="530" y="175" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Users</text>
+        </g>
+
+        <!-- Arrow from Login to Process ('valid user') -->
+        <path d="M 328 340 C 388 340, 440 160, 462 160" fill="none" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow)"/>
+        
+        <g transform="translate(385.0, 250.0)">
+          <rect x="-30" y="-8" width="60" height="15" fill="#ffffff" opacity="0.9"/>
+          <text x="0" y="3" font-size="10" font-weight="600" fill="#2d6a4f" text-anchor="middle">valid user</text>
+        </g>
+        
+    <!-- Data Store: users -->
+    <g class="data-store">
+      <!-- Background -->
+      <path d="M 935 142 L 760 142 L 760 178 L 935 178" fill="#ffffff" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Vertical divider -->
+      <line x1="785" y1="142" x2="785" y2="178" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Label -->
+      <text x="860.0" y="165.0" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">users</text>
+    </g>
+    
+        <!-- Process -> Store (add / update user) -->
+        <path d="M 602 150 L 758 150" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="679.0" y="146" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">add / update user</text>
+
+        <!-- Store -> Process (get user details) -->
+        <path d="M 760 170 L 606 170" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="679.0" y="183" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">get user details</text>
+        
+        <!-- Process: Manage Clothes & Presets -->
+        <g class="process">
+          <ellipse cx="530" cy="290" rx="68" ry="38" fill="#ffffff" stroke="#1e293b" stroke-width="1.8" filter="url(#shadow)"/>
+          <text x="530" y="286" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Manage Clothes</text>
+          <text x="530" y="305" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">& Presets</text>
+        </g>
+
+        <!-- Arrow from Login to Process ('valid user') -->
+        <path d="M 328 340 C 388 340, 440 290, 462 290" fill="none" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow)"/>
+        
+        <g transform="translate(385.0, 315.0)">
+          <rect x="-30" y="-8" width="60" height="15" fill="#ffffff" opacity="0.9"/>
+          <text x="0" y="3" font-size="10" font-weight="600" fill="#2d6a4f" text-anchor="middle">valid user</text>
+        </g>
+        
+    <!-- Data Store: clothing_items -->
+    <g class="data-store">
+      <!-- Background -->
+      <path d="M 935 272 L 760 272 L 760 308 L 935 308" fill="#ffffff" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Vertical divider -->
+      <line x1="785" y1="272" x2="785" y2="308" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Label -->
+      <text x="860.0" y="295.0" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">clothing_items</text>
+    </g>
+    
+        <!-- Process -> Store (add preset items) -->
+        <path d="M 602 280 L 758 280" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="679.0" y="276" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">add preset items</text>
+
+        <!-- Store -> Process (get clothing data) -->
+        <path d="M 760 300 L 606 300" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="679.0" y="313" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">get clothing data</text>
+        
+        <!-- Process: Manage AI Models & Rules -->
+        <g class="process">
+          <ellipse cx="530" cy="420" rx="68" ry="38" fill="#ffffff" stroke="#1e293b" stroke-width="1.8" filter="url(#shadow)"/>
+          <text x="530" y="416" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Manage AI Models</text>
+          <text x="530" y="435" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">& Rules</text>
+        </g>
+
+        <!-- Arrow from Login to Process ('valid user') -->
+        <path d="M 328 340 C 388 340, 440 420, 462 420" fill="none" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow)"/>
+        
+        <g transform="translate(385.0, 380.0)">
+          <rect x="-30" y="-8" width="60" height="15" fill="#ffffff" opacity="0.9"/>
+          <text x="0" y="3" font-size="10" font-weight="600" fill="#2d6a4f" text-anchor="middle">valid user</text>
+        </g>
+        
+    <!-- Data Store: outfits -->
+    <g class="data-store">
+      <!-- Background -->
+      <path d="M 935 402 L 760 402 L 760 438 L 935 438" fill="#ffffff" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Vertical divider -->
+      <line x1="785" y1="402" x2="785" y2="438" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Label -->
+      <text x="860.0" y="425.0" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">outfits</text>
+    </g>
+    
+        <!-- Process -> Store (configure rules) -->
+        <path d="M 602 410 L 758 410" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="679.0" y="406" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">configure rules</text>
+
+        <!-- Store -> Process (get outfit metrics) -->
+        <path d="M 760 430 L 606 430" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="679.0" y="443" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">get outfit metrics</text>
+        
+        <!-- Process: Feedback & Analytics Log -->
+        <g class="process">
+          <ellipse cx="530" cy="550" rx="68" ry="38" fill="#ffffff" stroke="#1e293b" stroke-width="1.8" filter="url(#shadow)"/>
+          <text x="530" y="546" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Feedback &</text>
+          <text x="530" y="565" font-size="13" font-weight="700" fill="#0f172a" text-anchor="middle">Analytics Log</text>
+        </g>
+
+        <!-- Arrow from Login to Process ('valid user') -->
+        <path d="M 328 340 C 388 340, 440 550, 462 550" fill="none" stroke="#1e293b" stroke-width="1.5" marker-end="url(#arrow)"/>
+        
+        <g transform="translate(385.0, 445.0)">
+          <rect x="-30" y="-8" width="60" height="15" fill="#ffffff" opacity="0.9"/>
+          <text x="0" y="3" font-size="10" font-weight="600" fill="#2d6a4f" text-anchor="middle">valid user</text>
+        </g>
+        
+    <!-- Data Store: outfit_feedback -->
+    <g class="data-store">
+      <!-- Background -->
+      <path d="M 935 532 L 760 532 L 760 568 L 935 568" fill="#ffffff" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Vertical divider -->
+      <line x1="785" y1="532" x2="785" y2="568" stroke="#1e293b" stroke-width="1.6"/>
+      <!-- Label -->
+      <text x="860.0" y="555.0" font-size="13" font-weight="600" fill="#0f172a" text-anchor="middle">outfit_feedback</text>
+    </g>
+    
+        <!-- Process -> Store (log audit action) -->
+        <path d="M 602 540 L 758 540" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="679.0" y="536" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">log audit action</text>
+
+        <!-- Store -> Process (get feedback stats) -->
+        <path d="M 760 560 L 606 560" fill="none" stroke="#1e293b" stroke-width="1.4" marker-end="url(#arrow)"/>
+        <text x="679.0" y="573" font-size="10" font-weight="600" fill="#0f172a" text-anchor="middle">get feedback stats</text>
+        </svg>

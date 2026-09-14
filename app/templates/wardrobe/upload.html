@@ -14,11 +14,55 @@
 <div class="row g-4">
   <div class="col-12 col-lg-7">
     <div class="custom-card-box">
-      <form action="{{ url_for('wardrobe.upload') }}" method="post" enctype="multipart/form-data" class="upload-form">
+      <form action="{{ url_for('wardrobe.upload') }}" method="post" enctype="multipart/form-data" class="upload-form" id="uploadForm">
         <div class="form-group mb-3">
           <label for="name" class="form-label-custom">Item Name <span class="text-danger">*</span></label>
-          <input type="text" id="name" name="name" class="form-input-custom" placeholder="e.g. Classic White Linen Shirt" required>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="text" id="name" name="name" class="form-input-custom" placeholder="e.g. Classic White Linen Shirt" required style="flex:1;">
+            <button type="button" id="aiNameBtn" onclick="applyAiName()"
+              style="display:none;white-space:nowrap;padding:8px 14px;background:#f0eaff;color:#7c3aed;border:1.5px solid #c4b5fd;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">
+              ✦ AI Suggest Name
+            </button>
+          </div>
+          <div id="aiNameSuggestion" style="display:none;margin-top:6px;font-size:12px;color:#7c3aed;">
+            💡 Suggested: <strong id="aiNameText"></strong> — <a href="#" onclick="applyAiName();return false;">Use this</a>
+          </div>
         </div>
+
+        <!-- ✦ AI Suggestion Panel — shown after image is picked -->
+        <div id="aiSuggestionPanel" class="ai-suggestion-panel d-none mb-3">
+          <div class="ai-suggestion-header">
+            <span class="ai-badge">✦ AI Analysis</span>
+            <span id="aiSourceLabel" class="ai-source-tag"></span>
+          </div>
+          <div class="ai-suggestion-body">
+            <div class="ai-suggestion-row">
+              <span class="ai-suggestion-label">Predicted Category:</span>
+              <strong id="aiCategory">—</strong>
+              <button type="button" class="ai-apply-btn" onclick="applyAiCategory()">Apply ↓</button>
+            </div>
+            <div class="ai-suggestion-row">
+              <span class="ai-suggestion-label">Clothing Type:</span>
+              <strong id="aiType">—</strong>
+              <button type="button" class="ai-apply-btn" onclick="applyAiType()">Apply ↓</button>
+            </div>
+            <div class="ai-suggestion-row" id="aiColorRow" style="display:none">
+              <span class="ai-suggestion-label">Detected Color:</span>
+              <span id="aiColorSwatch" class="color-swatch-mini"></span>
+              <strong id="aiColorName">—</strong>
+              <button type="button" class="ai-apply-btn" onclick="applyAiColor()">Apply ↓</button>
+            </div>
+            <div class="ai-suggestion-row">
+              <span class="ai-suggestion-label">Confidence:</span>
+              <div class="ai-conf-bar-wrap">
+                <div class="ai-conf-bar" id="aiConfBar"></div>
+              </div>
+              <span id="aiConfText" class="ai-conf-text"></span>
+            </div>
+          </div>
+          <p class="ai-suggestion-hint">Review the predictions and apply what's correct. You can edit any field below.</p>
+        </div>
+        <!-- End AI Suggestion Panel -->
 
         <div class="row g-3 mb-3">
           <div class="col-12 col-sm-6">
@@ -54,10 +98,30 @@
           </div>
         </div>
 
+        <!-- AI-Enhanced Fields -->
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-sm-6">
+            <label for="style" class="form-label-custom">Style <span class="ai-tag">✦ Smart</span></label>
+            <select id="style" name="style" class="form-select-custom">
+              {% for s in all_styles %}
+                <option value="{{ s }}" {% if s == 'Casual' %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label for="clothing_type" class="form-label-custom">Clothing Type <span class="ai-tag">✦ AI Detected</span></label>
+            <input type="text" id="clothing_type" name="clothing_type" class="form-input-custom"
+                   placeholder="e.g. T-Shirt, Jeans, Sneakers"
+                   value="{{ ai_prediction.clothing_type if ai_prediction else '' }}">
+            <small class="form-hint">Auto-detected from your uploaded image. Correct if needed.</small>
+          </div>
+        </div>
+
         <div class="form-group mb-3">
           <label class="form-label-custom">Choose Image Method</label>
           <div class="upload-dropzone" id="dropzone">
-            <input type="file" id="image_file" name="image_file" accept="image/*" class="file-input-hidden" onchange="previewUploadImage(this)">
+            <input type="file" id="image_file" name="image_file" accept="image/*" class="file-input-hidden"
+                   onchange="previewUploadImage(this); triggerAiAnalysis(this);">
             <label for="image_file" class="dropzone-label">
               <div class="upload-icon">📸</div>
               <strong>Click to upload an image</strong>
@@ -66,6 +130,10 @@
             <div id="imagePreview" class="image-preview-box d-none">
               <img id="previewImg" src="#" alt="Upload preview">
             </div>
+          </div>
+          <!-- AI scanning indicator -->
+          <div id="aiScanningIndicator" class="ai-scanning-indicator d-none">
+            <span class="ai-spinner"></span> Analysing with MobileNetV2…
           </div>
         </div>
 
@@ -97,4 +165,135 @@
     </div>
   </div>
 </div>
+
+<!-- ✦ AI Analysis Script -->
+<script>
+// Store AI prediction data from /wardrobe/analyze response
+let _aiData = {};
+
+function triggerAiAnalysis(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  // Show scanning indicator, hide old panel
+  document.getElementById('aiScanningIndicator').classList.remove('d-none');
+  document.getElementById('aiSuggestionPanel').classList.add('d-none');
+
+  // Send image to /wardrobe/analyze for AI prediction
+  const formData = new FormData();
+  formData.append('image_file', file);
+
+  fetch("{{ url_for('wardrobe.analyze_image') }}", {
+    method: 'POST',
+    body: formData,
+    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+  })
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('aiScanningIndicator').classList.add('d-none');
+    if (!data.success) return;
+
+    _aiData = data;
+
+    // Populate AI suggestion panel
+    document.getElementById('aiCategory').textContent = data.category || '—';
+    document.getElementById('aiType').textContent     = data.clothing_type || '—';
+
+    // Source badge
+    const sourceMap = {
+      'mobilenet_finetuned': '✦ MobileNetV2 Fine-tuned',
+      'mobilenet_imagenet':  '✦ MobileNetV2 ImageNet',
+      'shape_heuristic':     '⚙ Shape Heuristic',
+      'cv':                  '⚙ OpenCV Fallback',
+      'fallback':            '⚠ Manual Required',
+    };
+    document.getElementById('aiSourceLabel').textContent = sourceMap[data.source] || data.source;
+
+    // Confidence bar
+    const conf = parseFloat(data.confidence) || 0;
+    const confBar  = document.getElementById('aiConfBar');
+    const confText = document.getElementById('aiConfText');
+    confBar.style.width = conf + '%';
+    confBar.style.background = conf >= 70 ? 'var(--accent)' : conf >= 50 ? '#f59e0b' : '#ef4444';
+    confText.textContent = conf.toFixed(1) + '%';
+
+    // Color row
+    if (data.color_hex && data.color_name) {
+      document.getElementById('aiColorSwatch').style.background = data.color_hex;
+      document.getElementById('aiColorName').textContent = data.color_name + ' (' + data.color_hex + ')';
+      document.getElementById('aiColorRow').style.display = '';
+    } else {
+      document.getElementById('aiColorRow').style.display = 'none';
+    }
+
+    // Auto-apply if confidence is high (≥70%)
+    if (conf >= 70) {
+      applyAiCategory();
+      applyAiType();
+    }
+    if (data.color_hex && data.color_name) {
+      applyAiColor();
+    }
+
+    // Show AI name suggestion
+    const suggestedName = (data.color_name || '') + (data.color_name && (data.clothing_type || data.category) ? ' ' : '') + (data.clothing_type || data.category || '');
+    if (suggestedName.trim()) {
+      document.getElementById('aiNameText').textContent = suggestedName.trim();
+      document.getElementById('aiNameSuggestion').style.display = '';
+      document.getElementById('aiNameBtn').style.display = '';
+      // Auto-fill name if empty
+      const nameInput = document.getElementById('name');
+      if (!nameInput.value.trim()) {
+        nameInput.value = suggestedName.trim();
+      }
+    }
+
+    // Show the panel
+    document.getElementById('aiSuggestionPanel').classList.remove('d-none');
+  })
+  .catch(() => {
+    document.getElementById('aiScanningIndicator').classList.add('d-none');
+  });
+}
+
+function applyAiCategory() {
+  const cat = _aiData.category;
+  if (!cat) return;
+  const sel = document.getElementById('category');
+  for (let i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value === cat) { sel.selectedIndex = i; break; }
+  }
+}
+
+function applyAiType() {
+  const t = _aiData.clothing_type;
+  if (!t) return;
+  document.getElementById('clothing_type').value = t;
+}
+
+function applyAiColor() {
+  const n = _aiData.color_name;
+  if (!n) return;
+  const colorInput = document.getElementById('color');
+  if (!colorInput.value || colorInput.value.trim() === '') {
+    colorInput.value = n;
+  }
+}
+
+function _buildAiName() {
+  const color = _aiData.color_name || '';
+  const type  = _aiData.clothing_type || _aiData.category || '';
+  if (!color && !type) return '';
+  if (color && type) return color + ' ' + type;
+  return color || type;
+}
+
+function applyAiName() {
+  const suggested = _buildAiName();
+  if (!suggested) return;
+  const nameInput = document.getElementById('name');
+  nameInput.value = suggested;
+  nameInput.focus();
+}
+</script>
 {% endblock %}

@@ -1,0 +1,449 @@
+{"kind":"deck","id":"pr/wz1ma8","name":"Deck"}
+{"kind":"layout","layoutId":"3c77bdd1-d02c-4b74-9eec-67dff56aff3f","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"dd35c9fa-506a-4fe8-af21-d5e13b83f9ca","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/apmu4n","slide":1,"title":"S3 MCA MINI PROJECT","textShapes":6}
+{"kind":"textbox","id":"sh/ps7ipg3e","slide":1,"text":"S3 MCA MINI PROJECT","textPreview":"S3 MCA MINI PROJECT","textChars":19,"textLines":1,"bbox":[74,70,360,24]}
+{"kind":"textbox","id":"sh/25gje1kn","slide":1,"text":"Wearlytics","textPreview":"Wearlytics","textChars":10,"textLines":1,"bbox":[74,126,560,75]}
+{"kind":"textbox","id":"sh/nqp0n6l8","slide":1,"text":"AI-Powered Smart Wardrobe and\nPersonalized Outfit Recommendation System","textPreview":"AI-Powered Smart Wardrobe and | Personalized Outfit Recommendation System","textChars":71,"textLines":2,"bbox":[74,218,620,86]}
+{"kind":"shape","id":"sh/g3e1cb2x","slide":1,"bbox":[74,346,460,2]}
+{"kind":"textbox","id":"sh/147ilg32","slide":1,"text":"ANCHANA R P  •  Roll No. 23","textPreview":"ANCHANA R P  •  Roll No. 23","textChars":27,"textLines":1,"bbox":[74,380,440,26]}
+{"kind":"textbox","id":"sh/e1wja1kr","slide":1,"text":"S3 MCA\nLourdes Matha College of Science and Technology\nGuide: Prof. Bismi K. Charleys","textPreview":"S3 MCA | Lourdes Matha College of Science and Technology | Guide: Prof. Bismi K. Charleys","textChars":85,"textLines":3,"bbox":[74,424,570,82]}
+{"kind":"shape","id":"sh/f250j6lc","slide":1,"bbox":[716,75,470,550]}
+{"kind":"textbox","id":"sh/t0nihw36","slide":1,"text":"SECOND INTERIM PRESENTATION","textPreview":"SECOND INTERIM PRESENTATION","textChars":27,"textLines":1,"bbox":[74,654,390,18]}
+{"kind":"image","id":"im/xo3ed03q","slide":1,"name":"","geometry":"roundRect","alt":"Healthy AI Stylist screen","bbox":[738,105,426,500]}
+{"kind":"notes","id":"nt/apmu4n","slide":1,"text":""}
+{"kind":"slide","id":"sl/skm2pz","slide":2,"title":"02  /  WEARLYTICS","textShapes":15}
+{"kind":"textbox","id":"sh/vqxsni58","slide":2,"text":"02  /  WEARLYTICS","textPreview":"02  /  WEARLYTICS","textChars":17,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/wr6tgn6t","slide":2,"text":"A digital wardrobe reduces daily outfit-selection friction","textPreview":"A digital wardrobe reduces daily outfit-selection friction","textChars":58,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/hsfapsne","slide":2,"text":"Wearlytics brings wardrobe organization, availability status, and explainable outfit suggestions into one application.","textPreview":"Wearlytics brings wardrobe organization, availability status, and explainable outfit suggestions into one application.","textChars":118,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/ml4bador","slide":2,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/7mdsji5c","slide":2,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/8n6tcn6x","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"shape","id":"sh/9ofal8ni","slide":2,"bbox":[70,205,345,260]}
+{"kind":"shape","id":"sh/6h8bmxob","slide":2,"bbox":[70,205,5,260]}
+{"kind":"textbox","id":"sh/rihcv25g","slide":2,"text":"The problem","textPreview":"The problem","textChars":11,"textLines":1,"bbox":[92,227,303,30]}
+{"kind":"textbox","id":"sh/f6d8jqt8","slide":2,"text":"Clothes are difficult to catalogue, track and retrieve. Outfit selection is repetitive, and unused items are easy to overlook.","textPreview":"Clothes are difficult to catalogue, track and retrieve. Outfit selection is repetitive, and unused items are easy to overlook.","textChars":126,"textLines":1,"bbox":[92,265,303,188]}
+{"kind":"shape","id":"sh/e547qlsn","slide":2,"bbox":[468,205,345,260]}
+{"kind":"shape","id":"sh/18vql0be","slide":2,"bbox":[468,205,5,260]}
+{"kind":"textbox","id":"sh/07mpsvat","slide":2,"text":"The response","textPreview":"The response","textChars":12,"textLines":1,"bbox":[490,227,303,30]}
+{"kind":"textbox","id":"sh/nad8nat4","slide":2,"text":"Digitize wardrobe items, record wear/laundry status, and rank compatible outfit combinations using transparent rules.","textPreview":"Digitize wardrobe items, record wear/laundry status, and rank compatible outfit combinations using transparent rules.","textChars":117,"textLines":1,"bbox":[490,265,303,188]}
+{"kind":"shape","id":"sh/m94re5sj","slide":2,"bbox":[866,205,345,260]}
+{"kind":"shape","id":"sh/9wfqp0ba","slide":2,"bbox":[866,205,5,260]}
+{"kind":"textbox","id":"sh/ov69gvap","slide":2,"text":"The outcome","textPreview":"The outcome","textChars":11,"textLines":1,"bbox":[888,227,303,30]}
+{"kind":"textbox","id":"sh/byx8ratg","slide":2,"text":"A user can make availability-aware outfit choices, save looks, plan a week and review wardrobe utilization.","textPreview":"A user can make availability-aware outfit choices, save looks, plan a week and review wardrobe utilization.","textChars":107,"textLines":1,"bbox":[888,265,303,188]}
+{"kind":"shape","id":"sh/axori5sv","slide":2,"bbox":[70,516,340,28]}
+{"kind":"textbox","id":"sh/6t8bq9c3","slide":2,"text":"Implemented in the current Flask application","textPreview":"Implemented in the current Flask application","textChars":44,"textLines":1,"bbox":[70,522,340,16]}
+{"kind":"shape","id":"sh/7u1sjedo","slide":2,"bbox":[70,570,8,8]}
+{"kind":"textbox","id":"sh/8vatsju9","slide":2,"text":"Image-assisted garment metadata","textPreview":"Image-assisted garment metadata","textChars":31,"textLines":1,"bbox":[88,563,312,42]}
+{"kind":"shape","id":"sh/twjulove","slide":2,"bbox":[430,570,8,8]}
+{"kind":"textbox","id":"sh/yp8bm9cr","slide":2,"text":"Weighted outfit compatibility","textPreview":"Weighted outfit compatibility","textChars":29,"textLines":1,"bbox":[448,563,312,42]}
+{"kind":"shape","id":"sh/jqhsfedc","slide":2,"bbox":[790,570,8,8]}
+{"kind":"textbox","id":"sh/krqtozux","slide":2,"text":"Planner and wear analytics","textPreview":"Planner and wear analytics","textChars":26,"textLines":1,"bbox":[808,563,312,42]}
+{"kind":"notes","id":"nt/skm2pz","slide":2,"text":""}
+{"kind":"slide","id":"sl/n1mrlu","slide":3,"title":"03  /  WEARLYTICS","textShapes":14}
+{"kind":"textbox","id":"sh/dgnup0nm","slide":3,"text":"03  /  WEARLYTICS","textPreview":"03  /  WEARLYTICS","textChars":17,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/qdwbelov","slide":3,"text":"Literature survey: the project sits at the intersection of four research areas","textPreview":"Literature survey: the project sits at the intersection of four research areas","textChars":78,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/re5snq5g","slide":3,"text":"The review informs future validation; the implemented recommender remains rule- and content-based.","textPreview":"The review informs future validation; the implemented recommender remains rule- and content-based.","textChars":98,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/0jetkf6d","slide":3,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/1knutkni","slide":3,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/ehwbi5o7","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"shape","id":"sh/fi5cra5s","slide":3,"bbox":[70,205,520,130]}
+{"kind":"shape","id":"sh/gnut8b6t","slide":3,"bbox":[70,205,5,130]}
+{"kind":"textbox","id":"sh/ho3ahgne","slide":3,"text":"1. Apparel image classification","textPreview":"1. Apparel image classification","textChars":31,"textLines":1,"bbox":[92,227,478,30]}
+{"kind":"textbox","id":"sh/hofqxsjy","slide":3,"text":"Transfer learning with lightweight CNNs such as MobileNetV2 for clothing-category recognition.","textPreview":"Transfer learning with lightweight CNNs such as MobileNetV2 for clothing-category recognition.","textChars":94,"textLines":1,"bbox":[92,265,478,58]}
+{"kind":"shape","id":"sh/wn694n2t","slide":3,"bbox":[690,205,520,130]}
+{"kind":"shape","id":"sh/vmd8vi18","slide":3,"bbox":[690,205,5,130]}
+{"kind":"textbox","id":"sh/al4r2xkn","slide":3,"text":"2. Fashion recommendation","textPreview":"2. Fashion recommendation","textChars":25,"textLines":1,"bbox":[712,227,478,30]}
+{"kind":"textbox","id":"sh/5cfq1cja","slide":3,"text":"Content-based outfit construction, compatibility rules, explainability and cold-start behavior.","textPreview":"Content-based outfit construction, compatibility rules, explainability and cold-start behavior.","textChars":95,"textLines":1,"bbox":[712,265,478,58]}
+{"kind":"shape","id":"sh/4b69872p","slide":3,"bbox":[70,370,520,130]}
+{"kind":"shape","id":"sh/jax8z214","slide":3,"bbox":[70,370,5,130]}
+{"kind":"textbox","id":"sh/ipor6xkj","slide":3,"text":"3. Personalization from feedback","textPreview":"3. Personalization from feedback","textChars":32,"textLines":1,"bbox":[92,392,478,30]}
+{"kind":"textbox","id":"sh/tgzq5cj6","slide":3,"text":"Explicit likes/dislikes, preference learning, negative feedback and user control through pinned items.","textPreview":"Explicit likes/dislikes, preference learning, negative feedback and user control through pinned items.","textChars":102,"textLines":1,"bbox":[92,430,478,58]}
+{"kind":"shape","id":"sh/sfq9c72l","slide":3,"bbox":[690,370,520,130]}
+{"kind":"shape","id":"sh/cvy1ofu9","slide":3,"bbox":[690,370,5,130]}
+{"kind":"textbox","id":"sh/dwr2xkvu","slide":3,"text":"4. Image colour & sustainability","textPreview":"4. Image colour & sustainability","textChars":32,"textLines":1,"bbox":[712,392,478,30]}
+{"kind":"textbox","id":"sh/qtgjm5w3","slide":3,"text":"Foreground-aware dominant-color extraction, wardrobe utilization and underused-item awareness.","textPreview":"Foreground-aware dominant-color extraction, wardrobe utilization and underused-item awareness.","textChars":94,"textLines":1,"bbox":[712,430,478,58]}
+{"kind":"textbox","id":"sh/bupkvado","slide":3,"text":"Current implementation boundary: no embeddings, cosine similarity, collaborative filtering, or learned compatibility model.","textPreview":"Current implementation boundary: no embeddings, cosine similarity, collaborative filtering, or learned compatibility model.","textChars":123,"textLines":1,"bbox":[70,555,1120,28]}
+{"kind":"notes","id":"nt/n1mrlu","slide":3,"text":""}
+{"kind":"slide","id":"sl/rtiygj","slide":4,"title":"04  /  WEARLYTICS","textShapes":24}
+{"kind":"textbox","id":"sh/d8ryho7m","slide":4,"text":"04  /  WEARLYTICS","textPreview":"04  /  WEARLYTICS","textChars":17,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/q50z698v","slide":4,"text":"Existing approaches leave wardrobe information and decisions fragmented","textPreview":"Existing approaches leave wardrobe information and decisions fragmented","textChars":71,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/b69gfepg","slide":4,"text":"Wearlytics addresses concrete gaps through integrated management and transparent ranking.","textPreview":"Wearlytics addresses concrete gaps through integrated management and transparent ranking.","textChars":89,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/ojyh4zqp","slide":4,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/p4ryd47a","slide":4,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/2hgz2p8z","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"textbox","id":"sh/3ipgbup4","slide":4,"text":"Manual cataloguing","textPreview":"Manual cataloguing","textChars":18,"textLines":1,"bbox":[84,195,235,28]}
+{"kind":"textbox","id":"sh/8f2hg3q9","slide":4,"text":"Item details and images are hard to retrieve.","textPreview":"Item details and images are hard to retrieve.","textChars":45,"textLines":1,"bbox":[335,195,340,42]}
+{"kind":"textbox","id":"sh/90bip87u","slide":4,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[700,195,35,30]}
+{"kind":"shape","id":"sh/pkv6xsne","slide":4,"bbox":[760,187,380,58]}
+{"kind":"textbox","id":"sh/ojm5on6t","slide":4,"text":"Searchable wardrobe records","textPreview":"Searchable wardrobe records","textChars":27,"textLines":1,"bbox":[782,205,335,24]}
+{"kind":"textbox","id":"sh/3idov2p8","slide":4,"text":"Repeated outfit effort","textPreview":"Repeated outfit effort","textChars":22,"textLines":1,"bbox":[84,291,235,28]}
+{"kind":"textbox","id":"sh/2h4n2xo3","slide":4,"text":"Users repeatedly decide what pairs well.","textPreview":"Users repeatedly decide what pairs well.","textChars":40,"textLines":1,"bbox":[335,291,340,42]}
+{"kind":"textbox","id":"sh/1wv6ts7i","slide":4,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[700,291,35,30]}
+{"kind":"shape","id":"sh/gvm50n6x","slide":4,"bbox":[760,283,380,58]}
+{"kind":"textbox","id":"sh/fudoripc","slide":4,"text":"Ranked compatible combinations","textPreview":"Ranked compatible combinations","textChars":30,"textLines":1,"bbox":[782,301,335,24]}
+{"kind":"textbox","id":"sh/etknydor","slide":4,"text":"Unavailable items included","textPreview":"Unavailable items included","textChars":26,"textLines":1,"bbox":[84,387,235,28]}
+{"kind":"textbox","id":"sh/lsf65cnm","slide":4,"text":"Laundry status is easy to forget.","textPreview":"Laundry status is easy to forget.","textChars":33,"textLines":1,"bbox":[335,387,340,42]}
+{"kind":"textbox","id":"sh/0r6pw761","slide":4,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[700,387,35,30]}
+{"kind":"shape","id":"sh/47yhofip","slide":4,"bbox":[760,379,380,58]}
+{"kind":"textbox","id":"sh/587ihkza","slide":4,"text":"Laundry-aware recommendation pool","textPreview":"Laundry-aware recommendation pool","textChars":33,"textLines":1,"bbox":[782,397,335,24]}
+{"kind":"textbox","id":"sh/i5gzm50j","slide":4,"text":"No utilization view","textPreview":"No utilization view","textChars":19,"textLines":1,"bbox":[84,483,235,28]}
+{"kind":"textbox","id":"sh/j6pgfah4","slide":4,"text":"Underused items remain invisible.","textPreview":"Underused items remain invisible.","textChars":33,"textLines":1,"bbox":[335,483,340,42]}
+{"kind":"textbox","id":"sh/w3yhkfid","slide":4,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[700,483,35,30]}
+{"kind":"shape","id":"sh/h47ydkzy","slide":4,"bbox":[760,475,380,58]}
+{"kind":"textbox","id":"sh/a1wzi507","slide":4,"text":"Wear counts and analytics","textPreview":"Wear counts and analytics","textChars":25,"textLines":1,"bbox":[782,493,335,24]}
+{"kind":"textbox","id":"sh/v2pgbahs","slide":4,"text":"Existing drawback","textPreview":"Existing drawback","textChars":17,"textLines":1,"bbox":[84,170,220,18]}
+{"kind":"textbox","id":"sh/8zehgvih","slide":4,"text":"Observed gap","textPreview":"Observed gap","textChars":12,"textLines":1,"bbox":[335,170,220,18]}
+{"kind":"textbox","id":"sh/90ny90z2","slide":4,"text":"Implemented response","textPreview":"Implemented response","textChars":20,"textLines":1,"bbox":[760,170,220,18]}
+{"kind":"notes","id":"nt/rtiygj","slide":4,"text":""}
+{"kind":"slide","id":"sl/h8b8ym","slide":5,"title":"05  /  WEARLYTICS","textShapes":24}
+{"kind":"textbox","id":"sh/utgbat83","slide":5,"text":"05  /  WEARLYTICS","textPreview":"05  /  WEARLYTICS","textChars":17,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/hwru58re","slide":5,"text":"The proposed system combines a wardrobe, AI assistance, and planning workflow","textPreview":"The proposed system combines a wardrobe, AI assistance, and planning workflow","textChars":77,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/gvitc3q9","slide":5,"text":"Implemented features are separated from future extensions for an honest interim status.","textPreview":"Implemented features are separated from future extensions for an honest interim status.","textChars":87,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/76pczy9c","slide":5,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/65gb6t8r","slide":5,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/ts7u18ri","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"shape","id":"sh/s7yt83qx","slide":5,"bbox":[70,250,190,180]}
+{"kind":"textbox","id":"sh/r29cbi9w","slide":5,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[90,270,30,25]}
+{"kind":"textbox","id":"sh/q10vix8b","slide":5,"text":"Authenticate","textPreview":"Authenticate","textChars":12,"textLines":1,"bbox":[90,310,150,27]}
+{"kind":"textbox","id":"sh/4r694ze9","slide":5,"text":"Registration, login and hashed passwords","textPreview":"Registration, login and hashed passwords","textChars":40,"textLines":1,"bbox":[90,350,150,58]}
+{"kind":"shape","id":"sh/psfad4fu","slide":5,"bbox":[298,250,190,180]}
+{"kind":"textbox","id":"sh/2por29w3","slide":5,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[318,270,30,25]}
+{"kind":"textbox","id":"sh/3qxsbuxo","slide":5,"text":"Build wardrobe","textPreview":"Build wardrobe","textChars":14,"textLines":1,"bbox":[318,310,150,27]}
+{"kind":"textbox","id":"sh/gnm90zex","slide":5,"text":"Upload, classify, color-tag, edit and filter","textPreview":"Upload, classify, color-tag, edit and filter","textChars":44,"textLines":1,"bbox":[318,350,150,58]}
+{"kind":"shape","id":"sh/hofa94fi","slide":5,"bbox":[526,250,190,180]}
+{"kind":"textbox","id":"sh/ul4rypw7","slide":5,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[546,270,30,25]}
+{"kind":"textbox","id":"sh/fmds7uxc","slide":5,"text":"Style","textPreview":"Style","textChars":5,"textLines":1,"bbox":[546,310,150,27]}
+{"kind":"textbox","id":"sh/sjm9wfe1","slide":5,"text":"Score available combinations for occasion and season","textPreview":"Score available combinations for occasion and season","textChars":52,"textLines":1,"bbox":[546,350,150,58]}
+{"kind":"shape","id":"sh/tkva5kfm","slide":5,"bbox":[754,250,190,180]}
+{"kind":"textbox","id":"sh/9gnq9g7a","slide":5,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[774,270,30,25]}
+{"kind":"textbox","id":"sh/8fep0bqp","slide":5,"text":"Learn","textPreview":"Learn","textChars":5,"textLines":1,"bbox":[774,310,150,27]}
+{"kind":"textbox","id":"sh/7e5876p4","slide":5,"text":"Record feedback and update simple preferences","textPreview":"Record feedback and update simple preferences","textChars":45,"textLines":1,"bbox":[774,350,150,58]}
+{"kind":"shape","id":"sh/mdw7y18z","slide":5,"bbox":[982,250,190,180]}
+{"kind":"textbox","id":"sh/lc3q5w7e","slide":5,"text":"5","textPreview":"5","textChars":1,"textLines":1,"bbox":[1002,270,30,25]}
+{"kind":"textbox","id":"sh/krupwrqt","slide":5,"text":"Plan & review","textPreview":"Plan & review","textChars":13,"textLines":1,"bbox":[1002,310,150,27]}
+{"kind":"textbox","id":"sh/zql836p8","slide":5,"text":"Save outfits, schedule the week and inspect usage","textPreview":"Save outfits, schedule the week and inspect usage","textChars":49,"textLines":1,"bbox":[1002,350,150,58]}
+{"kind":"shape","id":"sh/ypc7u18n","slide":5,"bbox":[260,340,38,0]}
+{"kind":"shape","id":"sh/587qh07i","slide":5,"bbox":[488,340,38,0]}
+{"kind":"shape","id":"sh/47y98v6x","slide":5,"bbox":[716,340,38,0]}
+{"kind":"shape","id":"sh/2h8vmtk3","slide":5,"bbox":[944,340,38,0]}
+{"kind":"shape","id":"sh/3ihwfy1o","slide":5,"bbox":[70,500,150,28]}
+{"kind":"textbox","id":"sh/ojqdo329","slide":5,"text":"Implemented now","textPreview":"Implemented now","textChars":15,"textLines":1,"bbox":[70,506,150,16]}
+{"kind":"textbox","id":"sh/pkzeh8ju","slide":5,"text":"AI Stylist • wearable-item filtering • feedback • planner • analytics","textPreview":"AI Stylist • wearable-item filtering • feedback • planner • analytics","textChars":69,"textLines":1,"bbox":[240,506,730,18]}
+{"kind":"shape","id":"sh/udovitk7","slide":5,"bbox":[70,555,205,28]}
+{"kind":"textbox","id":"sh/fexwby1s","slide":5,"text":"Future / not implemented","textPreview":"Future / not implemented","textChars":24,"textLines":1,"bbox":[70,561,205,16]}
+{"kind":"textbox","id":"sh/gf6dkj2d","slide":5,"text":"Mobile app • notifications • full wear-event history • body/size/fit personalization • learned compatibility","textPreview":"Mobile app • notifications • full wear-event history • body/size/fit personalization • learned compatibility","textChars":108,"textLines":1,"bbox":[295,561,860,18]}
+{"kind":"notes","id":"nt/h8b8ym","slide":5,"text":""}
+{"kind":"slide","id":"sl/jnt9tj","slide":6,"title":"06  /  WEARLYTICS","textShapes":15}
+{"kind":"textbox","id":"sh/58bm5g72","slide":6,"text":"06  /  WEARLYTICS","textPreview":"06  /  WEARLYTICS","textChars":17,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/i50nulob","slide":6,"text":"The application uses a modular Python web stack with local AI services","textPreview":"The application uses a modular Python web stack with local AI services","textChars":70,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/j6t43qpw","slide":6,"text":"Server-rendered pages and a relational schema keep the current build simple and extensible.","textPreview":"Server-rendered pages and a relational schema keep the current build simple and extensible.","textChars":91,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/w3i5sb6l","slide":6,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/h4rm1g7q","slide":6,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/u10nq18f","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"shape","id":"sh/v294z6p0","slide":6,"bbox":[70,190,540,100]}
+{"kind":"shape","id":"sh/8zi5orq9","slide":6,"bbox":[70,190,5,100]}
+{"kind":"textbox","id":"sh/90rmxw7u","slide":6,"text":"Frontend","textPreview":"Frontend","textChars":8,"textLines":1,"bbox":[92,212,498,30]}
+{"kind":"textbox","id":"sh/hgjq5gfy","slide":6,"text":"Jinja2 templates • HTML5 • CSS3 • Bootstrap 5.3.8 • vanilla JavaScript","textPreview":"Jinja2 templates • HTML5 • CSS3 • Bootstrap 5.3.8 • vanilla JavaScript","textChars":70,"textLines":1,"bbox":[92,250,498,28]}
+{"kind":"shape","id":"sh/wfqpwvyd","slide":6,"bbox":[640,190,540,100]}
+{"kind":"shape","id":"sh/veh83qxs","slide":6,"bbox":[640,190,5,100]}
+{"kind":"textbox","id":"sh/ud87ulg7","slide":6,"text":"Backend","textPreview":"Backend","textChars":7,"textLines":1,"bbox":[662,212,498,30]}
+{"kind":"textbox","id":"sh/9cz61gzm","slide":6,"text":"Python • Flask • Blueprints • Flask-Login • Werkzeug","textPreview":"Python • Flask • Blueprints • Flask-Login • Werkzeug","textChars":52,"textLines":1,"bbox":[662,250,498,28]}
+{"kind":"shape","id":"sh/8bqpsbyh","slide":6,"bbox":[70,315,540,100]}
+{"kind":"shape","id":"sh/7ahoz6hw","slide":6,"bbox":[70,315,5,100]}
+{"kind":"textbox","id":"sh/m987q1gb","slide":6,"text":"Data","textPreview":"Data","textChars":4,"textLines":1,"bbox":[92,337,498,30]}
+{"kind":"textbox","id":"sh/l8z6xwzq","slide":6,"text":"SQLAlchemy • Flask-Migrate • Alembic • MySQL support / SQLite fallback","textPreview":"SQLAlchemy • Flask-Migrate • Alembic • MySQL support / SQLite fallback","textChars":70,"textLines":1,"bbox":[92,375,498,28]}
+{"kind":"shape","id":"sh/k76poby5","slide":6,"bbox":[640,315,540,100]}
+{"kind":"shape","id":"sh/c3uh0vad","slide":6,"bbox":[640,315,5,100]}
+{"kind":"textbox","id":"sh/x43yt0by","slide":6,"text":"AI / image processing","textPreview":"AI / image processing","textChars":21,"textLines":1,"bbox":[662,337,498,30]}
+{"kind":"textbox","id":"sh/a1czy5s7","slide":6,"text":"PyTorch • torchvision • MobileNetV2 • Pillow • NumPy • OpenCV • scikit-learn","textPreview":"PyTorch • torchvision • MobileNetV2 • Pillow • NumPy • OpenCV • scikit-learn","textChars":76,"textLines":1,"bbox":[662,375,498,28]}
+{"kind":"shape","id":"sh/b2lgrqts","slide":6,"bbox":[70,440,1140,100]}
+{"kind":"shape","id":"sh/ozuxwva1","slide":6,"bbox":[70,440,5,100]}
+{"kind":"textbox","id":"sh/p03yp0bm","slide":6,"text":"Testing","textPreview":"Testing","textChars":7,"textLines":1,"bbox":[92,462,1098,30]}
+{"kind":"textbox","id":"sh/2xsfulsb","slide":6,"text":"Two executable integration scripts using Flask test client and in-memory SQLite","textPreview":"Two executable integration scripts using Flask test client and in-memory SQLite","textChars":79,"textLines":1,"bbox":[92,500,1098,28]}
+{"kind":"notes","id":"nt/jnt9tj","slide":6,"text":""}
+{"kind":"slide","id":"sl/z0l5v7","slide":7,"title":"07  /  WEARLYTICS","textShapes":17}
+{"kind":"textbox","id":"sh/c3mpsr25","slide":7,"text":"07  /  WEARLYTICS","textPreview":"07  /  WEARLYTICS","textChars":17,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/b2dojmlk","slide":7,"text":"A clear request flow links the browser, Flask modules, data, and AI services","textPreview":"A clear request flow links the browser, Flask modules, data, and AI services","textChars":76,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/q147qhkz","slide":7,"text":"Recommendation results are derived from the user’s stored wardrobe—not from an external fashion API.","textPreview":"Recommendation results are derived from the user’s stored wardrobe—not from an external fashion API.","textChars":100,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/p0v6hc3u","slide":7,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/ofmpo729","slide":7,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/3etof2lo","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"shape","id":"sh/2dk7mxk3","slide":7,"bbox":[70,250,190,110]}
+{"kind":"textbox","id":"sh/9wfqtgjy","slide":7,"text":"Browser UI","textPreview":"Browser UI","textChars":10,"textLines":1,"bbox":[92,278,146,26]}
+{"kind":"textbox","id":"sh/8b6p0b2d","slide":7,"text":"Jinja2 + JS","textPreview":"Jinja2 + JS","textChars":11,"textLines":1,"bbox":[92,310,146,20]}
+{"kind":"shape","id":"sh/edo3i90v","slide":7,"bbox":[300,250,215,110]}
+{"kind":"textbox","id":"sh/fexkre1g","slide":7,"text":"Flask Blueprints","textPreview":"Flask Blueprints","textChars":16,"textLines":1,"bbox":[320,278,175,26]}
+{"kind":"textbox","id":"sh/0f6lkji1","slide":7,"text":"auth • wardrobe • stylist","textPreview":"auth • wardrobe • stylist","textChars":25,"textLines":1,"bbox":[320,310,175,20]}
+{"kind":"shape","id":"sh/1gz2toj6","slide":7,"bbox":[555,250,215,110]}
+{"kind":"textbox","id":"sh/69o3e90j","slide":7,"text":"SQLAlchemy Models","textPreview":"SQLAlchemy Models","textChars":17,"textLines":1,"bbox":[575,278,175,26]}
+{"kind":"textbox","id":"sh/raxkne14","slide":7,"text":"users • wardrobe • outfits","textPreview":"users • wardrobe • outfits","textChars":26,"textLines":1,"bbox":[575,310,175,20]}
+{"kind":"shape","id":"sh/sb6lgzip","slide":7,"bbox":[810,250,185,110]}
+{"kind":"textbox","id":"sh/dcf2p4ja","slide":7,"text":"AI Services","textPreview":"AI Services","textChars":11,"textLines":1,"bbox":[830,278,145,26]}
+{"kind":"textbox","id":"sh/a583qt03","slide":7,"text":"classify • color • score","textPreview":"classify • color • score","textChars":24,"textLines":1,"bbox":[830,310,145,20]}
+{"kind":"shape","id":"sh/b6h4zy1o","slide":7,"bbox":[1035,250,175,110]}
+{"kind":"textbox","id":"sh/ne98v6do","slide":7,"text":"Response","textPreview":"Response","textChars":8,"textLines":1,"bbox":[1050,278,145,26]}
+{"kind":"textbox","id":"sh/md0r21c3","slide":7,"text":"ranked outfit UI","textPreview":"ranked outfit UI","textChars":16,"textLines":1,"bbox":[1050,310,145,20]}
+{"kind":"shape","id":"sh/90rqxwvu","slide":7,"bbox":[260,305,40,0]}
+{"kind":"shape","id":"sh/8fi94ru9","slide":7,"bbox":[515,305,40,0]}
+{"kind":"shape","id":"sh/v298z6dk","slide":7,"bbox":[770,305,40,0]}
+{"kind":"shape","id":"sh/a10r61cf","slide":7,"bbox":[995,305,40,0]}
+{"kind":"textbox","id":"sh/x4ba1gvq","slide":7,"text":"Persistence: MySQL when DATABASE_URL is configured; SQLite fallback for development/testing.","textPreview":"Persistence: MySQL when DATABASE_URL is configured; SQLite fallback for development/testing.","textChars":92,"textLines":1,"bbox":[70,454,950,23]}
+{"kind":"shape","id":"sh/w3298bu5","slide":7,"bbox":[70,510,245,28]}
+{"kind":"textbox","id":"sh/j6ts3qdw","slide":7,"text":"No external recommendation API","textPreview":"No external recommendation API","textChars":30,"textLines":1,"bbox":[70,516,245,16]}
+{"kind":"notes","id":"nt/z0l5v7","slide":7,"text":""}
+{"kind":"slide","id":"sl/sqw3ps","slide":8,"title":"08  /  WEARLYTICS","textShapes":30}
+{"kind":"textbox","id":"sh/r69cjal4","slide":8,"text":"08  /  WEARLYTICS","textPreview":"08  /  WEARLYTICS","textChars":17,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/s7itcf2p","slide":8,"text":"The dataset is mapped to six categories; the database persists nine actual tables","textPreview":"The dataset is mapped to six categories; the database persists nine actual tables","textChars":81,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/d8rulk3a","slide":8,"text":"The dataset is top-heavy, while the schema supports wardrobe, feedback, planning and custom outfits.","textPreview":"The dataset is top-heavy, while the schema supports wardrobe, feedback, planning and custom outfits.","textChars":100,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/e90bepkf","slide":8,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/fatcnul0","slide":8,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/0b2tgz2l","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"textbox","id":"sh/1cbup436","slide":8,"text":"Mapped dataset: 5,096 of 5,403 CSV annotations","textPreview":"Mapped dataset: 5,096 of 5,403 CSV annotations","textChars":46,"textLines":1,"bbox":[70,181,520,24]}
+{"kind":"textbox","id":"sh/mdkbi9kr","slide":8,"text":"Tops","textPreview":"Tops","textChars":4,"textLines":1,"bbox":[70,220,110,18]}
+{"kind":"shape","id":"sh/netcrulc","slide":8,"bbox":[180,222,280,13]}
+{"kind":"textbox","id":"sh/jito3mdw","slide":8,"text":"2461","textPreview":"2461","textChars":4,"textLines":1,"bbox":[470,220,55,18]}
+{"kind":"textbox","id":"sh/ihknahwr","slide":8,"text":"Bottoms","textPreview":"Bottoms","textChars":7,"textLines":1,"bbox":[70,262,110,18]}
+{"kind":"shape","id":"sh/5kb65cv2","slide":8,"bbox":[180,264,131.41,13]}
+{"kind":"textbox","id":"sh/kj25creh","slide":8,"text":"1155","textPreview":"1155","textChars":4,"textLines":1,"bbox":[470,262,55,18]}
+{"kind":"textbox","id":"sh/be9oz2d0","slide":8,"text":"Outerwear","textPreview":"Outerwear","textChars":9,"textLines":1,"bbox":[70,304,110,18]}
+{"kind":"shape","id":"sh/ad0n6xwf","slide":8,"bbox":[180,306,59.28,13]}
+{"kind":"textbox","id":"sh/xgr61cv6","slide":8,"text":"521","textPreview":"521","textChars":3,"textLines":1,"bbox":[470,304,55,18]}
+{"kind":"textbox","id":"sh/wfi587el","slide":8,"text":"Shoes","textPreview":"Shoes","textChars":5,"textLines":1,"bbox":[70,346,110,18]}
+{"kind":"shape","id":"sh/fadob6d4","slide":8,"bbox":[180,348,49.04,13]}
+{"kind":"textbox","id":"sh/u947i1wj","slide":8,"text":"431","textPreview":"431","textChars":3,"textLines":1,"bbox":[470,346,55,18]}
+{"kind":"textbox","id":"sh/qh8zqpk3","slide":8,"text":"Dresses","textPreview":"Dresses","textChars":7,"textLines":1,"bbox":[70,388,110,18]}
+{"kind":"shape","id":"sh/bih0zu1o","slide":8,"bbox":[180,390,40.62,13]}
+{"kind":"textbox","id":"sh/cjqhsz29","slide":8,"text":"357","textPreview":"357","textChars":3,"textLines":1,"bbox":[470,388,55,18]}
+{"kind":"textbox","id":"sh/dkzi14ju","slide":8,"text":"Accessories","textPreview":"Accessories","textChars":11,"textLines":1,"bbox":[70,430,110,18]}
+{"kind":"shape","id":"sh/ylszu9kf","slide":8,"bbox":[180,432,19.46,13]}
+{"kind":"textbox","id":"sh/zm103e10","slide":8,"text":"171","textPreview":"171","textChars":3,"textLines":1,"bbox":[470,430,55,18]}
+{"kind":"textbox","id":"sh/07a1wj25","slide":8,"text":"Actual relational tables","textPreview":"Actual relational tables","textChars":24,"textLines":1,"bbox":[650,181,420,24]}
+{"kind":"shape","id":"sh/l8ji54jq","slide":8,"bbox":[650,225,160,28]}
+{"kind":"textbox","id":"sh/epozi5kv","slide":8,"text":"users","textPreview":"users","textChars":5,"textLines":1,"bbox":[650,231,160,16]}
+{"kind":"shape","id":"sh/fqx0ra1g","slide":8,"bbox":[830,225,160,28]}
+{"kind":"textbox","id":"sh/x4n2x83y","slide":8,"text":"clothing_items","textPreview":"clothing_items","textChars":14,"textLines":1,"bbox":[830,231,160,16]}
+{"kind":"shape","id":"sh/w3ulo3md","slide":8,"bbox":[1010,225,160,28]}
+{"kind":"textbox","id":"sh/v2lkvil8","slide":8,"text":"outfits","textPreview":"outfits","textChars":7,"textLines":1,"bbox":[1010,231,160,16]}
+{"kind":"shape","id":"sh/a1c3md4n","slide":8,"bbox":[650,280,160,28]}
+{"kind":"textbox","id":"sh/58n21s3a","slide":8,"text":"outfit_items","textPreview":"outfit_items","textChars":12,"textLines":1,"bbox":[650,286,160,16]}
+{"kind":"shape","id":"sh/47elsnmp","slide":8,"bbox":[830,280,160,28]}
+{"kind":"textbox","id":"sh/j65kzil4","slide":8,"text":"weekly_plans","textPreview":"weekly_plans","textChars":12,"textLines":1,"bbox":[830,286,160,16]}
+{"kind":"shape","id":"sh/i5w3qd4j","slide":8,"bbox":[1010,280,160,28]}
+{"kind":"textbox","id":"sh/lcj2po3q","slide":8,"text":"user_preferences","textPreview":"user_preferences","textChars":16,"textLines":1,"bbox":[1010,286,160,16]}
+{"kind":"shape","id":"sh/0ba1gjml","slide":8,"bbox":[650,335,160,28]}
+{"kind":"textbox","id":"sh/ori5or6t","slide":8,"text":"outfit_feedback","textPreview":"outfit_feedback","textChars":15,"textLines":1,"bbox":[650,341,160,16]}
+{"kind":"shape","id":"sh/psr6xwne","slide":8,"bbox":[830,335,160,28]}
+{"kind":"textbox","id":"sh/250nm1o3","slide":8,"text":"custom_outfits","textPreview":"custom_outfits","textChars":14,"textLines":1,"bbox":[830,341,160,16]}
+{"kind":"shape","id":"sh/369ovm58","slide":8,"bbox":[1010,335,160,28]}
+{"kind":"textbox","id":"sh/g3i5kr6x","slide":8,"text":"custom_outfit_items","textPreview":"custom_outfit_items","textChars":19,"textLines":1,"bbox":[1010,341,160,16]}
+{"kind":"textbox","id":"sh/14r6twni","slide":8,"text":"Excluded labels: Not sure 228 • Other 67 • Skip 12","textPreview":"Excluded labels: Not sure 228 • Other 67 • Skip 12","textChars":50,"textLines":1,"bbox":[70,505,500,20]}
+{"kind":"textbox","id":"sh/e1gnihor","slide":8,"text":"No user_profiles, preferences, or recommendations table exists.","textPreview":"No user_profiles, preferences, or recommendations table exists.","textChars":63,"textLines":1,"bbox":[650,505,520,20]}
+{"kind":"notes","id":"nt/sqw3ps","slide":8,"text":""}
+{"kind":"slide","id":"sl/jydwew","slide":9,"title":"09  /  WEARLYTICS","textShapes":23}
+{"kind":"textbox","id":"sh/61wzaxwj","slide":9,"text":"09  /  WEARLYTICS","textPreview":"09  /  WEARLYTICS","textChars":17,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/t47ilcfa","slide":9,"text":"Local image upload follows a resilient classification and colour-analysis pipeline","textPreview":"Local image upload follows a resilient classification and colour-analysis pipeline","textChars":82,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/s3ehc7ep","slide":9,"text":"The user can review and apply suggestions; category replacement is not automatic on save.","textPreview":"The user can review and apply suggestions; category replacement is not automatic on save.","textChars":89,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/jy50fix8","slide":9,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/ixwz6dgn","slide":9,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/50nihsfy","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"shape","id":"sh/kzeh8nyt","slide":9,"bbox":[70,250,230,155]}
+{"kind":"textbox","id":"sh/3up0bmxc","slide":9,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[90,270,34,20]}
+{"kind":"textbox","id":"sh/2tgzihwr","slide":9,"text":"Upload","textPreview":"Upload","textChars":6,"textLines":1,"bbox":[90,305,190,25]}
+{"kind":"textbox","id":"sh/c3utwjq1","slide":9,"text":"Validate type, secure filename, UUID save","textPreview":"Validate type, secure filename, UUID save","textChars":41,"textLines":1,"bbox":[90,342,188,48]}
+{"kind":"shape","id":"sh/d43a5or6","slide":9,"bbox":[352,250,230,155]}
+{"kind":"textbox","id":"sh/q1sbu98v","slide":9,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[372,270,34,20]}
+{"kind":"textbox","id":"sh/r21s3e9g","slide":9,"text":"Classify","textPreview":"Classify","textChars":8,"textLines":1,"bbox":[372,305,190,25]}
+{"kind":"textbox","id":"sh/4zatszap","slide":9,"text":"Fine-tuned MobileNetV2; ImageNet, CV and fixed fallbacks","textPreview":"Fine-tuned MobileNetV2; ImageNet, CV and fixed fallbacks","textChars":56,"textLines":1,"bbox":[372,342,188,48]}
+{"kind":"shape","id":"sh/p0ja14ra","slide":9,"bbox":[634,250,230,155]}
+{"kind":"textbox","id":"sh/ixsrqpsj","slide":9,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[654,270,34,20]}
+{"kind":"textbox","id":"sh/3y1szu94","slide":9,"text":"Detect colour","textPreview":"Detect colour","textChars":13,"textLines":1,"bbox":[654,305,190,25]}
+{"kind":"textbox","id":"sh/gva9ozat","slide":9,"text":"Center crop, background mask, K-Means (k=3), nearest named colour","textPreview":"Center crop, background mask, K-Means (k=3), nearest named colour","textChars":65,"textLines":1,"bbox":[654,342,188,48]}
+{"kind":"shape","id":"sh/hwjax4re","slide":9,"bbox":[916,250,230,155]}
+{"kind":"textbox","id":"sh/xgri5wfq","slide":9,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[936,270,34,20]}
+{"kind":"textbox","id":"sh/wfihcry5","slide":9,"text":"Persist","textPreview":"Persist","textChars":7,"textLines":1,"bbox":[936,305,190,25]}
+{"kind":"textbox","id":"sh/be9g3mxk","slide":9,"text":"Store image metadata, confidence and detected hex","textPreview":"Store image metadata, confidence and detected hex","textChars":49,"textLines":1,"bbox":[936,342,188,48]}
+{"kind":"shape","id":"sh/adgzahgf","slide":9,"bbox":[300,327.5,52,0]}
+{"kind":"shape","id":"sh/9c7y1cfu","slide":9,"bbox":[582,327.5,52,0]}
+{"kind":"shape","id":"sh/oryh87y9","slide":9,"bbox":[864,327.5,52,0]}
+{"kind":"shape","id":"sh/nqpgz2xo","slide":9,"bbox":[70,480,350,105]}
+{"kind":"shape","id":"sh/mpgz6hg3","slide":9,"bbox":[70,480,5,105]}
+{"kind":"textbox","id":"sh/t8bidgfy","slide":9,"text":"Classifier output","textPreview":"Classifier output","textChars":17,"textLines":1,"bbox":[92,502,308,30]}
+{"kind":"textbox","id":"sh/872hkbyd","slide":9,"text":"Category, default clothing type, confidence, source","textPreview":"Category, default clothing type, confidence, source","textChars":51,"textLines":1,"bbox":[92,540,308,33]}
+{"kind":"shape","id":"sh/qtcfydwv","slide":9,"bbox":[465,480,350,105]}
+{"kind":"shape","id":"sh/rulw7idg","slide":9,"bbox":[465,480,5,105]}
+{"kind":"textbox","id":"sh/cvex03e1","slide":9,"text":"Colour output","textPreview":"Colour output","textChars":13,"textLines":1,"bbox":[487,502,308,30]}
+{"kind":"textbox","id":"sh/dwne98vm","slide":9,"text":"Dominant RGB, nearest hex and named colour","textPreview":"Dominant RGB, nearest hex and named colour","textChars":42,"textLines":1,"bbox":[487,540,308,33]}
+{"kind":"shape","id":"sh/2pcvutwz","slide":9,"bbox":[860,480,350,105]}
+{"kind":"shape","id":"sh/3qlw3ydk","slide":9,"bbox":[860,480,5,105]}
+{"kind":"textbox","id":"sh/4rudw3ep","slide":9,"text":"Human control","textPreview":"Human control","textChars":13,"textLines":1,"bbox":[882,502,308,30]}
+{"kind":"textbox","id":"sh/ps3e58va","slide":9,"text":"Form allows manual category/type/color correction","textPreview":"Form allows manual category/type/color correction","textChars":49,"textLines":1,"bbox":[882,540,308,33]}
+{"kind":"notes","id":"nt/jydwew","slide":9,"text":""}
+{"kind":"slide","id":"sl/tof88f","slide":10,"title":"010  /  WEARLYTICS","textShapes":28}
+{"kind":"textbox","id":"sh/t0rads7u","slide":10,"text":"010  /  WEARLYTICS","textPreview":"010  /  WEARLYTICS","textChars":18,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/6d0bixoj","slide":10,"text":"The AI Stylist ranks viable wardrobe combinations with transparent weighted scoring","textPreview":"The AI Stylist ranks viable wardrobe combinations with transparent weighted scoring","textChars":83,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/7e9sb2po","slide":10,"text":"Only available items are considered; pinned items must all appear in a returned combination.","textPreview":"Only available items are considered; pinned items must all appear in a returned combination.","textChars":92,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/kbytgn6d","slide":10,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/5c7a9s7y","slide":10,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/i9gredo7","slide":10,"text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"shape","id":"sh/japs7ips","slide":10,"bbox":[70,210,230,120]}
+{"kind":"textbox","id":"sh/w7y9c361","slide":10,"text":"Available wardrobe","textPreview":"Available wardrobe","textChars":18,"textLines":1,"bbox":[88,235,194,25]}
+{"kind":"textbox","id":"sh/x87a587m","slide":10,"text":"Exclude laundry items","textPreview":"Exclude laundry items","textChars":21,"textLines":1,"bbox":[88,275,194,34]}
+{"kind":"shape","id":"sh/10ripof6","slide":10,"bbox":[355,210,230,120]}
+{"kind":"textbox","id":"sh/gzi1g3yl","slide":10,"text":"Filter & combine","textPreview":"Filter & combine","textChars":16,"textLines":1,"bbox":[373,235,194,25]}
+{"kind":"textbox","id":"sh/fe90nyxg","slide":10,"text":"Season / occasion; top+bottom or dress; optional shoes/extras","textPreview":"Season / occasion; top+bottom or dress; optional shoes/extras","textChars":61,"textLines":1,"bbox":[373,275,194,34]}
+{"kind":"shape","id":"sh/udgjetgv","slide":10,"bbox":[640,210,230,120]}
+{"kind":"textbox","id":"sh/tc7ilofa","slide":10,"text":"Score","textPreview":"Score","textChars":5,"textLines":1,"bbox":[658,235,194,25]}
+{"kind":"textbox","id":"sh/sby1cjyp","slide":10,"text":"Seven weighted components","textPreview":"Seven weighted components","textChars":25,"textLines":1,"bbox":[658,275,194,34]}
+{"kind":"shape","id":"sh/7ap0jex4","slide":10,"bbox":[925,210,230,120]}
+{"kind":"textbox","id":"sh/69gja9gj","slide":10,"text":"Rank & explain","textPreview":"Rank & explain","textChars":14,"textLines":1,"bbox":[943,235,194,25]}
+{"kind":"textbox","id":"sh/587ih4fy","slide":10,"text":"Top 3, breakdown, feedback actions","textPreview":"Top 3, breakdown, feedback actions","textChars":34,"textLines":1,"bbox":[943,275,194,34]}
+{"kind":"shape","id":"sh/k7y18jyt","slide":10,"bbox":[300,270,55,0]}
+{"kind":"shape","id":"sh/w329k3al","slide":10,"bbox":[585,270,55,0]}
+{"kind":"shape","id":"sh/x4bad8r6","slide":10,"bbox":[870,270,55,0]}
+{"kind":"textbox","id":"sh/a1kridsv","slide":10,"text":"Color harmony","textPreview":"Color harmony","textChars":13,"textLines":1,"bbox":[70,410,145,35]}
+{"kind":"shape","id":"sh/v2tsby90","slide":10,"bbox":[70,458,140,100]}
+{"kind":"textbox","id":"sh/8z29g3ap","slide":10,"text":"25%","textPreview":"25%","textChars":3,"textLines":1,"bbox":[70,570,140,20]}
+{"kind":"textbox","id":"sh/90ba98ra","slide":10,"text":"Category balance","textPreview":"Category balance","textChars":16,"textLines":1,"bbox":[232,410,145,35]}
+{"kind":"shape","id":"sh/mx0retsj","slide":10,"bbox":[232,458,140,80]}
+{"kind":"textbox","id":"sh/nyts7y94","slide":10,"text":"20%","textPreview":"20%","textChars":3,"textLines":1,"bbox":[232,570,140,20]}
+{"kind":"textbox","id":"sh/svmtsnat","slide":10,"text":"Occasion match","textPreview":"Occasion match","textChars":14,"textLines":1,"bbox":[394,410,145,35]}
+{"kind":"shape","id":"sh/twvalsre","slide":10,"bbox":[394,458,140,80]}
+{"kind":"textbox","id":"sh/3qhcbmtg","slide":10,"text":"20%","textPreview":"20%","textChars":3,"textLines":1,"bbox":[394,570,140,20]}
+{"kind":"textbox","id":"sh/2p8vihcv","slide":10,"text":"Season match","textPreview":"Season match","textChars":12,"textLines":1,"bbox":[556,410,145,35]}
+{"kind":"shape","id":"sh/pszudwbm","slide":10,"bbox":[556,458,140,60]}
+{"kind":"textbox","id":"sh/orqdkru1","slide":10,"text":"15%","textPreview":"15%","textChars":3,"textLines":1,"bbox":[556,570,140,20]}
+{"kind":"textbox","id":"sh/buhwf6ts","slide":10,"text":"Preferences","textPreview":"Preferences","textChars":11,"textLines":1,"bbox":[718,410,145,35]}
+{"kind":"shape","id":"sh/qt8vm1c7","slide":10,"bbox":[718,458,140,48]}
+{"kind":"textbox","id":"sh/dgjehgbi","slide":10,"text":"12%","textPreview":"12%","textChars":3,"textLines":1,"bbox":[718,570,140,20]}
+{"kind":"textbox","id":"sh/cvqdobud","slide":10,"text":"Novelty","textPreview":"Novelty","textChars":7,"textLines":1,"bbox":[880,410,145,35]}
+{"kind":"shape","id":"sh/ryxc32t8","slide":10,"bbox":[880,458,140,20]}
+{"kind":"textbox","id":"sh/6xovaxc3","slide":10,"text":"5%","textPreview":"5%","textChars":2,"textLines":1,"bbox":[880,570,140,20]}
+{"kind":"textbox","id":"sh/y18vqhkj","slide":10,"text":"Favorites","textPreview":"Favorites","textChars":9,"textLines":1,"bbox":[1042,410,145,35]}
+{"kind":"shape","id":"sh/j21cjml4","slide":10,"bbox":[1042,458,140,12]}
+{"kind":"textbox","id":"sh/k3ads72p","slide":10,"text":"3%","textPreview":"3%","textChars":2,"textLines":1,"bbox":[1042,570,140,20]}
+{"kind":"textbox","id":"sh/54jelcja","slide":10,"text":"Preference feedback: likes/favorites add colours and styles; disliked outfit items are avoided when viable alternatives exist.","textPreview":"Preference feedback: likes/favorites add colours and styles; disliked outfit items are avoided when viable alternatives exist.","textChars":126,"textLines":1,"bbox":[70,620,1120,20]}
+{"kind":"notes","id":"nt/tof88f","slide":10,"text":""}
+{"kind":"slide","id":"sl/zdlfgt","slide":11,"title":"011  /  WEARLYTICS","textShapes":17}
+{"kind":"textbox","id":"sh/zmxsjq90","slide":11,"text":"011  /  WEARLYTICS","textPreview":"011  /  WEARLYTICS","textChars":18,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/0n6tsvql","slide":11,"text":"Major modules turn stored wardrobe data into usable daily decisions","textPreview":"Major modules turn stored wardrobe data into usable daily decisions","textChars":67,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/1ofal0r6","slide":11,"text":"The current system is modular rather than a single monolithic route set.","textPreview":"The current system is modular rather than a single monolithic route set.","textChars":72,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/qh4rml8j","slide":11,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/ridsfq94","slide":11,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/sjm9ovqp","slide":11,"text":"11","textPreview":"11","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"shape","id":"sh/dkvah0ru","slide":11,"bbox":[70,205,350,145]}
+{"kind":"shape","id":"sh/ad8byp8n","slide":11,"bbox":[70,205,5,145]}
+{"kind":"textbox","id":"sh/behsrap8","slide":11,"text":"Authentication","textPreview":"Authentication","textChars":14,"textLines":1,"bbox":[92,227,308,30]}
+{"kind":"textbox","id":"sh/jepg7al8","slide":11,"text":"Register, login, logout, safe redirect","textPreview":"Register, login, logout, safe redirect","textChars":38,"textLines":1,"bbox":[92,265,308,73]}
+{"kind":"shape","id":"sh/ydgze5kn","slide":11,"bbox":[455,205,350,145]}
+{"kind":"shape","id":"sh/lgry9k3y","slide":11,"bbox":[455,205,5,145]}
+{"kind":"textbox","id":"sh/kfyhgf2d","slide":11,"text":"Wardrobe","textPreview":"Wardrobe","textChars":8,"textLines":1,"bbox":[477,227,308,30]}
+{"kind":"textbox","id":"sh/729gbal4","slide":11,"text":"CRUD, upload, search, favorites, wears, laundry","textPreview":"CRUD, upload, search, favorites, wears, laundry","textChars":47,"textLines":1,"bbox":[477,265,308,73]}
+{"kind":"shape","id":"sh/6h0zipkj","slide":11,"bbox":[840,205,350,145]}
+{"kind":"shape","id":"sh/t4rydk3a","slide":11,"bbox":[840,205,5,145]}
+{"kind":"textbox","id":"sh/83ihkf2p","slide":11,"text":"AI Stylist","textPreview":"AI Stylist","textChars":10,"textLines":1,"bbox":[862,227,308,30]}
+{"kind":"textbox","id":"sh/v69gful0","slide":11,"text":"Pinned item selection, scoring, explanations, feedback","textPreview":"Pinned item selection, scoring, explanations, feedback","textChars":54,"textLines":1,"bbox":[862,265,308,73]}
+{"kind":"shape","id":"sh/u50zmpkv","slide":11,"bbox":[70,395,350,145]}
+{"kind":"shape","id":"sh/q14jet43","slide":11,"bbox":[70,395,5,145]}
+{"kind":"textbox","id":"sh/r2dkny58","slide":11,"text":"Outfits & Planner","textPreview":"Outfits & Planner","textChars":17,"textLines":1,"bbox":[92,417,308,30]}
+{"kind":"textbox","id":"sh/s3m1g3mt","slide":11,"text":"Save ranked outfits, seven-day plan, custom outfit creation","textPreview":"Save ranked outfits, seven-day plan, custom outfit creation","textChars":59,"textLines":1,"bbox":[92,455,308,73]}
+{"kind":"shape","id":"sh/d4v2p8ne","slide":11,"bbox":[455,395,350,145]}
+{"kind":"shape","id":"sh/ixkja94r","slide":11,"bbox":[455,395,5,145]}
+{"kind":"textbox","id":"sh/3ytkje5c","slide":11,"text":"Analytics","textPreview":"Analytics","textChars":9,"textLines":1,"bbox":[477,417,308,30]}
+{"kind":"textbox","id":"sh/4zm1cjmx","slide":11,"text":"Usage, category/season/color splits, utilization score","textPreview":"Usage, category/season/color splits, utilization score","textChars":54,"textLines":1,"bbox":[477,455,308,73]}
+{"kind":"shape","id":"sh/50v2loni","slide":11,"bbox":[840,395,350,145]}
+{"kind":"shape","id":"sh/2tojmd4v","slide":11,"bbox":[840,395,5,145]}
+{"kind":"textbox","id":"sh/nuxkvi5g","slide":11,"text":"Profile & Preferences","textPreview":"Profile & Preferences","textChars":21,"textLines":1,"bbox":[862,417,308,30]}
+{"kind":"textbox","id":"sh/xozmlc7y","slide":11,"text":"Bio, password, avatar, style/occasion/season preferences","textPreview":"Bio, password, avatar, style/occasion/season preferences","textChars":56,"textLines":1,"bbox":[862,455,308,73]}
+{"kind":"notes","id":"nt/zdlfgt","slide":11,"text":""}
+{"kind":"slide","id":"sl/hrmncg","slide":12,"title":"012  /  WEARLYTICS","textShapes":25}
+{"kind":"textbox","id":"sh/fatsnqdo","slide":12,"text":"012  /  WEARLYTICS","textPreview":"012  /  WEARLYTICS","textChars":18,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/0v29wve9","slide":12,"text":"The classifier reaches 89.19% final test accuracy on the recorded evaluation","textPreview":"The classifier reaches 89.19% final test accuracy on the recorded evaluation","textChars":76,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/1wbap0ve","slide":12,"text":"Validation peaked at 91.88%; class support imbalance should be considered when interpreting per-class scores.","textPreview":"Validation peaked at 91.88%; class support imbalance should be considered when interpreting per-class scores.","textChars":109,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/2xkry5wz","slide":12,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/nytsradk","slide":12,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/oz290fe5","slide":12,"text":"12","textPreview":"12","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"shape","id":"sh/90vatkvq","slide":12,"bbox":[70,192,350,180]}
+{"kind":"textbox","id":"sh/i10rmlwv","slide":12,"text":"89.19%","textPreview":"89.19%","textChars":6,"textLines":1,"bbox":[95,222,300,56]}
+{"kind":"textbox","id":"sh/329sf6xg","slide":12,"text":"Final test accuracy","textPreview":"Final test accuracy","textChars":19,"textLines":1,"bbox":[95,286,300,24]}
+{"kind":"textbox","id":"sh/7idwzq5o","slide":12,"text":"509 test images","textPreview":"509 test images","textChars":15,"textLines":1,"bbox":[95,322,300,20]}
+{"kind":"shape","id":"sh/mh4fq5o3","slide":12,"bbox":[455,192,350,180]}
+{"kind":"textbox","id":"sh/9kve10nu","slide":12,"text":"91.88%","textPreview":"91.88%","textChars":6,"textLines":1,"bbox":[480,222,300,56]}
+{"kind":"textbox","id":"sh/8jmxsv69","slide":12,"text":"Best validation accuracy","textPreview":"Best validation accuracy","textChars":24,"textLines":1,"bbox":[480,286,300,24]}
+{"kind":"textbox","id":"sh/zutwvq5c","slide":12,"text":"Epoch 12 of 15","textPreview":"Epoch 12 of 15","textChars":14,"textLines":1,"bbox":[480,322,300,20]}
+{"kind":"textbox","id":"sh/ytkfmlo7","slide":12,"text":"Per-class F1 score","textPreview":"Per-class F1 score","textChars":18,"textLines":1,"bbox":[70,420,240,24]}
+{"kind":"textbox","id":"sh/lgvex0ni","slide":12,"text":"Accessories","textPreview":"Accessories","textChars":11,"textLines":1,"bbox":[70,460,100,16]}
+{"kind":"shape","id":"sh/kv2xov6x","slide":12,"bbox":[180,462,547.3,12]}
+{"kind":"textbox","id":"sh/bqtwr65g","slide":12,"text":"0.842","textPreview":"0.842","textChars":5,"textLines":1,"bbox":[850,460,58,16]}
+{"kind":"textbox","id":"sh/apkfilov","slide":12,"text":"Bottoms","textPreview":"Bottoms","textChars":7,"textLines":1,"bbox":[70,490,100,16]}
+{"kind":"shape","id":"sh/el0fu18n","slide":12,"bbox":[180,492,612.95,12]}
+{"kind":"textbox","id":"sh/fm9g36p8","slide":12,"text":"0.943","textPreview":"0.943","textChars":5,"textLines":1,"bbox":[850,490,58,16]}
+{"kind":"textbox","id":"sh/0nixwbqt","slide":12,"text":"Dresses","textPreview":"Dresses","textChars":7,"textLines":1,"bbox":[70,520,100,16]}
+{"kind":"shape","id":"sh/1ory5g7e","slide":12,"bbox":[180,522,471.25,12]}
+{"kind":"textbox","id":"sh/2pkfyl8z","slide":12,"text":"0.725","textPreview":"0.725","textChars":5,"textLines":1,"bbox":[850,520,58,16]}
+{"kind":"textbox","id":"sh/nqtg7qpk","slide":12,"text":"Outerwear","textPreview":"Outerwear","textChars":9,"textLines":1,"bbox":[70,550,100,16]}
+{"kind":"shape","id":"sh/or2x0vqp","slide":12,"bbox":[180,552,475.15,12]}
+{"kind":"textbox","id":"sh/psby907a","slide":12,"text":"0.731","textPreview":"0.731","textChars":5,"textLines":1,"bbox":[850,550,58,16]}
+{"kind":"textbox","id":"sh/atkz2l8v","slide":12,"text":"Shoes","textPreview":"Shoes","textChars":5,"textLines":1,"bbox":[70,580,100,16]}
+{"kind":"shape","id":"sh/betgbqpg","slide":12,"bbox":[180,582,630.5,12]}
+{"kind":"textbox","id":"sh/l8fi1kri","slide":12,"text":"0.970","textPreview":"0.970","textChars":5,"textLines":1,"bbox":[850,580,58,16]}
+{"kind":"textbox","id":"sh/knm18zax","slide":12,"text":"Tops","textPreview":"Tops","textChars":4,"textLines":1,"bbox":[70,610,100,16]}
+{"kind":"shape","id":"sh/zmd0zu9s","slide":12,"bbox":[180,612,592.8,12]}
+{"kind":"textbox","id":"sh/yl4j6ps7","slide":12,"text":"0.912","textPreview":"0.912","textChars":5,"textLines":1,"bbox":[850,610,58,16]}
+{"kind":"textbox","id":"sh/tcfi54ru","slide":12,"text":"Evaluation source: app/services/model_evaluation.json","textPreview":"Evaluation source: app/services/model_evaluation.json","textChars":53,"textLines":1,"bbox":[70,650,500,18]}
+{"kind":"notes","id":"nt/hrmncg","slide":12,"text":""}
+{"kind":"slide","id":"sl/pf1q83","slide":13,"title":"013  /  WEARLYTICS","textShapes":9}
+{"kind":"textbox","id":"sh/98ni90j6","slide":13,"text":"013  /  WEARLYTICS","textPreview":"013  /  WEARLYTICS","textChars":18,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/mlwzyl0f","slide":13,"text":"Healthy project screens show the wardrobe-to-recommendation journey","textPreview":"Healthy project screens show the wardrobe-to-recommendation journey","textChars":67,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/nm507q10","slide":13,"text":"Only functioning application captures are shown; error/debug screenshots are intentionally excluded.","textPreview":"Only functioning application captures are shown; error/debug screenshots are intentionally excluded.","textChars":100,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/0juhwbip","slide":13,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/1kni5gju","slide":13,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/ehczu10j","slide":13,"text":"13","textPreview":"13","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"textbox","id":"sh/pcrat0zy","slide":13,"text":"Dashboard","textPreview":"Dashboard","textChars":9,"textLines":1,"bbox":[70,522,350,22]}
+{"kind":"textbox","id":"sh/obi90vid","slide":13,"text":"Scored recommendation breakdown","textPreview":"Scored recommendation breakdown","textChars":31,"textLines":1,"bbox":[465,522,350,22]}
+{"kind":"textbox","id":"sh/3qpsrqhs","slide":13,"text":"Unified AI Stylist result","textPreview":"Unified AI Stylist result","textChars":25,"textLines":1,"bbox":[860,522,350,22]}
+{"kind":"shape","id":"sh/2pgryl07","slide":13,"bbox":[70,585,315,28]}
+{"kind":"textbox","id":"sh/1o7apgzm","slide":13,"text":"Real UI captures from the project workspace","textPreview":"Real UI captures from the project workspace","textChars":43,"textLines":1,"bbox":[70,591,315,16]}
+{"kind":"image","id":"im/qxcj2p83","slide":13,"name":"","geometry":"roundRect","alt":"Dashboard overview","bbox":[70,190,350,315]}
+{"kind":"image","id":"im/9oji10ra","slide":13,"name":"","geometry":"roundRect","alt":"Smart recommendation screen","bbox":[465,190,350,315]}
+{"kind":"image","id":"im/83ahsfqp","slide":13,"name":"","geometry":"roundRect","alt":"AI Stylist recommendation result","bbox":[860,190,350,315]}
+{"kind":"notes","id":"nt/pf1q83","slide":13,"text":""}
+{"kind":"slide","id":"sl/w7djry","slide":14,"title":"014  /  WEARLYTICS","textShapes":11}
+{"kind":"textbox","id":"sh/9wzahkjy","slide":14,"text":"014  /  WEARLYTICS","textPreview":"014  /  WEARLYTICS","textChars":18,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/mt8b650n","slide":14,"text":"Wearlytics demonstrates an integrated, explainable smart-wardrobe foundation","textPreview":"Wearlytics demonstrates an integrated, explainable smart-wardrobe foundation","textChars":76,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/nuhsfa18","slide":14,"text":"The next stage is to strengthen evaluation, reliability and personalization without overstating the current implementation.","textPreview":"The next stage is to strengthen evaluation, reliability and personalization without overstating the current implementation.","textChars":123,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/0rqt4fih","slide":14,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/1szadkj2","slide":14,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/e58bi5kb","slide":14,"text":"14","textPreview":"14","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"shape","id":"sh/z6hsba1w","slide":14,"bbox":[70,205,545,210]}
+{"kind":"shape","id":"sh/c36tgv2l","slide":14,"bbox":[70,205,5,210]}
+{"kind":"textbox","id":"sh/d4fa90j6","slide":14,"text":"Delivered in this interim","textPreview":"Delivered in this interim","textChars":25,"textLines":1,"bbox":[92,227,503,30]}
+{"kind":"textbox","id":"sh/5sfixgnu","slide":14,"text":"Authenticated wardrobe management, image-assisted metadata, weighted recommendations, feedback, planner, laundry state, analytics and passing integration suites.","textPreview":"Authenticated wardrobe management, image-assisted metadata, weighted recommendations, feedback, planner, laundry state, analytics and pas...","textChars":161,"textLines":1,"bbox":[92,265,503,138]}
+{"kind":"shape","id":"sh/4r61obm9","slide":14,"bbox":[665,205,545,210]}
+{"kind":"shape","id":"sh/jqx0v65o","slide":14,"bbox":[665,205,5,210]}
+{"kind":"textbox","id":"sh/ipojml43","slide":14,"text":"Future enhancement priorities","textPreview":"Future enhancement priorities","textChars":29,"textLines":1,"bbox":[687,227,503,30]}
+{"kind":"textbox","id":"sh/hofitgni","slide":14,"text":"Reproducible dataset organization; full wear-event history; robust preference toggles; fixed custom-outfit editing; calibrated classifier evaluation; notifications, deployment and mobile access.","textPreview":"Reproducible dataset organization; full wear-event history; robust preference toggles; fixed custom-outfit editing; calibrated classifier...","textChars":194,"textLines":1,"bbox":[687,265,503,138]}
+{"kind":"textbox","id":"sh/wnmhkbmx","slide":14,"text":"Key conclusion","textPreview":"Key conclusion","textChars":14,"textLines":1,"bbox":[70,490,190,24]}
+{"kind":"textbox","id":"sh/vmd0r65s","slide":14,"text":"The project is a working Flask-based smart wardrobe system with measurable image-classification performance and transparent recommendation logic.","textPreview":"The project is a working Flask-based smart wardrobe system with measurable image-classification performance and transparent recommendatio...","textChars":145,"textLines":1,"bbox":[70,525,1080,55]}
+{"kind":"notes","id":"nt/w7djry","slide":14,"text":""}
+{"kind":"slide","id":"sl/k8v6iw","slide":15,"title":"015  /  WEARLYTICS","textShapes":18}
+{"kind":"textbox","id":"sh/n2xkj29w","slide":15,"text":"015  /  WEARLYTICS","textPreview":"015  /  WEARLYTICS","textChars":18,"textLines":1,"bbox":[70,38,300,22]}
+{"kind":"textbox","id":"sh/83q1c7ah","slide":15,"text":"References","textPreview":"References","textChars":10,"textLines":1,"bbox":[70,70,1140,55]}
+{"kind":"textbox","id":"sh/94z2lsr2","slide":15,"text":"Sources used for the verified project facts and literature-survey direction.","textPreview":"Sources used for the verified project facts and literature-survey direction.","textChars":76,"textLines":1,"bbox":[70,126,1120,34]}
+{"kind":"shape","id":"sh/ydojmdsf","slide":15,"bbox":[70,680,1140,1]}
+{"kind":"textbox","id":"sh/zexkfi90","slide":15,"text":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textPreview":"S3 MCA MINI PROJECT  •  Lourdes Matha College of Science and Technology","textChars":71,"textLines":1,"bbox":[70,692,760,16]}
+{"kind":"textbox","id":"sh/0f618nal","slide":15,"text":"15","textPreview":"15","textChars":2,"textLines":1,"bbox":[1155,690,55,16]}
+{"kind":"textbox","id":"sh/l0f2hsr6","slide":15,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[78,190,35,18]}
+{"kind":"textbox","id":"sh/q94jidsj","slide":15,"text":"Wearlytics source code and migrations, local project workspace (accessed September 2026).","textPreview":"Wearlytics source code and migrations, local project workspace (accessed September 2026).","textChars":89,"textLines":1,"bbox":[125,188,1010,38]}
+{"kind":"textbox","id":"sh/badkbi9o","slide":15,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[78,252,35,18]}
+{"kind":"textbox","id":"sh/ritkzexo","slide":15,"text":"Wearlytics model evaluation: app/services/model_evaluation.json; training methodology: train_classifier.py.","textPreview":"Wearlytics model evaluation: app/services/model_evaluation.json; training methodology: train_classifier.py.","textChars":107,"textLines":1,"bbox":[125,250,1010,38]}
+{"kind":"textbox","id":"sh/qh0j69g3","slide":15,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[78,314,35,18]}
+{"kind":"textbox","id":"sh/dkb21ofe","slide":15,"text":"Grigorev, A. Clothing Dataset (Full), Kaggle dataset referenced by the project training script.","textPreview":"Grigorev, A. Clothing Dataset (Full), Kaggle dataset referenced by the project training script.","textChars":95,"textLines":1,"bbox":[125,312,1010,38]}
+{"kind":"textbox","id":"sh/cj218jyt","slide":15,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[78,376,35,18]}
+{"kind":"textbox","id":"sh/z6tk3yxk","slide":15,"text":"Sandler, M., Howard, A., Zhu, M., Zhmoginov, A., & Chen, L.-C. (2018). MobileNetV2: Inverted Residuals and Linear Bottlenecks. CVPR.","textPreview":"Sandler, M., Howard, A., Zhu, M., Zhmoginov, A., & Chen, L.-C. (2018). MobileNetV2: Inverted Residuals and Linear Bottlenecks. CVPR.","textChars":132,"textLines":1,"bbox":[125,374,1010,38]}
+{"kind":"textbox","id":"sh/elkjatgz","slide":15,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[78,438,35,18]}
+{"kind":"textbox","id":"sh/18b258fq","slide":15,"text":"Flask Documentation; SQLAlchemy Documentation; PyTorch and torchvision Documentation.","textPreview":"Flask Documentation; SQLAlchemy Documentation; PyTorch and torchvision Documentation.","textChars":85,"textLines":1,"bbox":[125,436,1010,38]}
+{"kind":"textbox","id":"sh/0721c3y5","slide":15,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[78,500,35,18]}
+{"kind":"textbox","id":"sh/fqp0ruxg","slide":15,"text":"Literature review scope: lightweight apparel classification, content-based outfit recommendation, explicit-feedback personalization, dominant-color extraction, and wardrobe-utilization analytics.","textPreview":"Literature review scope: lightweight apparel classification, content-based outfit recommendation, explicit-feedback personalization, domi...","textChars":195,"textLines":1,"bbox":[125,498,1010,38]}
+{"kind":"textbox","id":"sh/upgjypgv","slide":15,"text":"All implementation claims in this presentation are grounded in the inspected Wearlytics project, not inferred features.","textPreview":"All implementation claims in this presentation are grounded in the inspected Wearlytics project, not inferred features.","textChars":119,"textLines":1,"bbox":[70,600,1100,25]}
+{"kind":"notes","id":"nt/k8v6iw","slide":15,"text":""}

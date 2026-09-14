@@ -58,10 +58,15 @@
 <div class="row g-3 g-md-4 mt-3">
   {% for item in items %}
   <div class="col-6 col-sm-4 col-lg-3">
-    <div class="clothing-card">
+    <div class="clothing-card {% if item.is_in_laundry %}card-in-laundry{% endif %}">
       <div class="card-image-wrap">
         <img src="{{ item.image_url }}" alt="{{ item.name }}" loading="lazy">
         <span class="badge-category">{{ item.category }}</span>
+        
+        <!-- Laundry badge overlay -->
+        {% if item.is_in_laundry %}
+        <span class="badge-laundry" title="In Laundry">🧺</span>
+        {% endif %}
         
         <form action="{{ url_for('wardrobe.toggle_favorite', item_id=item.id) }}" method="post" class="fav-form-overlay">
           <button type="submit" class="btn-star-fav {% if item.is_favorite %}is-active{% endif %}" title="Toggle Favorite">
@@ -74,11 +79,30 @@
         <h3>{{ item.name }}</h3>
         <p class="meta-info">{{ item.brand or 'Unbranded' }} • {{ item.color }} • {{ item.season }}</p>
         
+        <!-- Laundry status pill -->
+        {% if item.is_in_laundry %}
+        <p class="laundry-status-pill">🧺 In Laundry</p>
+        {% else %}
+        <p class="available-status-pill">✅ Available</p>
+        {% endif %}
+
         <div class="card-footer-custom">
-          <span class="wear-count">Worn {{ item.wear_count }}x</span>
+          <div>
+            <span class="wear-count">Worn {{ item.wear_count }}x</span>
+            {% if item.last_worn_at %}
+            <span class="last-worn-date">Last: {{ item.last_worn_at.strftime('%d %b %Y') }}</span>
+            {% endif %}
+          </div>
           <div class="card-actions">
             <form action="{{ url_for('wardrobe.wear_item', item_id=item.id) }}" method="post" style="display:inline;">
               <button type="submit" class="btn-action-icon" title="Log Wear">+1</button>
+            </form>
+            <!-- Laundry toggle -->
+            <form action="{{ url_for('wardrobe.toggle_laundry', item_id=item.id) }}" method="post" style="display:inline;">
+              <button type="submit" class="btn-action-icon {% if item.is_in_laundry %}btn-laundry-active{% endif %}" 
+                      title="{{ 'Mark Available' if item.is_in_laundry else 'Send to Laundry' }}">
+                {{ '✅' if item.is_in_laundry else '🧺' }}
+              </button>
             </form>
             <a href="{{ url_for('wardrobe.edit_item', item_id=item.id) }}" class="btn-action-icon" title="Edit Item">✏</a>
             <form action="{{ url_for('wardrobe.delete_item', item_id=item.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Remove this item?')">

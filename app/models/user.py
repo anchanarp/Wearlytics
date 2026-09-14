@@ -17,6 +17,10 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(256), nullable=False)
+    avatar_color = db.Column(db.String(20), nullable=True, default="#6c5ce7")
+    """Hex color for the user's avatar (profile photo placeholder)."""
+    bio = db.Column(db.String(200), nullable=True)
+    """Short profile bio / tagline."""
     created_at = db.Column(
         db.DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),

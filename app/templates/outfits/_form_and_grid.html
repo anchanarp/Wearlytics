@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}AI Outfit Recommendations | Wearlytics{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Styling Engine</p>
+    <h1>AI Outfit Recommendations</h1>
+    <p>Smart outfit combinations powered by color harmony and category balance.</p>
+  </div>
+</div>
+
+<!-- Generator Control Card -->
+<div class="ai-generator-box mb-4">
+  <div class="generator-intro">
+    <span class="chip">✦ AI Stylist</span>
+    <h2>Generate a new outfit look</h2>
+    <p>Select your occasion and season to let our styling algorithm pair pieces from your wardrobe.</p>
+  </div>
+
+  <form action="{{ url_for('outfits.generate') }}" method="post" class="row g-3 align-items-center mt-2">
+    <div class="col-12 col-sm-5">
+      <label class="visually-hidden" for="occasion">Occasion</label>
+      <select id="occasion" name="occasion" class="form-select-custom">
+        <option value="Casual">Casual</option>
+        <option value="Work / Business">Work / Business</option>
+        <option value="College / Campus">College / Campus</option>
+        <option value="Formal">Formal</option>
+        <option value="Party">Party</option>
+        <option value="Date Night">Date Night</option>
+        <option value="Sporty / Workout">Sporty / Workout</option>
+      </select>
+    </div>
+    <div class="col-12 col-sm-5">
+      <label class="visually-hidden" for="season">Season</label>
+      <select id="season" name="season" class="form-select-custom">
+        <option value="All Seasons">All Seasons</option>
+        <option value="Summer">Summer</option>
+        <option value="Winter">Winter</option>
+        <option value="Spring/Fall">Spring / Fall</option>
+      </select>
+    </div>
+    <div class="col-12 col-sm-2">
+      <button type="submit" class="btn light-button w-100 py-2">✦ Generate</button>
+    </div>
+  </form>
+</div>
+
+<!-- Saved Outfits Grid -->
+<div class="section-heading mt-4">
+  <div>
+    <p class="eyebrow">Curated Collections</p>
+    <h2>Saved & AI Generated Outfits</h2>
+  </div>
+</div>
+
+{% if outfits %}
+<div class="row g-4 mt-1">
+  {% for outfit in outfits %}
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="outfit-card">
+      <div class="outfit-card-header">
+        <div>
+          <span class="badge-occasion">{{ outfit.occasion }}</span>
+          <h3>{{ outfit.title }}</h3>
+        </div>
+        <form action="{{ url_for('outfits.toggle_favorite', outfit_id=outfit.id) }}" method="post">
+          <button type="submit" class="btn-star-fav {% if outfit.is_favorite %}is-active{% endif %}">★</button>
+        </form>
+      </div>
+
+      <p class="outfit-desc">{{ outfit.description }}</p>
+
+      <div class="outfit-items-strip">
+        {% for item in outfit.items %}
+        <div class="outfit-item-chip" title="{{ item.name }} ({{ item.category }})">
+          <img src="{{ item.image_url }}" alt="{{ item.name }}">
+          <span class="chip-name">{{ item.name }}</span>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="outfit-card-footer">
+        <span class="meta-season">❄/☀ {{ outfit.season }}</span>
+        <form action="{{ url_for('outfits.delete_outfit', outfit_id=outfit.id) }}" method="post" onsubmit="return confirm('Delete this outfit?')">
+          <button type="submit" class="btn-text-danger">Delete Outfit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">✦</div>
+  <h3>No AI Outfits Generated Yet</h3>
+  <p>Use the generator above to create stylish outfit combinations from your wardrobe.</p>
+</div>
+{% endif %}
+{% endblock %}
