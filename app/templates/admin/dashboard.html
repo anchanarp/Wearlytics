@@ -1,0 +1,109 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Dashboard – Admin – Wearlytics{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stat Cards -->
+<div class="admin-stats-grid">
+  <div class="admin-stat-card">
+    <span class="admin-stat-label">Total Users</span>
+    <span class="admin-stat-value">{{ stats.total_users }}</span>
+    <span class="admin-stat-sub">{{ stats.admin_users }} admin{{ 's' if stats.admin_users != 1 }}</span>
+  </div>
+  <div class="admin-stat-card">
+    <span class="admin-stat-label">Clothing Items</span>
+    <span class="admin-stat-value">{{ stats.total_clothing }}</span>
+    <span class="admin-stat-sub">Across all users</span>
+  </div>
+  <div class="admin-stat-card">
+    <span class="admin-stat-label">Saved Outfits</span>
+    <span class="admin-stat-value">{{ stats.total_outfits }}</span>
+    <span class="admin-stat-sub">AI &amp; manual</span>
+  </div>
+  <div class="admin-stat-card">
+    <span class="admin-stat-label">Feedback Events</span>
+    <span class="admin-stat-value">{{ stats.total_feedback }}</span>
+    <span class="admin-stat-sub">Likes, dislikes &amp; favorites</span>
+  </div>
+</div>
+
+<div class="row g-3">
+  <!-- Recent Users -->
+  <div class="col-lg-6">
+    <div class="admin-card">
+      <div class="admin-card-header d-flex justify-content-between align-items-center">
+        Recent Users
+        <a href="{{ url_for('admin.users') }}" class="admin-btn admin-btn-ghost admin-btn-sm">View all</a>
+      </div>
+      <div class="admin-card-body" style="padding: 0.5rem 1.25rem;">
+        {% if recent_users %}
+          <ul class="admin-recent-list">
+            {% for u in recent_users %}
+            <li class="admin-recent-item">
+              <div class="admin-avatar" style="background: {{ u.avatar_color or '#6c5ce7' }};">
+                {{ u.name[:2].upper() if u.name else 'US' }}
+              </div>
+              <div class="admin-recent-info">
+                <div class="admin-recent-name">{{ u.name }}</div>
+                <div class="admin-recent-sub">{{ u.email }}</div>
+              </div>
+              {% if u.is_admin %}
+                <span class="badge-admin">Admin</span>
+              {% endif %}
+              <small class="text-muted ms-2" style="white-space: nowrap;">
+                {{ u.created_at.strftime('%b %d') if u.created_at else '—' }}
+              </small>
+            </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="admin-empty"><div class="admin-empty-icon">👤</div><p class="admin-empty-text">No users yet.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Feedback -->
+  <div class="col-lg-6">
+    <div class="admin-card">
+      <div class="admin-card-header d-flex justify-content-between align-items-center">
+        Recent Feedback
+        <a href="{{ url_for('admin.feedback') }}" class="admin-btn admin-btn-ghost admin-btn-sm">View all</a>
+      </div>
+      <div class="admin-card-body" style="padding: 0.5rem 1.25rem;">
+        {% if recent_feedback %}
+          <ul class="admin-recent-list">
+            {% for fb in recent_feedback %}
+            <li class="admin-recent-item">
+              <div class="admin-recent-info">
+                <div class="admin-recent-name">
+                  {{ fb.user.name if fb.user else 'Unknown' }}
+                  →
+                  {{ fb.outfit.title if fb.outfit else 'Outfit #' ~ fb.outfit_id }}
+                </div>
+                <div class="admin-recent-sub">{{ fb.created_at.strftime('%b %d, %Y') if fb.created_at else '—' }}</div>
+              </div>
+              <span class="badge-{{ fb.reaction }}">{{ fb.reaction | capitalize }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <div class="admin-empty"><div class="admin-empty-icon">💬</div><p class="admin-empty-text">No feedback yet.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Links -->
+<div class="admin-card mt-3">
+  <div class="admin-card-header">Quick Actions</div>
+  <div class="admin-card-body d-flex flex-wrap gap-2">
+    <a href="{{ url_for('admin.users') }}" class="admin-btn admin-btn-primary">Manage Users</a>
+    <a href="{{ url_for('admin.clothing') }}" class="admin-btn admin-btn-ghost">View Clothing</a>
+    <a href="{{ url_for('admin.outfits') }}" class="admin-btn admin-btn-ghost">View Outfits</a>
+    <a href="{{ url_for('admin.feedback') }}" class="admin-btn admin-btn-ghost">View Feedback</a>
+    <a href="{{ url_for('admin.analytics') }}" class="admin-btn admin-btn-ghost">Analytics</a>
+  </div>
+</div>
+{% endblock %}

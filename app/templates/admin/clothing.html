@@ -1,0 +1,119 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Clothing – Admin – Wearlytics{% endblock %}
+{% block page_title %}Clothing Items{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h2 class="admin-page-title">Clothing Items <span style="font-size:1rem; font-weight:500; color:var(--text-muted);">({{ pag.total }})</span></h2>
+</div>
+
+<!-- Filters -->
+<form method="get" class="admin-filter-bar">
+  <input class="admin-search-input" type="search" name="q" value="{{ q }}" placeholder="Search item name…">
+  <select class="admin-select" name="category">
+    <option value="">All Categories</option>
+    {% for cat in categories %}
+      <option value="{{ cat }}" {% if category == cat %}selected{% endif %}>{{ cat }}</option>
+    {% endfor %}
+  </select>
+  <select class="admin-select" name="color">
+    <option value="">All Colors</option>
+    {% for col in colors %}
+      <option value="{{ col }}" {% if color == col %}selected{% endif %}>{{ col }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="admin-btn admin-btn-primary">Filter</button>
+  {% if q or category or color %}
+    <a href="{{ url_for('admin.clothing') }}" class="admin-btn admin-btn-ghost">Clear</a>
+  {% endif %}
+</form>
+
+<div class="admin-card">
+  {% if pag.items %}
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Color</th>
+          <th>Season</th>
+          <th>Brand</th>
+          <th>Owner</th>
+          <th>Added</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in pag.items %}
+        <tr>
+          <td>
+            {% if item.image_url %}
+              <img src="{{ item.image_url }}" alt="{{ item.name }}" class="admin-thumb">
+            {% else %}
+              <div class="admin-thumb-placeholder">👗</div>
+            {% endif %}
+          </td>
+          <td style="font-weight:600; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ item.name }}</td>
+          <td>{{ item.category or '—' }}</td>
+          <td>
+            {% if item.color %}
+              <div style="display:flex; align-items:center; gap:6px;">
+                {% if item.detected_color_hex %}
+                  <span style="width:14px; height:14px; border-radius:50%; background:{{ item.detected_color_hex }}; border:1px solid #ddd; display:inline-block;"></span>
+                {% endif %}
+                {{ item.color }}
+              </div>
+            {% else %}—{% endif %}
+          </td>
+          <td>{{ item.season or '—' }}</td>
+          <td style="color:var(--text-muted); font-size:0.85rem;">{{ item.brand or '—' }}</td>
+          <td style="font-size:0.85rem;">{{ item.user.name if item.user else '—' }}</td>
+          <td style="font-size:0.82rem; color:var(--text-muted);">
+            {{ item.created_at.strftime('%b %d, %Y') if item.created_at else '—' }}
+          </td>
+          <td>
+            <form method="post" action="{{ url_for('admin.delete_clothing', item_id=item.id) }}"
+                  onsubmit="return confirm('Delete clothing item \'{{ item.name }}\'?')">
+              <button type="submit" class="admin-btn admin-btn-danger admin-btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  {% if pag.total_pages > 1 %}
+  <div class="admin-pagination">
+    <span class="page-count">
+      Showing {{ ((pag.page - 1) * pag.per_page) + 1 }}–{{ [pag.page * pag.per_page, pag.total] | min }} of {{ pag.total }}
+    </span>
+    <a class="admin-page-link {% if not pag.has_prev %}disabled{% endif %}"
+       href="{{ url_for('admin.clothing', page=pag.page-1, q=q, category=category, color=color) }}">← Prev</a>
+    {% for p in range(1, pag.total_pages + 1) %}
+      {% if p == pag.page %}
+        <span class="admin-page-link current">{{ p }}</span>
+      {% elif p <= 3 or p >= pag.total_pages - 2 or (p >= pag.page - 1 and p <= pag.page + 1) %}
+        <a class="admin-page-link" href="{{ url_for('admin.clothing', page=p, q=q, category=category, color=color) }}">{{ p }}</a>
+      {% elif p == 4 or p == pag.total_pages - 3 %}
+        <span style="color:var(--text-muted); padding:0 4px;">…</span>
+      {% endif %}
+    {% endfor %}
+    <a class="admin-page-link {% if not pag.has_next %}disabled{% endif %}"
+       href="{{ url_for('admin.clothing', page=pag.page+1, q=q, category=category, color=color) }}">Next →</a>
+  </div>
+  {% endif %}
+
+  {% else %}
+  <div class="admin-empty">
+    <div class="admin-empty-icon">👗</div>
+    <p class="admin-empty-text">
+      {% if q or category or color %}No items match the current filters.{% else %}No clothing items found.{% endif %}
+    </p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

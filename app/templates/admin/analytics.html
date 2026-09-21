@@ -1,0 +1,162 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Analytics – Admin – Wearlytics{% endblock %}
+{% block page_title %}Analytics{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h2 class="admin-page-title">Platform Analytics</h2>
+</div>
+
+<div class="admin-charts-grid">
+
+  <!-- Category Distribution -->
+  <div class="admin-chart-card">
+    <p class="admin-chart-title">Clothing by Category</p>
+    <div class="admin-chart-container">
+      <canvas id="categoryChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Color Distribution -->
+  <div class="admin-chart-card">
+    <p class="admin-chart-title">Top 10 Colors</p>
+    <div class="admin-chart-container">
+      <canvas id="colorChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Season Distribution -->
+  <div class="admin-chart-card">
+    <p class="admin-chart-title">Clothing by Season</p>
+    <div class="admin-chart-container">
+      <canvas id="seasonChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Outfit Occasion -->
+  <div class="admin-chart-card">
+    <p class="admin-chart-title">Outfits by Occasion</p>
+    <div class="admin-chart-container">
+      <canvas id="occasionChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Feedback Reactions -->
+  <div class="admin-chart-card">
+    <p class="admin-chart-title">Feedback Reactions</p>
+    <div class="admin-chart-container">
+      <canvas id="feedbackChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Top Users by Clothing Count -->
+  <div class="admin-chart-card">
+    <p class="admin-chart-title">Top Users by Clothing Count</p>
+    <div class="admin-chart-container">
+      <canvas id="topUsersChart"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- No-data fallback if all datasets are empty -->
+{% if not category_values and not color_values and not outfit_occasion_values %}
+<div class="admin-empty" style="margin-top:2rem;">
+  <div class="admin-empty-icon">📊</div>
+  <p class="admin-empty-text">Not enough data yet to show analytics charts.</p>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // ── Palette ──────────────────────────────────────────────
+  const PALETTE = [
+    '#6c5ce7','#a29bfe','#fd79a8','#fdcb6e','#00b894',
+    '#0984e3','#e17055','#74b9ff','#55efc4','#ff7675',
+  ];
+
+  function palette(n) {
+    return Array.from({length: n}, (_, i) => PALETTE[i % PALETTE.length]);
+  }
+
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+  const textColor = isDark ? '#ccc' : '#555';
+
+  const barDefaults = {
+    type: 'bar',
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: textColor, font: { size: 11 } }, grid: { color: gridColor } },
+        y: { ticks: { color: textColor, font: { size: 11 } }, grid: { color: gridColor }, beginAtZero: true },
+      },
+    },
+  };
+
+  const pieDefaults = {
+    type: 'doughnut',
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: textColor, boxWidth: 14, font: { size: 11 } } },
+      },
+    },
+  };
+
+  function makeBar(id, labels, values, label='Count') {
+    const ctx = document.getElementById(id);
+    if (!ctx || !values.length) return;
+    new Chart(ctx, {
+      ...barDefaults,
+      data: {
+        labels,
+        datasets: [{ label, data: values, backgroundColor: palette(values.length), borderRadius: 6 }],
+      },
+    });
+  }
+
+  function makePie(id, labels, values) {
+    const ctx = document.getElementById(id);
+    if (!ctx || !values.length) return;
+    new Chart(ctx, {
+      ...pieDefaults,
+      data: {
+        labels,
+        datasets: [{ data: values, backgroundColor: palette(values.length), hoverOffset: 8 }],
+      },
+    });
+  }
+
+  // ── Charts ───────────────────────────────────────────────
+  makeBar('categoryChart',
+    {{ category_labels | tojson }},
+    {{ category_values | tojson }});
+
+  makeBar('colorChart',
+    {{ color_labels | tojson }},
+    {{ color_values | tojson }});
+
+  makePie('seasonChart',
+    {{ season_labels | tojson }},
+    {{ season_values | tojson }});
+
+  makePie('occasionChart',
+    {{ occasion_labels | tojson }},
+    {{ occasion_values | tojson }});
+
+  makePie('feedbackChart',
+    {{ feedback_labels | tojson }},
+    {{ feedback_values | tojson }});
+
+  makeBar('topUsersChart',
+    {{ top_user_labels | tojson }},
+    {{ top_user_values | tojson }},
+    'Clothing Items');
+</script>
+{% endblock %}

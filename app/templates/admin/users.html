@@ -1,0 +1,120 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Users – Admin – Wearlytics{% endblock %}
+{% block page_title %}Users{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h2 class="admin-page-title">All Users <span style="font-size:1rem; font-weight:500; color:var(--text-muted);">({{ pag.total }})</span></h2>
+</div>
+
+<!-- Filter bar -->
+<form method="get" class="admin-filter-bar">
+  <input class="admin-search-input" type="search" name="q" value="{{ q }}" placeholder="Search name or email…">
+  <button type="submit" class="admin-btn admin-btn-primary">Search</button>
+  {% if q %}
+    <a href="{{ url_for('admin.users') }}" class="admin-btn admin-btn-ghost">Clear</a>
+  {% endif %}
+</form>
+
+<div class="admin-card">
+  {% if pag.items %}
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>User</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Clothing</th>
+          <th>Outfits</th>
+          <th>Joined</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in pag.items %}
+        <tr>
+          <td style="color:var(--text-muted); font-size:0.8rem;">{{ u.id }}</td>
+          <td>
+            <div style="display:flex; align-items:center; gap:0.6rem;">
+              <div class="admin-avatar" style="background: {{ u.avatar_color or '#6c5ce7' }};">
+                {{ u.name[:2].upper() if u.name else 'US' }}
+              </div>
+              <span style="font-weight:600;">{{ u.name }}</span>
+            </div>
+          </td>
+          <td style="color:var(--text-secondary);">{{ u.email }}</td>
+          <td>
+            {% if u.is_admin %}
+              <span class="badge-admin">Admin</span>
+            {% else %}
+              <span class="badge-user">User</span>
+            {% endif %}
+          </td>
+          <td>{{ u.clothing_count }}</td>
+          <td>{{ u.outfit_count }}</td>
+          <td style="font-size:0.82rem; color:var(--text-muted);">
+            {{ u.created_at.strftime('%b %d, %Y') if u.created_at else '—' }}
+          </td>
+          <td>
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+              {% if u.id != current_user.id %}
+                {% if u.is_admin %}
+                  <form method="post" action="{{ url_for('admin.demote_user', user_id=u.id) }}"
+                        onsubmit="return confirm('Demote {{ u.name }} to regular user?')">
+                    <button type="submit" class="admin-btn admin-btn-warning admin-btn-sm">Demote</button>
+                  </form>
+                {% else %}
+                  <form method="post" action="{{ url_for('admin.promote_user', user_id=u.id) }}"
+                        onsubmit="return confirm('Promote {{ u.name }} to admin?')">
+                    <button type="submit" class="admin-btn admin-btn-success admin-btn-sm">Promote</button>
+                  </form>
+                {% endif %}
+                <form method="post" action="{{ url_for('admin.delete_user', user_id=u.id) }}"
+                      onsubmit="return confirm('Permanently delete user {{ u.name }}? This cannot be undone.')">
+                  <button type="submit" class="admin-btn admin-btn-danger admin-btn-sm">Delete</button>
+                </form>
+              {% else %}
+                <span style="font-size:0.78rem; color:var(--text-muted);">You</span>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  {% if pag.total_pages > 1 %}
+  <div class="admin-pagination">
+    <span class="page-count">
+      Showing {{ ((pag.page - 1) * pag.per_page) + 1 }}–{{ [pag.page * pag.per_page, pag.total] | min }} of {{ pag.total }}
+    </span>
+    <a class="admin-page-link {% if not pag.has_prev %}disabled{% endif %}"
+       href="{{ url_for('admin.users', page=pag.page-1, q=q) }}">← Prev</a>
+    {% for p in range(1, pag.total_pages + 1) %}
+      {% if p == pag.page %}
+        <span class="admin-page-link current">{{ p }}</span>
+      {% elif p <= 3 or p >= pag.total_pages - 2 or (p >= pag.page - 1 and p <= pag.page + 1) %}
+        <a class="admin-page-link" href="{{ url_for('admin.users', page=p, q=q) }}">{{ p }}</a>
+      {% elif p == 4 or p == pag.total_pages - 3 %}
+        <span style="color:var(--text-muted); padding:0 4px;">…</span>
+      {% endif %}
+    {% endfor %}
+    <a class="admin-page-link {% if not pag.has_next %}disabled{% endif %}"
+       href="{{ url_for('admin.users', page=pag.page+1, q=q) }}">Next →</a>
+  </div>
+  {% endif %}
+
+  {% else %}
+  <div class="admin-empty">
+    <div class="admin-empty-icon">👤</div>
+    <p class="admin-empty-text">
+      {% if q %}No users match "{{ q }}".{% else %}No users found.{% endif %}
+    </p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

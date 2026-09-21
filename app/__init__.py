@@ -33,7 +33,9 @@ def create_app(config_class=Config):
     from app.planner import planner_bp
     from app.profile import profile_bp
     from app.recommendations import recommendations_bp
+    from app.admin import admin_bp
     from app.stylist import stylist_bp
+    app.register_blueprint(admin_bp)
     from app.wardrobe import wardrobe_bp
 
     app.register_blueprint(auth_bp)

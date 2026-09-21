@@ -46,7 +46,10 @@ def login():
             flash("Invalid email or password.", "error")
         else:
             login_user(user, remember=request.form.get("remember") == "on")
-            return redirect(_safe_next_url(request.args.get("next")) or url_for("main.home"))
+            if user.is_admin:
+                return redirect(url_for("admin.dashboard"))
+            else:
+                return redirect(_safe_next_url(request.args.get("next")) or url_for("main.home"))
 
     return render_template("auth/login.html")
 

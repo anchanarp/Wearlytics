@@ -16,6 +16,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False, index=True)
+    is_admin = db.Column(db.Boolean, default=False, nullable=False)  # Admin flag
     password_hash = db.Column(db.String(256), nullable=False)
     avatar_color = db.Column(db.String(20), nullable=True, default="#6c5ce7")
     """Hex color for the user's avatar (profile photo placeholder)."""
@@ -34,3 +35,15 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         """Return whether a submitted password matches this account."""
         return check_password_hash(self.password_hash, password)
+
+    @property
+    def clothing_count(self):
+        """Number of clothing items owned by this user."""
+        return self.clothing_items.count()
+
+    @property
+    def outfit_count(self):
+        """Number of outfits created by this user."""
+        from app.models.outfit import Outfit  # lazy import avoids circular dependency
+        return Outfit.query.filter_by(user_id=self.id).count()
+

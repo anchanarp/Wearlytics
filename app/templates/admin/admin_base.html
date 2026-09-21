@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en" id="html-root">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block title %}Admin – Wearlytics{% endblock %}</title>
+
+  <!-- Theme (prevent flash) -->
+  <script>
+    (function() {
+      var t = localStorage.getItem('wearlytics-theme');
+      if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    })();
+  </script>
+
+  <!-- Google Fonts & Bootstrap -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- App stylesheets -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='admin/admin.css') }}">
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="admin-shell">
+
+    <!-- ── Sidebar ── -->
+    <aside class="admin-sidebar">
+      <a class="brand" href="{{ url_for('admin.dashboard') }}" aria-label="Admin home">
+        <span class="brand-mark">W</span>
+        <span>Wearlytics</span>
+        <span class="admin-badge">Admin</span>
+      </a>
+
+      <p class="admin-nav-label">Navigation</p>
+      <nav aria-label="Admin navigation">
+        <a class="admin-nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}"
+           href="{{ url_for('admin.dashboard') }}">
+          <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10Zm0 8h8v-6H3v6Zm10 0h8V11h-8v10Zm0-18v6h8V3h-8Z"/></svg>
+          Dashboard
+        </a>
+        <a class="admin-nav-link {% if request.endpoint == 'admin.users' %}active{% endif %}"
+           href="{{ url_for('admin.users') }}">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3Zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3Zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z"/></svg>
+          Users
+        </a>
+        <a class="admin-nav-link {% if request.endpoint == 'admin.clothing' %}active{% endif %}"
+           href="{{ url_for('admin.clothing') }}">
+          <svg viewBox="0 0 24 24"><path d="M6 3h12l1 18H5L6 3Zm2 3v2h8V6H8Zm0 5h8v2H8v-2Zm0 4h5v2H8v-2Z"/></svg>
+          Clothing
+        </a>
+        <a class="admin-nav-link {% if request.endpoint == 'admin.outfits' %}active{% endif %}"
+           href="{{ url_for('admin.outfits') }}">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2Zm-2 14.5v-9l6 4.5-6 4.5Z"/></svg>
+          Outfits
+        </a>
+        <a class="admin-nav-link {% if request.endpoint == 'admin.feedback' %}active{% endif %}"
+           href="{{ url_for('admin.feedback') }}">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2Zm-7 9h-2V5h2v6Zm0 4h-2v-2h2v2Z"/></svg>
+          Feedback
+        </a>
+        <a class="admin-nav-link {% if request.endpoint == 'admin.analytics' %}active{% endif %}"
+           href="{{ url_for('admin.analytics') }}">
+          <svg viewBox="0 0 24 24"><path d="M5 20H3V10h2v10Zm5 0H8V4h2v16Zm5 0h-2v-7h2v7Zm5 0h-2V7h2v13Z"/></svg>
+          Analytics
+        </a>
+      </nav>
+
+      <div class="admin-sidebar-bottom">
+        <a class="admin-nav-link" href="{{ url_for('main.home') }}" style="margin: 0 0 0.25rem;">
+          <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          User Home
+        </a>
+        <form action="{{ url_for('auth.logout') }}" method="post">
+          <button type="submit" class="admin-logout-btn">
+            <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            Sign out
+          </button>
+        </form>
+      </div>
+    </aside>
+
+    <!-- ── Main ── -->
+    <div class="admin-main">
+      <!-- Topbar -->
+      <header class="admin-topbar">
+        <h1 class="admin-topbar-title">{% block page_title %}Admin Panel{% endblock %}</h1>
+        <div class="admin-topbar-user">
+          <span class="avatar" style="background: {{ current_user.avatar_color or '#6c5ce7' }}; color:#fff; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;">
+            {{ current_user.name[:2].upper() if current_user.name else 'AD' }}
+          </span>
+          <span>{{ current_user.name }}</span>
+        </div>
+      </header>
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="admin-toast-wrap" style="padding: 0.75rem 1.5rem 0;">
+            {% for category, message in messages %}
+              <div class="admin-toast {{ category }}">
+                <span>{{ message }}</span>
+                <button class="admin-toast-close" onclick="this.parentElement.remove()">×</button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Content -->
+      <div class="admin-content">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

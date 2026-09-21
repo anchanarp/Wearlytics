@@ -1,0 +1,108 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Feedback – Admin – Wearlytics{% endblock %}
+{% block page_title %}Feedback{% endblock %}
+
+{% block content %}
+<div class="admin-page-header">
+  <h2 class="admin-page-title">Feedback Events <span style="font-size:1rem; font-weight:500; color:var(--text-muted);">({{ pag.total }})</span></h2>
+</div>
+
+<!-- Summary stats -->
+<div class="admin-stats-grid" style="margin-bottom:1.25rem;">
+  <div class="admin-stat-card">
+    <span class="admin-stat-label">Total</span>
+    <span class="admin-stat-value">{{ stats.total }}</span>
+    <span class="admin-stat-sub">All reactions</span>
+  </div>
+  <div class="admin-stat-card">
+    <span class="admin-stat-label">Liked</span>
+    <span class="admin-stat-value" style="color:#27ae60;">{{ stats.liked }}</span>
+  </div>
+  <div class="admin-stat-card">
+    <span class="admin-stat-label">Disliked</span>
+    <span class="admin-stat-value" style="color:#e74c3c;">{{ stats.disliked }}</span>
+  </div>
+  <div class="admin-stat-card">
+    <span class="admin-stat-label">Favorited</span>
+    <span class="admin-stat-value" style="color:#f39c12;">{{ stats.favorited }}</span>
+  </div>
+</div>
+
+<div class="admin-card">
+  {% if pag.items %}
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>User</th>
+          <th>Outfit</th>
+          <th>Reaction</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for fb in pag.items %}
+        <tr>
+          <td style="color:var(--text-muted); font-size:0.8rem;">{{ fb.id }}</td>
+          <td>
+            {% if fb.user %}
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <div class="admin-avatar" style="background: {{ fb.user.avatar_color or '#6c5ce7' }}; width:28px; height:28px; font-size:0.7rem;">
+                  {{ fb.user.name[:2].upper() if fb.user.name else 'US' }}
+                </div>
+                <span style="font-size:0.9rem;">{{ fb.user.name }}</span>
+              </div>
+            {% else %}
+              <span style="color:var(--text-muted);">Unknown user</span>
+            {% endif %}
+          </td>
+          <td style="font-size:0.88rem;">
+            {% if fb.outfit %}
+              {{ fb.outfit.title }}
+            {% else %}
+              <span style="color:var(--text-muted);">Outfit #{{ fb.outfit_id }}</span>
+            {% endif %}
+          </td>
+          <td>
+            <span class="badge-{{ fb.reaction }}">{{ fb.reaction | capitalize }}</span>
+          </td>
+          <td style="font-size:0.82rem; color:var(--text-muted);">
+            {{ fb.created_at.strftime('%b %d, %Y %H:%M') if fb.created_at else '—' }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  {% if pag.total_pages > 1 %}
+  <div class="admin-pagination">
+    <span class="page-count">
+      Showing {{ ((pag.page - 1) * pag.per_page) + 1 }}–{{ [pag.page * pag.per_page, pag.total] | min }} of {{ pag.total }}
+    </span>
+    <a class="admin-page-link {% if not pag.has_prev %}disabled{% endif %}"
+       href="{{ url_for('admin.feedback', page=pag.page-1) }}">← Prev</a>
+    {% for p in range(1, pag.total_pages + 1) %}
+      {% if p == pag.page %}
+        <span class="admin-page-link current">{{ p }}</span>
+      {% elif p <= 3 or p >= pag.total_pages - 2 or (p >= pag.page - 1 and p <= pag.page + 1) %}
+        <a class="admin-page-link" href="{{ url_for('admin.feedback', page=p) }}">{{ p }}</a>
+      {% elif p == 4 or p == pag.total_pages - 3 %}
+        <span style="color:var(--text-muted); padding:0 4px;">…</span>
+      {% endif %}
+    {% endfor %}
+    <a class="admin-page-link {% if not pag.has_next %}disabled{% endif %}"
+       href="{{ url_for('admin.feedback', page=pag.page+1) }}">Next →</a>
+  </div>
+  {% endif %}
+
+  {% else %}
+  <div class="admin-empty">
+    <div class="admin-empty-icon">💬</div>
+    <p class="admin-empty-text">No feedback events recorded yet.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
