@@ -15,8 +15,9 @@ from app.utils.seeder import seed_user_wardrobe
 @login_required
 def home():
     """Render the dashboard with dynamic user wardrobe stats."""
-    # Ensure wardrobe has starter items if empty
-    seed_user_wardrobe(current_user)
+    # Ensure wardrobe has starter items if empty and only for demo users
+    if getattr(current_user, "is_demo", False):
+        seed_user_wardrobe(current_user)
 
     items = ClothingItem.query.filter_by(user_id=current_user.id).order_by(ClothingItem.created_at.desc()).all()
     outfits = Outfit.query.filter_by(user_id=current_user.id).all()

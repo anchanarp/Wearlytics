@@ -1,0 +1,473 @@
+/* ============================================================
+   Wardrobe Accordion — AI Stylist
+   Unified control bar design (no separate mode cards)
+   ============================================================ */
+
+/* ── Unified bar: Wardrobe toggle button ────────────────────── */
+.stylist-bar {
+  align-items: flex-end;
+}
+.stylist-bar-occasion { flex: 0 0 180px; min-width: 140px; }
+.stylist-bar-season   { flex: 0 0 150px; min-width: 120px; }
+.stylist-bar-wardrobe { flex: 1 1 220px; min-width: 180px; }
+.stylist-bar-cta {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stylist-wardrobe-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 42px;
+  padding: 0 1rem;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  width: 100%;
+  white-space: nowrap;
+  transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+  text-align: left;
+}
+.stylist-wardrobe-toggle:hover {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 5%, var(--surface));
+}
+.stylist-wardrobe-toggle.wardrobe-toggle--active {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+  color: var(--primary);
+}
+.wardrobe-toggle-chevron {
+  margin-left: auto;
+  font-size: 1.1rem;
+  color: var(--muted);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.wardrobe-toggle--active .wardrobe-toggle-chevron {
+  transform: rotate(90deg);
+  color: var(--primary);
+}
+.wardrobe-sel-badge {
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Style Me button in unified bar ─────────────────────────── */
+.style-me-btn {
+  height: 42px;
+  padding: 0 1.4rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: .01em;
+  border-radius: 10px;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(108, 92, 231, 0.28);
+}
+.style-me-btn:hover {
+  box-shadow: 0 6px 18px rgba(108, 92, 231, 0.38);
+  transform: translateY(-1px);
+}
+
+/* ── Responsive: stack on small screens ─────────────────────── */
+@media (max-width: 900px) {
+  .stylist-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .stylist-bar-occasion,
+  .stylist-bar-season,
+  .stylist-bar-wardrobe {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+  .style-me-btn { width: 100%; justify-content: center; }
+}
+
+/* ── Wardrobe Container — two-column on desktop ────────────── */
+.wardrobe-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+  margin-top: 0.5rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.06));
+}
+@media (min-width: 900px) {
+  .wardrobe-container {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .accordion-section {
+    flex: 1 1 62%;
+    max-width: 62%;
+  }
+  .selection-panel {
+    flex: 0 0 34%;
+    max-width: 34%;
+    position: sticky;
+    top: 80px;
+  }
+}
+@media (max-width: 899px) {
+  .accordion-section { width: 100%; }
+  .selection-panel   { width: 100%; }
+  .wardrobe-container { padding: 1rem; }
+}
+
+/* ── Accordion Section Header ──────────────────────────────── */
+.wardrobe-section-header {
+  margin-bottom: 0.85rem;
+}
+.wardrobe-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 0.6rem;
+}
+.wardrobe-search-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.wardrobe-search-input {
+  flex: 1;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 0.88rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.wardrobe-search-input:focus {
+  border-color: var(--primary);
+}
+.filter-wrap {
+  position: relative;
+}
+.filter-trigger-btn {
+  white-space: nowrap;
+  font-size: 0.82rem;
+  padding: 0.42rem 0.8rem;
+}
+
+/* ── Accordion Headers ─────────────────────────────────────── */
+.accordion-header {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text);
+  transition: background 0.15s;
+  user-select: none;
+}
+.accordion-header:hover { background: var(--surface-hover, #f5f3ff); }
+.accordion-header .chevron {
+  transition: transform 0.2s;
+  font-size: 1rem;
+  color: var(--muted);
+}
+.accordion-header[aria-expanded="true"] { border-color: var(--primary); }
+.accordion-header[aria-expanded="true"] .chevron { transform: rotate(90deg); }
+
+/* ── Accordion Body — CSS grid ─────────────────────────────── */
+.accordion-body {
+  display: none;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 0.65rem;
+  padding: 0.5rem 0 0.75rem;
+  margin-bottom: 0.2rem;
+}
+.accordion-body.active { display: grid; }
+
+/* ── Wardrobe Card ─────────────────────────────────────────── */
+.wardrobe-card {
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.4rem 0.3rem 0.5rem;
+}
+.wardrobe-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.10);
+}
+.wardrobe-card.selected {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent);
+}
+.wardrobe-card.selected::after {
+  content: "✓";
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wardrobe-card.disabled {
+  opacity: 0.45;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* Fixed thumbnail — image never escapes */
+.wardrobe-card-thumb {
+  width: 90px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--bg, #f9f9f9);
+  flex-shrink: 0;
+  margin-bottom: 0.35rem;
+}
+.wardrobe-card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.wardrobe-card-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.2;
+  max-height: 2.4em;
+  overflow: hidden;
+  word-break: break-word;
+  width: 100%;
+}
+.wardrobe-card-meta {
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+.laundry-badge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #e53935;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 2px 0;
+  letter-spacing: .03em;
+}
+
+/* ── Selection Panel ───────────────────────────────────────── */
+.selection-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-height: 220px;
+}
+.selection-panel-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.5rem;
+}
+.selection-panel-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0;
+}
+.selection-count {
+  font-size: 0.75rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Empty state */
+.selection-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem 0.5rem;
+  color: var(--muted);
+  gap: 0.3rem;
+}
+.selection-empty-icon { font-size: 2rem; }
+.selection-empty-state p { font-size: 0.85rem; font-weight: 600; margin: 0; color: var(--text); }
+.selection-empty-state small { font-size: 0.75rem; }
+
+/* Pinned preview area */
+#pinned-items-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex: 1;
+}
+.pinned-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg, #f5f5f5);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.35rem 0.5rem;
+}
+.pinned-tag-thumb {
+  width: 40px;
+  height: 44px;
+  border-radius: 5px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pinned-tag-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.pinned-tag-info { flex: 1; min-width: 0; }
+.pinned-tag-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pinned-tag-cat { font-size: 0.68rem; color: var(--muted); }
+.pinned-tag-remove {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 2px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.pinned-tag-remove:hover { color: #e53935; }
+
+/* Footer */
+.selection-panel-footer {
+  border-top: 1px solid var(--line);
+  padding-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ── Filter Popover ────────────────────────────────────────── */
+.filter-popover {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  display: none;
+  min-width: 200px;
+}
+.filter-popover.active { display: block; }
+.filter-popover strong {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+  margin-top: 0.5rem;
+}
+.filter-popover strong:first-child { margin-top: 0; }
+.filter-popover label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text);
+  cursor: pointer;
+  padding: 2px 0;
+}
+.filter-popover button { margin-top: 0.6rem; width: 100%; }
+
+/* ── Pinned selection badge in result ─────────────────────── */
+.rec-pinned-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: color-mix(in srgb, var(--primary) 12%, var(--surface));
+  color: var(--primary);
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}

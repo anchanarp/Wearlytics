@@ -22,19 +22,19 @@
     background: var(--card-bg, #fff);
   }
   .selectable-item:hover {
-    border-color: #7c3aed44;
-    box-shadow: 0 2px 12px rgba(124,58,237,0.12);
+    border-color: rgba(201, 154, 107, 0.4);
+    box-shadow: 0 4px 16px rgba(201, 154, 107, 0.2);
   }
   .selectable-item.selected {
-    border-color: #7c3aed;
-    box-shadow: 0 0 0 3px rgba(124,58,237,0.2);
+    border-color: var(--primary, #c99a6b);
+    box-shadow: 0 0 0 3px rgba(201, 154, 107, 0.25);
   }
   .selectable-item .overlay-check {
     position: absolute;
     top: 6px;
     right: 6px;
-    background: #7c3aed;
-    color: #fff;
+    background: var(--primary, #c99a6b);
+    color: #12100d;
     border-radius: 50%;
     width: 26px;
     height: 26px;
@@ -83,7 +83,7 @@
     height: 60px;
     object-fit: cover;
     border-radius: 8px;
-    border: 2px solid #7c3aed;
+    border: 2px solid var(--primary, #c99a6b);
   }
   .preview-empty {
     color: #aaa;

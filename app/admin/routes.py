@@ -101,49 +101,20 @@ def delete_user(user_id):
 
 
 # ──────────────────────────────────────────────
-# Clothing
+# Clothing (Privacy Protected)
 # ──────────────────────────────────────────────
 @admin_bp.route("/clothing")
 @admin_required
 def clothing():
-    page     = request.args.get("page", 1, type=int)
-    q        = request.args.get("q", "").strip()
-    category = request.args.get("category", "").strip()
-    color    = request.args.get("color", "").strip()
-
-    query = ClothingItem.query.order_by(ClothingItem.created_at.desc())
-    if q:
-        query = query.filter(ClothingItem.name.ilike(f"%{q}%"))
-    if category:
-        query = query.filter(ClothingItem.category == category)
-    if color:
-        query = query.filter(ClothingItem.color.ilike(f"%{color}%"))
-
-    pag = paginate(query, page, PER_PAGE)
-
-    # distinct category and color lists for filter dropdowns
-    categories = [r[0] for r in db.session.query(ClothingItem.category).distinct().order_by(ClothingItem.category).all() if r[0]]
-    colors      = [r[0] for r in db.session.query(ClothingItem.color).distinct().order_by(ClothingItem.color).all() if r[0]]
-
-    return render_template(
-        "admin/clothing.html",
-        pag=pag,
-        q=q,
-        category=category,
-        color=color,
-        categories=categories,
-        colors=colors,
-    )
+    flash("User clothing items and personal wardrobes are private and cannot be viewed by administrators.", "info")
+    return redirect(url_for("admin.dashboard"))
 
 
 @admin_bp.post("/clothing/<int:item_id>/delete")
 @admin_required
 def delete_clothing(item_id):
-    item = ClothingItem.query.get_or_404(item_id)
-    db.session.delete(item)
-    db.session.commit()
-    flash("Clothing item deleted.", "success")
-    return redirect(url_for("admin.clothing"))
+    flash("User clothing items cannot be accessed or deleted by administrators to protect user privacy.", "error")
+    return redirect(url_for("admin.dashboard"))
 
 
 # ──────────────────────────────────────────────

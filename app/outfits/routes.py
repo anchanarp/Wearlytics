@@ -94,4 +94,6 @@ def delete_outfit(outfit_id):
     db.session.delete(outfit)
     db.session.commit()
     flash(f"Outfit '{title}' deleted.", "success")
+    if request.referrer:
+        return redirect(request.referrer)
     return redirect(url_for("stylist.index", tab="quick"))

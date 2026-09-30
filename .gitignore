@@ -32,3 +32,7 @@ app/services/*.onnx
 data/
 social-feed-platform/
 
+# Temporary evaluation chart outputs
+occasion_*.png
+season_*.png
+

@@ -16,7 +16,7 @@
   <div class="col-12 col-lg-4">
     <div class="profile-summary-card">
       <!-- Avatar with customizable color -->
-      <div class="profile-avatar-large" style="background: {{ current_user.avatar_color or '#6c5ce7' }};">
+      <div class="profile-avatar-large" style="background: {{ current_user.avatar_color or '#c99a6b' }};">
         {{ current_user.name[:2].upper() if current_user.name else 'US' }}
       </div>
       <h2>{{ current_user.name }}</h2>
@@ -74,12 +74,12 @@
         <div class="mb-3">
           <label class="form-label-custom">Avatar Color</label>
           <div class="avatar-color-picker">
-            {% for color in ['#6c5ce7','#fd79a8','#00b894','#e17055','#0984e3','#fdcb6e','#6c757d','#2d3436'] %}
+            {% for color in ['#c99a6b','#dfb17b','#8f683e','#1e1e22','#2d3436','#b91c1c','#059669','#2563eb'] %}
             <label class="avatar-color-swatch" title="{{ color }}">
               <input type="radio" name="avatar_color" value="{{ color }}" 
-                     {% if (current_user.avatar_color or '#6c5ce7') == color %}checked{% endif %}
+                     {% if (current_user.avatar_color or '#c99a6b') == color %}checked{% endif %}
                      style="display:none;" onchange="updateAvatarPreview('{{ color }}')">
-              <span class="color-dot" style="background:{{ color }}; {% if (current_user.avatar_color or '#6c5ce7') == color %}box-shadow: 0 0 0 3px #fff, 0 0 0 5px {{ color }};{% endif %}"></span>
+              <span class="color-dot" style="background:{{ color }}; {% if (current_user.avatar_color or '#c99a6b') == color %}box-shadow: 0 0 0 3px #fff, 0 0 0 5px {{ color }};{% endif %}"></span>
             </label>
             {% endfor %}
           </div>

@@ -7,6 +7,8 @@ from app.extensions import db
 from app.models.clothing import ClothingItem
 from app.models.planner import WeeklyPlan
 from app.models.custom_outfit import CustomOutfit
+from app.models.outfit import Outfit
+from app.models.feedback import OutfitFeedback
 from app.planner import planner_bp
 
 DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -15,9 +17,23 @@ DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturda
 @planner_bp.route("/")
 @login_required
 def index():
-    """Display 7-day weekly schedule with assigned outfits."""
+    """Display 7-day weekly schedule with assigned outfits and saved outfit library."""
     existing_plans = {p.day_of_week: p for p in WeeklyPlan.query.filter_by(user_id=current_user.id).all()}
-    outfits = current_user.outfits.order_by(None).all()
+
+    # Only include real saved outfits (exclude internal ai_feedback rows), ensure items exist and unique combos
+    all_user_outfits = current_user.outfits.order_by(Outfit.created_at.desc()).all()
+    seen_combos = set()
+    outfits = []
+    for o in all_user_outfits:
+        if len(o.items) == 0:
+            continue
+        if o.recommendation_type == "ai_feedback":
+            continue
+        combo_key = tuple(sorted(it.id for it in o.items))
+        if combo_key in seen_combos:
+            continue
+        seen_combos.add(combo_key)
+        outfits.append(o)
 
     weekly_schedule = []
     for day in DAYS_OF_WEEK:
@@ -26,7 +42,12 @@ def index():
             "plan": existing_plans.get(day),
         })
 
-    return render_template("planner/index.html", schedule=weekly_schedule, outfits=outfits)
+    return render_template(
+        "planner/index.html",
+        schedule=weekly_schedule,
+        outfits=outfits,
+        days_of_week=DAYS_OF_WEEK,
+    )
 
 
 # ── Custom Outfit: show selection form (GET) ──────────────────────────────────
@@ -229,3 +250,48 @@ def delete_custom_outfit(outfit_id):
     db.session.commit()
     flash('Custom outfit removed.', 'success')
     return redirect(url_for('planner.index'))
+
+
+# ── Quick Assign from Saved Outfits library ───────────────────────────────────
+
+@planner_bp.post("/assign-quick")
+@login_required
+def assign_quick():
+    """Quickly assign an outfit to a selected day of the week."""
+    day = request.form.get("day_of_week")
+    outfit_id = request.form.get("outfit_id", type=int)
+
+    if day not in DAYS_OF_WEEK or not outfit_id:
+        flash("Please select a valid day and outfit.", "error")
+        return redirect(url_for("planner.index"))
+
+    outfit = current_user.outfits.filter_by(id=outfit_id).first()
+    if not outfit:
+        flash("Saved outfit not found.", "error")
+        return redirect(url_for("planner.index"))
+
+    plan = WeeklyPlan.query.filter_by(user_id=current_user.id, day_of_week=day).first()
+    if not plan:
+        plan = WeeklyPlan(user_id=current_user.id, day_of_week=day)
+        db.session.add(plan)
+
+    plan.outfit_id = outfit.id
+    plan.custom_outfit_id = None  # replace any custom outfit on that day
+    db.session.commit()
+    flash(f"'{outfit.title}' added to {day}!", "success")
+    return redirect(url_for("planner.index"))
+
+
+# ── Delete saved outfit from collection ────────────────────────────────────────
+
+@planner_bp.post("/outfit/<int:outfit_id>/delete")
+@login_required
+def delete_saved_outfit(outfit_id):
+    """Delete a saved outfit from the user's collection."""
+    outfit = current_user.outfits.filter_by(id=outfit_id).first_or_404()
+    title = outfit.title
+    WeeklyPlan.query.filter_by(user_id=current_user.id, outfit_id=outfit.id).update({"outfit_id": None})
+    db.session.delete(outfit)
+    db.session.commit()
+    flash(f"Saved outfit '{title}' removed.", "success")
+    return redirect(url_for("planner.index"))

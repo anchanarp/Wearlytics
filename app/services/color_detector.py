@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import os
 from typing import Optional
+import colorsys
 
 # Nearest-color lookup table (CSS named colors → hex)
 _COLOR_MAP: list[tuple[tuple[int, int, int], str, str]] = [
@@ -22,6 +23,8 @@ _COLOR_MAP: list[tuple[tuple[int, int, int], str, str]] = [
     ((128, 128, 128), "#808080", "Gray"),
     ((192, 192, 192), "#C0C0C0", "Silver"),
     ((64,   64,  64), "#404040", "Charcoal"),
+    ((245, 245, 245), "#F5F5F5", "Off White"),
+    ((255, 250, 240), "#FFFAF0", "Cream"),
     # Browns & earth tones
     ((165,  42,  42), "#A52A2A", "Brown"),
     ((210, 180, 140), "#D2B48C", "Tan"),
@@ -30,45 +33,90 @@ _COLOR_MAP: list[tuple[tuple[int, int, int], str, str]] = [
     ((240, 230, 140), "#F0E68C", "Khaki"),
     # Reds & pinks
     ((255,   0,   0), "#FF0000", "Red"),
+    ((255,  36,   0), "#FF2400", "Cherry Red"),
     ((220,  20,  60), "#DC143C", "Crimson"),
     ((255, 192, 203), "#FFC0CB", "Pink"),
     ((255, 105, 180), "#FF69B4", "Hot Pink"),
-    ((255, 127, 80),  "#FF7F50", "Coral"),
+    ((255, 127,  80), "#FF7F50", "Coral"),
+    ((128,   0,   0), "#800000", "Maroon"),
     # Oranges & yellows
     ((255, 165,   0), "#FFA500", "Orange"),
     ((255, 215,   0), "#FFD700", "Gold"),
     ((255, 255,   0), "#FFFF00", "Yellow"),
-    # Greens — full range from lime to dark
-    ((200, 240, 140), "#C8F08C", "Lime"),           # high-brightness lime/neon green (e.g. sports t-shirts)
+    # Greens — full range
+    ((0, 255,   0), "#00FF00", "Green"),
+    ((0, 128,   0), "#008000", "Dark Green"),
     ((173, 255,  47), "#ADFF2F", "Green Yellow"),
-    ((50,  205,  50), "#32CD32", "Lime Green"),
-    ((154, 205,  50), "#9ACD32", "Yellow Green"),
-    ((124, 252,   0), "#7CFC00", "Lawn Green"),
-    ((144, 238, 144), "#90EE90", "Light Green"),
-    ((0,   255,   0), "#00FF00", "Green"),
-    ((0,   128,   0), "#008000", "Dark Green"),
-    ((0,   128, 128), "#008080", "Teal"),
-    ((64,  224, 208), "#40E0D0", "Turquoise"),
-    ((152, 251, 152), "#98FB98", "Pale Green"),
-    ((0,   255, 127), "#00FF7F", "Mint"),
     # Blues
-    ((0,   255, 255), "#00FFFF", "Cyan"),
-    ((173, 216, 230), "#ADD8E6", "Light Blue"),
-    ((30,  144, 255), "#1E90FF", "Dodger Blue"),
-    ((0,     0, 255), "#0000FF", "Blue"),
-    ((0,     0, 128), "#000080", "Navy"),
-    ((70,  130, 180), "#4682B4", "Steel Blue"),
+    ((0,   0, 255), "#0000FF", "Blue"),
+    ((0,   0, 128), "#000080", "Navy Blue"),
+    ((70, 130, 180), "#4682B4", "Steel Blue"),
     # Purples
     ((128,   0, 128), "#800080", "Purple"),
-    ((75,    0, 130), "#4B0082", "Indigo"),
     ((138,  43, 226), "#8B2BE2", "Violet"),
     ((216, 191, 216), "#D8BFD8", "Lavender"),
-    ((139,   0,   0), "#8B0000", "Maroon"),
+    # Additional colors can be added as needed
 ]
 
 
 def _nearest_color(r: int, g: int, b: int) -> tuple[str, str]:
-    """Return (hex_code, color_name) for the closest entry in _COLOR_MAP."""
+    """Return (hex_code, color_name) for the given RGB.
+
+    Uses HSV thresholds for neutrals and hue-angle rules for the red family
+    before falling back to Euclidean distance against the canonical _COLOR_MAP.
+
+    Neutral ladder (saturation < 0.15):
+        v >= 0.97  → White
+        v >= 0.78  → Off White   (was incorrectly hitting Silver at v>0.75)
+        v >= 0.60  → Silver
+        v >= 0.32  → Gray
+        v >= 0.12  → Charcoal
+        else       → Black
+
+    Red family (hue near 0°/360°, saturation >= 0.40):
+        h ∈ [5°, 20°]  → Cherry Red
+        v < 0.55       → Maroon
+        else           → Red
+    """
+    rn, gn, bn = r / 255.0, g / 255.0, b / 255.0
+    h, s, v = colorsys.rgb_to_hsv(rn, gn, bn)
+    h_deg = h * 360.0
+
+    # ------------------------------------------------------------------
+    # Neutral ladder  (low saturation → achromatic)
+    # ------------------------------------------------------------------
+    if s < 0.15:
+        if v >= 0.97:
+            return "#FFFFFF", "White"
+        elif v >= 0.78:
+            return "#F5F5F5", "Off White"
+        elif v >= 0.60:
+            return "#C0C0C0", "Silver"
+        elif v >= 0.32:
+            return "#808080", "Gray"
+        elif v >= 0.12:
+            return "#404040", "Charcoal"
+        else:
+            return "#000000", "Black"
+
+    # ------------------------------------------------------------------
+    # Red / Brown family  (hue wraps around 0°/360°)
+    # ------------------------------------------------------------------
+    if (h_deg <= 20 or h_deg >= 345) and s >= 0.40:
+        # Brown: same hue angle as red but lower saturation + mid value
+        # e.g. RGB(165,42,42) → H=0°, S=0.75, V=0.65
+        if s < 0.82 and 0.35 <= v <= 0.72:
+            return "#A52A2A", "Brown"
+        if v < 0.55:
+            return "#800000", "Maroon"
+        elif 5 <= h_deg <= 20:
+            return "#FF2400", "Cherry Red"
+        else:
+            return "#FF0000", "Red"
+
+    # ------------------------------------------------------------------
+    # Fallback: nearest Euclidean distance in RGB space
+    # ------------------------------------------------------------------
     best_dist = float("inf")
     best_hex, best_name = "#000000", "Black"
     for (cr, cg, cb), hex_code, name in _COLOR_MAP:
@@ -142,23 +190,44 @@ def extract_color(image_path: str, n_clusters: int = 3) -> Optional[dict]:
         pixels = np.array(img_crop).reshape(-1, 3).astype(np.float32)
 
         # ------------------------------------------------------------------
-        # Step 2: Background pixel mask
-        # Removes near-white AND mid-gray low-saturation pixels.
+        # Step 2: Dynamic border-based background subtraction
+        #
+        # Sample the outermost 5 % of pixels on three sides of the FULL image
+        # to estimate the studio backdrop colour.  Then keep only crop pixels
+        # whose Euclidean distance from that backdrop exceeds a threshold.
+        #
+        # This correctly handles white/off-white garments on white/light-gray
+        # studio backdrops — the old static brightness mask would remove both
+        # the backdrop AND the light garment, leaving only shadow pixels which
+        # then mapped to Tan/Brown.
         # ------------------------------------------------------------------
-        norm       = pixels / 255.0
-        brightness = norm.max(axis=1)                       # V  (0-1)
-        saturation = norm.max(axis=1) - norm.min(axis=1)   # S  (0-1, unnormalised)
+        border_h = max(4, int(h * 0.05))
+        border_w = max(4, int(w * 0.05))
 
-        # Tight threshold: catches white, off-white, AND gray studio backdrops
-        fg_mask    = ~((brightness > 0.70) & (saturation < 0.12))
+        top_strip   = np.array(img.crop((0, 0, w, border_h))).reshape(-1, 3)
+        left_strip  = np.array(img.crop((0, 0, border_w, h))).reshape(-1, 3)
+        right_strip = np.array(img.crop((w - border_w, 0, w, h))).reshape(-1, 3)
+        border_pix  = np.vstack([top_strip, left_strip, right_strip]).astype(np.float32)
+
+        # Median backdrop colour — robust to logos / watermarks at edges
+        bg_median = np.median(border_pix, axis=0)  # shape (3,)
+
+        # Is the backdrop achromatic (white/gray studio)?
+        bg_norm = bg_median / 255.0
+        bg_sat  = float(bg_norm.max() - bg_norm.min())
+        # Tighter threshold for neutral backdrops keeps light garments intact
+        dist_threshold = 20 if bg_sat < 0.15 else 25
+
+        dist_to_bg = np.linalg.norm(pixels - bg_median, axis=1)
+        fg_mask    = dist_to_bg > dist_threshold
         foreground = pixels[fg_mask]
 
-        # Fallback 1: relax thresholds slightly if too few pixels survive
+        # Fallback 1: relax threshold when garment/backdrop contrast is tiny
         if len(foreground) < 200:
-            fg_mask    = ~((brightness > 0.80) & (saturation < 0.18))
+            fg_mask    = dist_to_bg > (dist_threshold * 0.6)
             foreground = pixels[fg_mask]
 
-        # Fallback 2: use all cropped pixels (background removal skipped)
+        # Fallback 2: use all cropped pixels
         sample = foreground if len(foreground) >= 200 else pixels
 
         # ------------------------------------------------------------------

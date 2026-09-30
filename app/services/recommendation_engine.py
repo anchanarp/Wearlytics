@@ -18,9 +18,11 @@ from __future__ import annotations
 
 import itertools
 import random
+import logging
 from typing import Optional
 
 from app.services import compatibility_scorer
+from flask import current_app
 
 
 _TOP_CATEGORIES    = {"Tops", "Dresses", "Outerwear"}
@@ -227,6 +229,121 @@ def _build_combinations(items: list, max_combos: int = 300) -> list[list]:
     return combos[:max_combos]
 
 
+def _build_combinations_with_pinned(
+    items: list,
+    pinned_items: list,
+    max_combos: int = 300,
+) -> list[list]:
+    """
+    Build outfit combinations that ALWAYS contain every pinned item.
+
+    Strategy:
+    - Determine what categories the pinned items already cover.
+    - Only vary the remaining (completion) slots using non-pinned items.
+    - Every returned combination contains ALL pinned items exactly once.
+
+    This guarantees that pinned item IDs pass the final
+    `pinned_set.issubset(...)` check regardless of random shuffle or cap.
+    """
+    pinned_ids  = {i.id for i in pinned_items}
+    pinned_cats = {i.category for i in pinned_items}
+    free_items  = [i for i in items if i.id not in pinned_ids]
+
+    # Categorise free (non-pinned) items for completion
+    free_tops    = [i for i in free_items if i.category in _TOP_CATEGORIES]
+    free_bottoms = [i for i in free_items if i.category in _BOTTOM_CATEGORIES]
+    free_shoes   = [i for i in free_items if i.category in _SHOE_CATEGORIES]
+    free_extras  = [i for i in free_items if i.category in _EXTRA_CATEGORIES]
+
+    # Also allow pinned shoes/extras to satisfy their own slot
+    # (they are already in pinned_items which is always added to each combo)
+
+    has_pinned_top    = bool(pinned_cats & _TOP_CATEGORIES)
+    has_pinned_bottom = bool(pinned_cats & _BOTTOM_CATEGORIES)
+    has_pinned_shoe   = bool(pinned_cats & _SHOE_CATEGORIES)
+    has_pinned_dress  = "Dresses" in pinned_cats
+
+    combos: list[list] = []
+
+    def make_combo(*extra_items) -> list:
+        """Return pinned items + any non-None extra items (deduplicated by id)."""
+        seen: set[int] = set(pinned_ids)
+        combo = list(pinned_items)
+        for item in extra_items:
+            if item is not None and item.id not in seen:
+                seen.add(item.id)
+                combo.append(item)
+        return combo
+
+    if has_pinned_dress or (has_pinned_top and has_pinned_bottom):
+        # Core is complete — just add optional shoe + extra completions
+        shoe_pool  = free_shoes  if not has_pinned_shoe else [None]
+        extra_pool = free_extras[:3]
+        for shoe in ([None] + shoe_pool):
+            for extra in ([None] + extra_pool):
+                combos.append(make_combo(shoe, extra))
+                if len(combos) >= max_combos:
+                    return combos
+
+    elif has_pinned_top and not has_pinned_bottom:
+        # Need a bottom; dress already counts as top+bottom
+        if not free_bottoms:
+            # No bottoms available — build dress-style outfits if pinned is a dress
+            for shoe in ([None] + free_shoes):
+                for extra in ([None] + free_extras[:3]):
+                    combos.append(make_combo(shoe, extra))
+                    if len(combos) >= max_combos:
+                        return combos
+        else:
+            for bottom in free_bottoms:
+                for shoe in ([None] + free_shoes):
+                    combos.append(make_combo(bottom, shoe))
+                    if len(combos) >= max_combos:
+                        return combos
+
+    elif has_pinned_bottom and not has_pinned_top:
+        # Need a top (or dress)
+        top_pool = free_tops
+        if not top_pool:
+            # Can't form a valid outfit
+            return []
+        for top in top_pool:
+            for shoe in ([None] + free_shoes):
+                combos.append(make_combo(top, shoe))
+                if len(combos) >= max_combos:
+                    return combos
+
+    elif has_pinned_shoe or (pinned_cats <= _EXTRA_CATEGORIES | _SHOE_CATEGORIES):
+        # Pinned item is a shoe or accessory — need a full top+bottom or dress base
+        if free_tops and free_bottoms:
+            for top in free_tops:
+                is_dress = top.category == "Dresses"
+                if is_dress:
+                    for extra in ([None] + free_extras[:3]):
+                        combos.append(make_combo(top, extra))
+                        if len(combos) >= max_combos:
+                            return combos
+                else:
+                    for bottom in free_bottoms:
+                        combos.append(make_combo(top, bottom))
+                        if len(combos) >= max_combos:
+                            return combos
+        elif free_tops:
+            # Only tops (might be dresses)
+            for top in free_tops:
+                combos.append(make_combo(top))
+                if len(combos) >= max_combos:
+                    return combos
+
+    if not combos:
+        # Final fallback: just return pinned items as a minimal outfit
+        combos.append(list(pinned_items))
+
+    return combos
+
+
+
+
 # ---------------------------------------------------------------------------
 # Main API
 # ---------------------------------------------------------------------------
@@ -291,23 +408,48 @@ def get_recommendations(
         candidate_items = available_items
 
     # --- Season + occasion filter ---
+    # IMPORTANT: pinned items are ALWAYS kept in the pool regardless of filters,
+    # so that the pinned constraint can always be satisfied.
+    pinned_set = set(pinned_item_ids) if pinned_item_ids else set()
+    pinned_items = [i for i in candidate_items if i.id in pinned_set]
+
+    # Apply season and occasion filters
     filtered = _filter_by_season(candidate_items, season)
     filtered = _filter_by_occasion(filtered, occasion)
+    # If filters result in no viable outfit, keep filtered as is (could be empty) and log for debugging
     if not _can_form_outfit(filtered):
-        filtered = candidate_items   # graceful fallback when filters wipe out key categories
+        current_app.logger.debug(
+            f"Filtered items after season/occasion filters cannot form outfit (occasion={occasion}, season={season}). Returning empty result set."
+        )
+        # Do not fallback to candidate_items; downstream will handle empty combos
+
+
+
+    # Re-add any pinned items that were removed by the filters so they are
+    # always available as hard constraints in combination building.
+    if pinned_items:
+        filtered_ids = {i.id for i in filtered}
+        for pi in pinned_items:
+            if pi.id not in filtered_ids:
+                filtered.append(pi)
 
     # --- Build combinations ---
-    combos = _build_combinations(filtered)
+    if pinned_items:
+        # Build combinations that ALWAYS include every pinned item.
+        combos = _build_combinations_with_pinned(filtered, pinned_items)
+    else:
+        combos = _build_combinations(filtered)
+
     if not combos:
         return []
 
-    # --- Apply pinned item constraint (STRICT: all pinned IDs must be present) ---
-    if pinned_item_ids:
-        pinned_set = set(pinned_item_ids)
+    # --- Verify pinned constraint (final safety check) ---
+    if pinned_set:
         combos = [c for c in combos if pinned_set.issubset({i.id for i in c})]
         if not combos:
             # Cannot form any outfit with all pinned items → caller surfaces error
             return []
+
 
     # --- Score all combinations ---
     scored: list[tuple[float, dict, list]] = []

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}✨ AI Stylist | Wearlytics{% endblock %}
+{% block title %}AI Stylist | Wearlytics{% endblock %}
 
 {% block content %}
 
@@ -7,7 +7,7 @@
 <div class="stylist-page-header">
   <div>
     <p class="eyebrow" style="color:var(--primary);font-weight:700;letter-spacing:.08em;">✦ AI-POWERED</p>
-    <h1 class="stylist-page-title">✨ AI Stylist</h1>
+    <h1 class="stylist-page-title">AI Stylist</h1>
     <p class="stylist-page-sub">Your personal AI-powered wardrobe stylist.</p>
   </div>
   <a href="{{ url_for('recommendations.preferences') }}" class="btn light-button stylist-prefs-btn">⚙ My Preferences</a>
@@ -22,14 +22,16 @@
 </div>
 {% endif %}
 
-{# ── Style Form ───────────────────────────────────────────────────────────── #}
-<div class="stylist-controls-card mb-5">
+{# ── Unified Control Bar ────────────────────────────────────────────────────
+   Order: Occasion | Season | Select from My Wardrobe | ✨ Style Me
+   ─────────────────────────────────────────────────────────────────────────── #}
+<div class="stylist-controls-card mb-4">
   <form method="post" action="{{ url_for('stylist.generate') }}" id="stylist-form">
 
-    <div class="stylist-controls-row">
+    <div class="stylist-controls-row stylist-bar">
 
-      {# Occasion #}
-      <div class="stylist-ctrl-field">
+      {# ── 1. Occasion ── #}
+      <div class="stylist-ctrl-field stylist-bar-occasion">
         <label class="form-label-custom" for="occasion-input">Occasion</label>
         <div class="occasion-selector" style="position:relative;">
           <input type="text" id="occasion-input" class="form-select-custom stylist-ctrl-input"
@@ -60,8 +62,8 @@
         <script src="{{ url_for('static', filename='js/occasion_selector.js') }}"></script>
       </div>
 
-      {# Season #}
-      <div class="stylist-ctrl-field">
+      {# ── 2. Season ── #}
+      <div class="stylist-ctrl-field stylist-bar-season">
         <label class="form-label-custom" for="stylist-season">Season</label>
         <select id="stylist-season" name="season" class="form-select-custom stylist-ctrl-input">
           {% for s in seasons %}
@@ -70,69 +72,78 @@
         </select>
       </div>
 
-      {# Choose Items #}
-      <div class="stylist-ctrl-field stylist-ctrl-choose">
-        <label class="form-label-custom">
-          👕 Choose Items <span style="font-weight:400;color:var(--muted);">(Optional)</span>
-        </label>
-        <button type="button" class="btn light-button stylist-ctrl-input" id="open-wardrobe-picker"
-                style="white-space:nowrap;">
-          + Select from My Wardrobe
+      {# ── 3. Select from My Wardrobe (toggle) ── #}
+      <div class="stylist-ctrl-field stylist-bar-wardrobe">
+        <label class="form-label-custom">Wardrobe</label>
+        <button type="button" id="wardrobe-toggle-btn"
+                class="stylist-wardrobe-toggle"
+                aria-expanded="false" aria-controls="wardrobe-section">
+          <span id="wardrobe-toggle-icon">👗</span>
+          <span id="wardrobe-toggle-label">Select from My Wardrobe</span>
+          <span id="wardrobe-sel-count" class="wardrobe-sel-badge" style="display:none;">0</span>
+          <span class="wardrobe-toggle-chevron">›</span>
         </button>
-        {# Pinned item tags #}
-        <div id="pinned-items-preview" class="pinned-items-preview mt-2"
-             style="{% if not selected_item_ids %}display:none{% endif %}"></div>
-        {# Hidden inputs for selected item IDs #}
-        <div id="pinned-hidden-inputs">
-          {% for iid in selected_item_ids %}
-            <input type="hidden" name="item_ids" value="{{ iid }}">
-          {% endfor %}
-        </div>
       </div>
 
-      {# Style Me CTA #}
-      <div class="stylist-ctrl-cta">
+      {# ── 4. Style Me ── #}
+      <div class="stylist-bar-cta">
+        <label class="form-label-custom" style="opacity:0;pointer-events:none;">Go</label>
         <button type="submit" class="btn primary-button style-me-btn" id="style-me-btn">
           ✨ Style Me
         </button>
       </div>
 
-    </div>{# /stylist-controls-row #}
+    </div>{# /stylist-bar #}
 
   </form>
 </div>
 
-{# ── Wardrobe Picker Modal ─────────────────────────────────────────────────── #}
-<div id="wardrobe-picker-modal" class="stylist-modal-backdrop" style="display:none;" role="dialog"
-     aria-modal="true" aria-label="Select wardrobe items">
-  <div class="stylist-modal-box" style="max-width:520px;">
-    <div class="stylist-modal-header">
-      <h3>Select Wardrobe Items</h3>
-      <button type="button" class="stylist-modal-close" id="close-wardrobe-picker" aria-label="Close">✕</button>
-    </div>
-    <input type="text" id="wardrobe-search" placeholder="Search your wardrobe…"
-           class="form-select-custom mb-3" autocomplete="off" />
-    <div id="wardrobe-items-list" class="stylist-wardrobe-list">
-      {% for item in wardrobe %}
-      <label class="wardrobe-picker-item" data-name="{{ item.name|lower }} {{ item.category|lower }} {{ item.color|lower }}">
-        <input type="checkbox" class="wardrobe-checkbox" value="{{ item.id }}"
-               {% if item.id in selected_item_ids %}checked{% endif %} />
-        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="wardrobe-picker-thumb">
-        <div class="wardrobe-picker-info">
-          <strong>{{ item.name }}</strong>
-          <small>{{ item.category }}{% if item.clothing_type %} · {{ item.clothing_type }}{% endif %} · {{ item.color }}</small>
+{# ── Wardrobe Selection Area (hidden by default, toggled by button) ─────── #}
+<div id="wardrobe-section" class="wardrobe-container" style="display:none;">
+
+  <!-- LEFT: Accordion -->
+  <div class="accordion-section">
+    <div class="wardrobe-section-header">
+      <h3 class="wardrobe-section-title">Select from My Wardrobe</h3>
+      <div class="wardrobe-search-row">
+        <input type="text" id="wardrobe-search" placeholder="Search clothing…"
+               class="wardrobe-search-input" autocomplete="off" />
+        <div class="filter-wrap">
+          <button type="button" id="filter-btn" class="btn light-button filter-trigger-btn">⚙ Filter</button>
+          <div id="filter-popover" class="filter-popover"></div>
         </div>
-      </label>
-      {% else %}
-      <p class="text-muted small p-3">No wardrobe items available.</p>
-      {% endfor %}
+      </div>
     </div>
-    <div class="stylist-modal-footer">
-      <button type="button" class="btn light-button" id="clear-wardrobe-selection">✕ Clear Selection</button>
-      <button type="button" class="btn primary-button" id="apply-wardrobe-selection">Apply Selection</button>
+    <div id="wardrobe-accordion"></div>
+  </div>
+
+  <!-- RIGHT: Selection Panel -->
+  <div id="selection-panel" class="selection-panel">
+    <div class="selection-panel-header">
+      <h3 class="selection-panel-title">YOUR SELECTION</h3>
+      <span class="selection-count" id="selection-count">0 items</span>
+    </div>
+    <div id="pinned-items-preview" class="pinned-items-preview">
+      <div class="selection-empty-state" id="selection-empty">
+        <span class="selection-empty-icon">👗</span>
+        <p>No items selected yet</p>
+        <small>Select clothing from your wardrobe.</small>
+      </div>
+    </div>
+    <div id="pinned-hidden-inputs"></div>
+    <div class="selection-panel-footer" id="selection-footer" style="display:none;">
+      <button type="button" class="btn light-button btn-sm" id="clear-all-btn">✕ Clear All</button>
     </div>
   </div>
+
 </div>
+
+<!-- Hidden wardrobe data for JS -->
+<script type="application/json" id="wardrobe-data">{{ wardrobe_json|tojson }}</script>
+
+<!-- Include accordion CSS and JS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/wardrobe_accordion.css') }}">
+<script src="{{ url_for('static', filename='js/wardrobe_accordion.js') }}"></script>
 
 {# ── Pinned Item Error ─────────────────────────────────────────────────────── #}
 {% if pinned_error %}
@@ -170,6 +181,9 @@
   <div class="rec-result-left">
     <div class="rec-result-header">
       <h2 class="rec-result-title">🏆 Your Recommended Look</h2>
+      {% if selected_item_ids %}
+      <div class="rec-pinned-badge">📌 Built around your selected wardrobe items</div>
+      {% endif %}
       <div class="rec-result-pills">
         <span class="result-occasion-pill">{{ best.occasion }}</span>
         <span class="result-season-pill">✕ {{ best.season }}</span>
@@ -325,7 +339,7 @@
         <input type="hidden" name="occasion" value="{{ best.occasion }}">
         <input type="hidden" name="season" value="{{ best.season }}">
         <input type="hidden" name="score" value="{{ best.score }}">
-        <input type="hidden" name="title" value="AI Stylist Outfit — {{ '%.1f'|format(best.score) }}/100">
+        <input type="hidden" name="title" value="{% for item in best['items'] %}{{ item.name }}{% if not loop.last %} & {% endif %}{% endfor %}{% if best.occasion and best.occasion != 'Any' %} ({{ best.occasion }}){% endif %}">
         {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
         <button type="submit" class="rec-action-btn btn-save">💾 Save</button>
       </form>
@@ -392,7 +406,7 @@
           <input type="hidden" name="occasion" value="{{ rec.occasion }}">
           <input type="hidden" name="season" value="{{ rec.season }}">
           <input type="hidden" name="score" value="{{ rec.score }}">
-          <input type="hidden" name="title" value="AI Stylist Alt #{{ rank }} — {{ '%.1f'|format(rec.score) }}/100">
+          <input type="hidden" name="title" value="{% for item in rec['items'] %}{{ item.name }}{% if not loop.last %} & {% endif %}{% endfor %}{% if rec.occasion and rec.occasion != 'Any' %} ({{ rec.occasion }}){% endif %}">
           {% for item in rec["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
           <button type="submit" class="rec-action-btn btn-save" style="font-size:12px;padding:5px 10px;">💾</button>
         </form>
@@ -420,110 +434,6 @@
 <script>
 (function () {
   'use strict';
-
-  /* ── Wardrobe picker data for pinned preview ────────────────────────── */
-  var wardrobeData = {};
-  document.querySelectorAll('.wardrobe-checkbox').forEach(function (cb) {
-    var label = cb.closest('.wardrobe-picker-item');
-    if (label) {
-      wardrobeData[cb.value] = {
-        name: label.querySelector('strong').textContent,
-        img:  label.querySelector('img').src,
-      };
-    }
-  });
-
-  /* ── Pinned preview ─────────────────────────────────────────────────── */
-  var pinnedPreview   = document.getElementById('pinned-items-preview');
-  var pinnedContainer = document.getElementById('pinned-hidden-inputs');
-
-  function renderPinnedPreview(ids) {
-    pinnedPreview.innerHTML = '';
-    if (!ids.length) { pinnedPreview.style.display = 'none'; return; }
-    pinnedPreview.style.display = 'flex';
-    ids.forEach(function (id) {
-      var info = wardrobeData[id];
-      if (!info) return;
-      var tag = document.createElement('div');
-      tag.className = 'pinned-tag';
-      tag.innerHTML =
-        '<img src="' + info.img + '" alt="' + info.name + '">' +
-        '<span>' + info.name + '</span>' +
-        '<button type="button" data-id="' + id + '" aria-label="Remove">✕</button>';
-      tag.querySelector('button').addEventListener('click', function () {
-        var pid = this.getAttribute('data-id');
-        document.querySelectorAll('#pinned-hidden-inputs input').forEach(function (inp) {
-          if (inp.value === pid) inp.remove();
-        });
-        document.querySelectorAll('.wardrobe-checkbox').forEach(function (cb) {
-          if (cb.value === pid) cb.checked = false;
-        });
-        renderPinnedPreview(getPinnedIds());
-      });
-      pinnedPreview.appendChild(tag);
-    });
-  }
-
-  function getPinnedIds() {
-    return Array.from(document.querySelectorAll('#pinned-hidden-inputs input'))
-      .map(function (i) { return i.value; });
-  }
-
-  renderPinnedPreview(getPinnedIds());
-
-  /* ── Wardrobe Picker Modal ──────────────────────────────────────────── */
-  var pickerModal = document.getElementById('wardrobe-picker-modal');
-  var openBtn     = document.getElementById('open-wardrobe-picker');
-  var closeBtn    = document.getElementById('close-wardrobe-picker');
-  var applyBtn    = document.getElementById('apply-wardrobe-selection');
-  var clearBtn    = document.getElementById('clear-wardrobe-selection');
-  var searchInput = document.getElementById('wardrobe-search');
-
-  function openPicker() {
-    var existingIds = getPinnedIds();
-    document.querySelectorAll('.wardrobe-checkbox').forEach(function (cb) {
-      cb.checked = existingIds.includes(cb.value);
-    });
-    pickerModal.style.display = 'flex';
-    if (searchInput) { searchInput.value = ''; filterWardrobe(''); searchInput.focus(); }
-  }
-  function closePicker() { pickerModal.style.display = 'none'; }
-  function applyPicker() {
-    pinnedContainer.innerHTML = '';
-    document.querySelectorAll('.wardrobe-checkbox:checked').forEach(function (cb) {
-      var inp = document.createElement('input');
-      inp.type = 'hidden'; inp.name = 'item_ids'; inp.value = cb.value;
-      pinnedContainer.appendChild(inp);
-    });
-    renderPinnedPreview(getPinnedIds());
-    closePicker();
-  }
-  function clearPicker() {
-    document.querySelectorAll('.wardrobe-checkbox').forEach(function (cb) { cb.checked = false; });
-    pinnedContainer.innerHTML = '';
-    renderPinnedPreview([]);
-    closePicker();
-  }
-  function filterWardrobe(q) {
-    var lq = q.toLowerCase();
-    document.querySelectorAll('.wardrobe-picker-item').forEach(function (el) {
-      el.style.display = (!lq || (el.dataset.name || '').includes(lq)) ? '' : 'none';
-    });
-  }
-
-  if (openBtn)  openBtn.addEventListener('click', openPicker);
-  if (closeBtn) closeBtn.addEventListener('click', closePicker);
-  if (applyBtn) applyBtn.addEventListener('click', applyPicker);
-  if (clearBtn) clearBtn.addEventListener('click', clearPicker);
-  if (pickerModal) pickerModal.addEventListener('click', function (e) { if (e.target === pickerModal) closePicker(); });
-  if (searchInput) searchInput.addEventListener('input', function () { filterWardrobe(this.value); });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-      closePicker();
-      var om = document.getElementById('more-options-modal');
-      if (om) om.style.display = 'none';
-    }
-  });
 
   /* ── Accordion: Why this outfit? & View Score Details ──────────────── */
   document.querySelectorAll('.rec-acc-trigger').forEach(function (trigger) {
@@ -557,13 +467,45 @@
     });
   });
 
-  /* ── Style Me loading state ─────────────────────────────────────────── */
+  /* ── Escape key: close occasion modal only ──────────────────────────── */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      var om = document.getElementById('more-options-modal');
+      if (om) om.style.display = 'none';
+    }
+  });
+
+
+  /* ── Sync pinned item_ids into form before submit ────────────────────
+     #pinned-hidden-inputs lives outside #stylist-form (it is inside
+     #selection-panel for layout reasons). This listener copies every
+     hidden input from that container into the form just before POST,
+     so all selected item IDs are submitted as `item_ids` fields.
+  ─────────────────────────────────────────────────────────────────── */
   var stylistForm = document.getElementById('stylist-form');
-  var smBtn       = document.getElementById('style-me-btn');
-  if (stylistForm && smBtn) {
+  if (stylistForm) {
     stylistForm.addEventListener('submit', function () {
-      smBtn.disabled    = true;
-      smBtn.textContent = '⏳ Styling…';
+      // Remove any previously-synced copies to avoid duplicates on retry
+      stylistForm.querySelectorAll('input[name="item_ids"][data-synced]')
+        .forEach(function(el) { el.remove(); });
+
+      // Clone inputs from the out-of-form container into the form
+      var pinnedContainer = document.getElementById('pinned-hidden-inputs');
+      if (pinnedContainer) {
+        pinnedContainer.querySelectorAll('input[name="item_ids"]')
+          .forEach(function (src) {
+            var copy = document.createElement('input');
+            copy.type  = 'hidden';
+            copy.name  = 'item_ids';
+            copy.value = src.value;
+            copy.setAttribute('data-synced', '1');
+            stylistForm.appendChild(copy);
+          });
+      }
+
+      // Loading state
+      var smBtn = document.getElementById('style-me-btn');
+      if (smBtn) { smBtn.disabled = true; smBtn.textContent = '⏳ Styling…'; }
     });
   }
 })();

@@ -17,11 +17,11 @@
 <!-- Welcome Banner Card -->
 <section class="welcome-card" aria-labelledby="inspiration-heading">
   <div class="welcome-copy">
-    <span class="chip">✦ AI Powered Styling</span>
-    <h2 id="inspiration-heading">Your next favourite look is waiting.</h2>
-    <p>We found new outfit combinations from the {{ total_items }} pieces in your wardrobe.</p>
+    <span class="chip">✦ Signature Styling</span>
+    <h2 id="inspiration-heading">Curated looks, crafted with effortless elegance.</h2>
+    <p>We harmonized sophisticated outfit combinations tailored for your collection of {{ total_items }} wardrobe pieces.</p>
     <a href="{{ url_for('outfits.index') }}" class="btn light-button">
-      Explore AI outfits <span aria-hidden="true">→</span>
+      Explore Curated Outfits <span aria-hidden="true">→</span>
     </a>
   </div>
   <div class="welcome-art" aria-hidden="true">
@@ -76,7 +76,7 @@
       <a href="{{ url_for('planner.index') }}" class="stat-card-link">
         <article class="stat-card">
           <div class="stat-icon plan-icon">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3ZM4 9V7a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2H4Zm0 2h16v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8Z"/></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3Zm1 15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8h16v8ZM4 9V7a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2H4Z"/></svg>
           </div>
           <div>
             <p>Weekly Plans</p>
@@ -106,25 +106,25 @@
 <section class="rec-preview-section mt-5">
   <div class="section-heading">
     <div>
-      <p class="eyebrow">✦ AI-Powered</p>
-      <h2>✨ AI Stylist</h2>
+      <p class="eyebrow">✦ Signature Intelligence</p>
+      <h2>AI Stylist Studio</h2>
     </div>
-    <a href="{{ url_for('stylist.index') }}">Open AI Stylist <span aria-hidden="true">→</span></a>
+    <a href="{{ url_for('stylist.index') }}">Open Stylist Studio <span aria-hidden="true">→</span></a>
   </div>
   <div class="rec-preview-card">
-    <div class="rec-preview-icon">🤖</div>
+    <div class="rec-preview-icon" style="color:var(--primary); font-family:var(--font-serif); font-size:44px; font-weight:700;">✦</div>
     <div class="rec-preview-copy">
-      <h3>Get Personalised Outfit Suggestions</h3>
-      <p>Our AI analyses your wardrobe and generates scored outfit combinations based on color harmony, category balance, occasion, and your personal style preferences.</p>
+      <h3>Personalized Haute Elegance & Everyday Harmony</h3>
+      <p>Our intelligent styling engine analyzes your wardrobe, balancing palette tones, silhouette proportions, occasion, and your distinct style signature.</p>
       <div class="rec-feature-pills">
-        <span class="feature-pill">🎨 Color Harmony</span>
-        <span class="feature-pill">⚡ Compatibility Score</span>
-        <span class="feature-pill">📅 Occasion-Based</span>
-        <span class="feature-pill">🧠 Learns from Feedback</span>
+        <span class="feature-pill">✦ Color Harmony</span>
+        <span class="feature-pill">✦ Compatibility Score</span>
+        <span class="feature-pill">✦ Occasion Curation</span>
+        <span class="feature-pill">✦ Adaptive Learning</span>
       </div>
     </div>
     <a href="{{ url_for('stylist.index') }}" class="btn primary-button rec-preview-cta">
-      ✨ Style Me →
+      ✦ Style Me →
     </a>
   </div>
 </section>

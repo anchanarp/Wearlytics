@@ -1,6 +1,7 @@
 """Recommendation routes — AI-powered outfit suggestions with feedback learning."""
 
-from flask import flash, redirect, render_template, request, url_for
+import json
+from flask import flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required
 
 from app.extensions import db
@@ -60,7 +61,7 @@ def save_outfit():
     season = request.form.get("season", "All Seasons")
     score = request.form.get("score", type=float)
     item_ids = request.form.getlist("item_ids", type=int)
-    title = request.form.get("title", "").strip() or "AI Recommended Outfit"
+    title = request.form.get("title", "").strip()
 
     from app.models.clothing import ClothingItem
 
@@ -73,6 +74,39 @@ def save_outfit():
         flash("No items found to save.", "error")
         return redirect(url_for("recommendations.index"))
 
+    # Generate a friendly title based on items if title is generic
+    if not title or title.startswith("AI Stylist") or title.startswith("AI Recommended"):
+        names = [it.name for it in items]
+        if len(names) == 1:
+            title = names[0]
+        elif len(names) == 2:
+            title = f"{names[0]} & {names[1]}"
+        elif len(names) > 2:
+            title = f"{names[0]}, {names[1]} & {len(names)-2} more"
+        else:
+            title = f"{occasion} Outfit"
+
+    # Deduplication: Check if an outfit with the exact same items already exists
+    target_ids = {it.id for it in items}
+    existing_outfit = None
+    for o in current_user.outfits.all():
+        if {it.id for it in o.items} == target_ids:
+            existing_outfit = o
+            break
+
+    if existing_outfit:
+        existing_outfit.title = title
+        existing_outfit.occasion = occasion
+        existing_outfit.season = season
+        existing_outfit.compatibility_score = score
+        existing_outfit.recommendation_type = "user_saved"
+        OutfitFeedback.query.filter_by(user_id=current_user.id, outfit_id=existing_outfit.id, reaction="disliked").delete()
+        db.session.commit()
+        flash(f"✦ Outfit saved to your collection! (Score: {score}/100)", "success")
+        if request.referrer:
+            return redirect(request.referrer)
+        return redirect(url_for("recommendations.index", occasion=occasion, season=season))
+
     outfit = Outfit(
         user_id=current_user.id,
         title=title,
@@ -81,13 +115,15 @@ def save_outfit():
         season=season,
         is_favorite=False,
         compatibility_score=score,
-        recommendation_type="ai_smart",
+        recommendation_type="user_saved",
     )
     outfit.items.extend(items)
     db.session.add(outfit)
     db.session.commit()
 
     flash(f"✦ Outfit saved to your collection! (Score: {score}/100)", "success")
+    if request.referrer:
+        return redirect(request.referrer)
     return redirect(url_for("recommendations.index", occasion=occasion, season=season))
 
 
@@ -96,8 +132,8 @@ def save_outfit():
 def submit_feedback():
     """
     Record like / dislike / favorite feedback for a recommendation.
-    Since recommended outfits are transient, this saves the outfit first
-    then records feedback on the saved outfit.
+    Since recommended outfits are transient, this attaches to existing outfit
+    or creates an internal feedback record without polluting the user's saved outfits.
     """
     reaction = request.form.get("reaction", "").strip()
     occasion = request.form.get("occasion", "Casual")
@@ -117,23 +153,28 @@ def submit_feedback():
         ClothingItem.user_id == current_user.id,
     ).all()
 
-    # Save the outfit so we can attach feedback to it.
-    # IMPORTANT: add + flush BEFORE extending items so outfit.id is assigned
-    # before the outfit_items join-table rows are written.
-    outfit = Outfit(
-        user_id=current_user.id,
-        title=title,
-        description=f"AI Recommendation (Feedback: {reaction})",
-        occasion=occasion,
-        season=season,
-        is_favorite=(reaction == "favorited"),
-        compatibility_score=score,
-        recommendation_type="ai_smart",
-    )
-    db.session.add(outfit)
-    db.session.flush()  # assigns outfit.id before any relationship writes
+    # Reuse existing outfit if one already exists for this combination
+    target_ids = {it.id for it in items}
+    outfit = None
+    for o in current_user.outfits.all():
+        if {it.id for it in o.items} == target_ids:
+            outfit = o
+            break
 
-    outfit.items.extend(items)  # outfit.id is set; FK in outfit_items is valid
+    if not outfit:
+        outfit = Outfit(
+            user_id=current_user.id,
+            title=title,
+            description=f"AI Recommendation (Feedback: {reaction})",
+            occasion=occasion,
+            season=season,
+            is_favorite=(reaction == "favorited"),
+            compatibility_score=score,
+            recommendation_type="ai_feedback",
+        )
+        db.session.add(outfit)
+        db.session.flush()
+        outfit.items.extend(items)
 
     if outfit.id is None:
         db.session.rollback()
@@ -151,10 +192,11 @@ def submit_feedback():
     prefs = UserPreferences.get_or_create(current_user.id)
 
     if reaction in ("liked", "favorited"):
-        # Boost preferred colors and styles from liked items
+        # Boost preferred colors and styles, and add liked clothes to favorites
         colors = prefs.preferred_colors_list
         styles = prefs.preferred_styles_list
         for item in items:
+            item.is_favorite = True  # Automatically available in "Favorites Only" tab
             if item.color and item.color not in colors:
                 colors.append(item.color)
             if item.style and item.style not in styles:
@@ -162,18 +204,55 @@ def submit_feedback():
         prefs.preferred_colors_list = colors[-10:]   # keep last 10
         prefs.preferred_styles_list = styles[-6:]
 
+        # Update stylist session results if present so UI updates seamlessly
+        raw_sess = session.get("stylist_results")
+        if raw_sess:
+            try:
+                stored = json.loads(raw_sess)
+                target_ids = {it.id for it in items}
+                for rec_dict in stored:
+                    for it in rec_dict.get("items", []):
+                        if it.get("id") in target_ids:
+                            it["is_favorite"] = True
+                session["stylist_results"] = json.dumps(stored)
+            except Exception:
+                pass
+
     elif reaction == "disliked":
-        # Track disliked colors
+        # Track disliked colors and remove disliked clothes from favorites
         disliked = prefs.disliked_colors_list
         for item in items:
+            item.is_favorite = False  # Remove from "Favorites Only" tab
             if item.color and item.color not in disliked:
                 disliked.append(item.color)
         prefs.disliked_colors_list = disliked[-10:]
 
+        # Update stylist session results if present so UI updates seamlessly
+        raw_sess = session.get("stylist_results")
+        if raw_sess:
+            try:
+                stored = json.loads(raw_sess)
+                target_ids = {it.id for it in items}
+                for rec_dict in stored:
+                    for it in rec_dict.get("items", []):
+                        if it.get("id") in target_ids:
+                            it["is_favorite"] = False
+                session["stylist_results"] = json.dumps(stored)
+            except Exception:
+                pass
+
     db.session.commit()
 
     emoji = {"liked": "👍", "disliked": "👎", "favorited": "⭐"}.get(reaction, "")
-    flash(f"{emoji} Feedback saved! Future recommendations will improve.", "success")
+    if reaction in ("liked", "favorited"):
+        flash(f"{emoji} Outfit liked! Its items are now available in your Favorites tab.", "success")
+    elif reaction == "disliked":
+        flash(f"{emoji} Outfit disliked. Its items have been removed from your Favorites.", "info")
+    else:
+        flash(f"{emoji} Feedback saved! Future recommendations will improve.", "success")
+
+    if request.referrer:
+        return redirect(request.referrer)
     return redirect(url_for("recommendations.index", occasion=occasion, season=season))
 
 

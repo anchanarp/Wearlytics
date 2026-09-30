@@ -199,6 +199,12 @@ _IMAGENET_KEYWORD_MAP: list[tuple[str, str, str]] = [
     # Bottoms
     ("jean",            "Bottoms",     "Jeans"),
     ("denim",           "Bottoms",     "Jeans"),
+    ("trouser",         "Bottoms",     "Trousers"),
+    ("chino",           "Bottoms",     "Trousers"),
+    ("pant",            "Bottoms",     "Trousers"),
+    ("capri",           "Bottoms",     "Trousers"),
+    ("legging",         "Bottoms",     "Leggings"),
+    ("shorts",          "Bottoms",     "Shorts"),
     ("miniskirt",       "Bottoms",     "Skirt"),
     ("skirt",           "Bottoms",     "Skirt"),
     ("stocking",        "Bottoms",     "Leggings"),
@@ -230,11 +236,24 @@ _IMAGENET_KEYWORD_MAP: list[tuple[str, str, str]] = [
     ("sombrero",        "Accessories", "Hat"),
     ("purse",           "Accessories", "Bag"),
     ("backpack",        "Accessories", "Bag"),
+    ("mailbag",         "Accessories", "Bag"),
+    ("handbag",         "Accessories", "Bag"),
+    ("satchel",         "Accessories", "Bag"),
+    ("tote bag",        "Accessories", "Bag"),
+    ("wallet",          "Accessories", "Bag"),
+    ("bag",             "Accessories", "Bag"),
+    ("clutch",          "Accessories", "Bag"),
     ("sunglasses",      "Accessories", "Sunglasses"),
     ("sunglass",        "Accessories", "Sunglasses"),
     ("bolo tie",        "Accessories", "Tie"),
     ("mortarboard",     "Accessories", "Hat"),
     ("shower cap",      "Accessories", "Hat"),
+    ("watch",           "Accessories", "Watch"),
+    ("wristwatch",      "Accessories", "Watch"),
+    ("necklace",        "Accessories", "Jewellery"),
+    ("bead",            "Accessories", "Jewellery"),
+    ("umbrella",        "Accessories", "Accessories"),
+    ("punching bag",    "Accessories", "Bag"),
 ]
 
 
@@ -268,9 +287,13 @@ def _decode_imagenet_top5(logits) -> Optional[tuple[str, str, float]]:
 
             for keyword, category, clothing_type in _IMAGENET_KEYWORD_MAP:
                 if keyword in label:
-                    # Scale confidence: rank 0 = full prob, rank 4 = 60% of prob
-                    scaled = prob * (1.0 - rank * 0.08)
-                    return category, clothing_type, round(min(scaled, 0.95), 3)
+                    # Use a fixed confidence based on match rank rather than
+                    # the raw ImageNet softmax probability (which is spread
+                    # across 1000 classes and is always misleadingly low).
+                    # Rank 0 = strongest signal (82%), rank 4 = weakest (60%).
+                    rank_confidence = [0.82, 0.76, 0.70, 0.65, 0.60]
+                    fixed_conf = rank_confidence[rank] if rank < len(rank_confidence) else 0.60
+                    return category, clothing_type, fixed_conf
 
         return None
     except Exception:
@@ -281,6 +304,11 @@ def _classify_with_custom_model(image_path: str) -> Optional[dict]:
     """
     Run inference using the fine-tuned clothing model (clothing_model.pt).
     Returns result dict or None.
+
+    Sanity-checks the prediction against:
+      1. A minimum confidence threshold (0.75) — the model is unreliable below this.
+      2. ImageNet top-5 cross-validation — if the fine-tuned model says Shoes/Tops
+         but ImageNet clearly sees a bag, or vice-versa, we bail to Tier 1B.
     """
     model = _load_custom_model()
     if model is None:
@@ -296,6 +324,67 @@ def _classify_with_custom_model(image_path: str) -> Optional[dict]:
             conf, idx = torch.max(probs, dim=1)
         category = _MODEL_CATEGORIES[int(idx)]
         confidence = round(float(conf), 3)
+
+        # ------------------------------------------------------------------
+        # Gate 1: minimum confidence threshold
+        # The fine-tuned model is unreliable under 0.75 — let Tier 1B decide.
+        # ------------------------------------------------------------------
+        if confidence < 0.75:
+            return None
+
+        # ------------------------------------------------------------------
+        # Gate 2: cross-validate against ImageNet top-5 keywords
+        #
+        # Load the ImageNet model and check its top-5 labels.
+        # If ImageNet sees a bag-like label (mailbag, purse, backpack, …) but
+        # the fine-tuned model predicts Shoes or Tops, the fine-tuned model is
+        # almost certainly wrong — bail to Tier 1B.
+        # Similarly, if the fine-tuned model says Accessories but ImageNet sees
+        # a portrait-only garment label (jean, trouser, …) reject it.
+        # ------------------------------------------------------------------
+        try:
+            from torchvision.models import MobileNet_V2_Weights as _W
+            _inet_model = _load_imagenet_model()
+            if _inet_model is not None:
+                with torch.no_grad():
+                    _inet_logits = _inet_model(tensor)
+                _inet_probs = torch.nn.functional.softmax(_inet_logits, dim=1)[0]
+                _top5 = torch.topk(_inet_probs, 5)
+                _inet_cats = _W.IMAGENET1K_V1.meta["categories"]
+                _top5_labels = " ".join(
+                    _inet_cats[int(i)].lower() for i in _top5.indices
+                )
+
+                # Bag signal in ImageNet but fine-tuned says something else
+                _bag_keywords = ("bag", "purse", "satchel", "backpack",
+                                 "clutch", "tote", "wallet", "handbag")
+                _inet_sees_bag = any(kw in _top5_labels for kw in _bag_keywords)
+                if _inet_sees_bag and category not in ("Accessories",):
+                    return None   # ImageNet says bag, fine-tuned disagrees → Tier 1B
+
+                # Garment signal in ImageNet but fine-tuned says Accessories
+                _garment_keywords = ("jean", "trouser", "pant", "skirt",
+                                     "shirt", "blouse", "jersey", "dress",
+                                     "coat", "jacket", "sneaker", "boot")
+                _inet_sees_garment = any(kw in _top5_labels for kw in _garment_keywords)
+                if _inet_sees_garment and category == "Accessories":
+                    return None   # ImageNet says garment, fine-tuned says Accessories → Tier 1B
+
+                # Extra gate: fine-tuned says Accessories, ImageNet sees NEITHER
+                # bag NOR garment, AND the image is very bright (mean > 200).
+                # This is the white-garment-on-white-backdrop false-positive signature.
+                if category == "Accessories" and not _inet_sees_bag:
+                    try:
+                        from PIL import Image as _PIL2
+                        import numpy as _np2
+                        _mean_b = float(_np2.array(_PIL2.open(image_path).convert("RGB")).mean())
+                        if _mean_b > 200:
+                            return None  # very bright + no bag signal → reject Accessories
+                    except Exception:
+                        pass
+        except Exception:
+            pass  # Cross-validation failed; keep the fine-tuned result
+
         clothing_type = _DEFAULT_TYPE.get(category, "")
         return {
             "category":      category,
@@ -344,20 +433,40 @@ def _classify_with_imagenet(image_path: str) -> Optional[dict]:
 def _imagenet_shape_heuristic(image_path: str) -> Optional[dict]:
     """
     When ImageNet top-5 contains no clothing class, use image aspect ratio
-    (via Pillow, no OpenCV) to make a basic guess.
-    Confidence capped at 0.45 so the user always gets a correction prompt.
+    and mean brightness to make a better guess.
+    Confidence is capped at 0.45 so the user always gets a correction prompt.
+
+    Heuristic rules (h/w = aspect ratio):
+        aspect < 0.75                → Shoes (wide, landscape)
+        aspect > 1.8                 → Dresses (very tall)
+        1.0 ≤ aspect ≤ 1.8          → Bottoms (portrait product photo,
+                                       especially common for trousers/pants)
+        aspect 0.75–1.0, bright bg  → Tops (square-ish, light background)
+        else                        → Tops
     """
     try:
         from PIL import Image
-        img = Image.open(image_path)
+        import numpy as _np
+        img = Image.open(image_path).convert("RGB")
         w, h = img.size
         aspect = h / w if w > 0 else 1.0
+        mean_brightness = float(_np.array(img).mean())
 
         if aspect < 0.75:
+            # Landscape / wide → likely a shoe pair or flat lay
             return {"category": "Shoes", "clothing_type": "Sneakers", "confidence": 0.42, "source": "shape_heuristic"}
-        elif aspect > 1.5:
+        elif aspect > 1.8:
+            # Very tall → maxi dress or long skirt
             return {"category": "Dresses", "clothing_type": "Casual Dress", "confidence": 0.40, "source": "shape_heuristic"}
+        elif 1.0 <= aspect <= 1.8:
+            # Portrait product photo — common for trousers, jeans, leggings
+            # Light background (>200) strongly suggests a product-photography shot
+            if mean_brightness > 160:
+                return {"category": "Bottoms", "clothing_type": "Trousers", "confidence": 0.44, "source": "shape_heuristic"}
+            else:
+                return {"category": "Bottoms", "clothing_type": "Jeans", "confidence": 0.40, "source": "shape_heuristic"}
         else:
+            # Square-ish → most likely a top
             return {"category": "Tops", "clothing_type": "T-Shirt", "confidence": 0.38, "source": "shape_heuristic"}
     except Exception:
         return None
@@ -448,12 +557,14 @@ def classify(image_path: str) -> dict:
     if not image_path or not os.path.isfile(image_path):
         return {"category": "Tops", "clothing_type": "T-Shirt", "confidence": 0.0, "source": "fallback"}
 
-    # --- Tier 1A: Fine-tuned MobileNetV2 (best accuracy) ---
+    # --- Tier 1A: Fine-tuned MobileNetV2 ---
+    # Threshold (0.75) and ImageNet cross-validation are applied inside
+    # _classify_with_custom_model(); it returns None if the result is suspect.
     result = _classify_with_custom_model(image_path)
     if result:
         return result
 
-    # --- Tier 1B: ImageNet-pretrained MobileNetV2 (no training needed) ---
+    # --- Tier 1B: ImageNet-pretrained MobileNetV2 (keyword-based mapping) ---
     result = _classify_with_imagenet(image_path)
     if result:
         return result

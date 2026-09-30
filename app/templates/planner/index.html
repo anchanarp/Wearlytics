@@ -11,6 +11,7 @@
   </div>
 </div>
 
+{# ── 7-Day Schedule Grid ── #}
 <div class="planner-grid">
   {% for entry in schedule %}
   {% set plan = entry.plan %}
@@ -28,8 +29,8 @@
 
     {# ── Custom Outfit block ── #}
     {% if has_custom %}
-      <div class="assigned-outfit-box" style="border-left: 4px solid #7c3aed;">
-        <p class="eyebrow" style="font-size:10px;color:#7c3aed;margin-bottom:2px;">✏️ Custom Outfit</p>
+      <div class="assigned-outfit-box" style="border-left: 4px solid var(--primary, #c99a6b);">
+        <p class="eyebrow" style="font-size:10px;color:var(--primary, #c99a6b);margin-bottom:2px;">✏️ Custom Outfit</p>
         <h4>{{ plan.custom_outfit.name or 'My Custom Outfit' }}</h4>
         {% if plan.custom_outfit.note %}
           <p class="planner-notes">📝 {{ plan.custom_outfit.note }}</p>
@@ -41,13 +42,13 @@
         </div>
         <div class="d-flex gap-2 mt-2">
           <a href="{{ url_for('planner.edit_custom_outfit', outfit_id=plan.custom_outfit.id) }}"
-             class="btn btn-sm" style="background:#f0eaff;color:#7c3aed;border:1px solid #c4b5fd;border-radius:8px;font-size:12px;font-weight:700;padding:5px 10px;flex:1;text-align:center;">
+             class="btn btn-sm" style="background:rgba(201,154,107,0.15);color:var(--primary,#c99a6b);border:1px solid rgba(201,154,107,0.35);border-radius:8px;font-size:11px;font-weight:700;padding:5px 8px;flex:1;text-align:center;text-decoration:none;">
             ✏️ Edit
           </a>
           <form action="{{ url_for('planner.delete_custom_outfit', outfit_id=plan.custom_outfit.id) }}" method="post" style="flex:1;">
             <button type="submit" class="btn w-100" onclick="return confirm('Remove this custom outfit?')"
-              style="background:#fff0f2;color:#d63031;border:1px solid #ffd6d8;border-radius:8px;font-size:12px;font-weight:700;padding:5px;cursor:pointer;">
-              🗑 Delete
+              style="background:#fff0f2;color:#d63031;border:1px solid #ffd6d8;border-radius:8px;font-size:11px;font-weight:700;padding:5px;cursor:pointer;">
+              🗑 Remove
             </button>
           </form>
         </div>
@@ -56,7 +57,8 @@
     {# ── AI / Recommended Outfit block ── #}
     {% elif has_ai %}
       <div class="assigned-outfit-box">
-        <h4>{{ plan.outfit.title }}</h4>
+        <p class="eyebrow" style="font-size:10px;color:var(--primary);margin-bottom:2px;">✦ Assigned Outfit</p>
+        <h4>{{ plan.outfit.display_name }}</h4>
         <p class="meta-info">{{ plan.outfit.occasion }} &bull; {{ plan.outfit.items|length }} items</p>
         <div class="items-mini-thumbnails">
           {% for item in plan.outfit.items %}
@@ -66,12 +68,20 @@
         {% if plan.notes %}
           <p class="planner-notes">📝 {{ plan.notes }}</p>
         {% endif %}
-        <form action="{{ url_for('planner.clear_day', plan_id=plan.id) }}" method="post" style="margin-top:8px;">
-          <button type="submit" class="btn w-100"
-            style="background:#fff0f2;color:#d63031;border:1px solid #ffd6d8;border-radius:8px;font-size:12px;font-weight:800;padding:6px;cursor:pointer;">
-            ✕ Clear Day
-          </button>
-        </form>
+        <div class="d-flex gap-2 mt-2">
+          <form action="{{ url_for('planner.clear_day', plan_id=plan.id) }}" method="post" style="flex:1;">
+            <button type="submit" class="btn w-100"
+              style="background:#fff0f2;color:#d63031;border:1px solid #ffd6d8;border-radius:8px;font-size:11px;font-weight:700;padding:5px 8px;cursor:pointer;">
+              ✕ Remove from {{ entry.day }}
+            </button>
+          </form>
+          <form action="{{ url_for('planner.delete_saved_outfit', outfit_id=plan.outfit.id) }}" method="post" style="flex:1;" onsubmit="return confirm('Delete this saved outfit completely from your collection?');">
+            <button type="submit" class="btn w-100"
+              style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;border-radius:8px;font-size:11px;font-weight:700;padding:5px 8px;cursor:pointer;">
+              🗑 Delete Outfit
+            </button>
+          </form>
+        </div>
       </div>
 
     {% else %}
@@ -88,26 +98,146 @@
     </a>
 
     {# ── AI Outfit assignment form ── #}
-    <form action="{{ url_for('planner.assign_outfit') }}" method="post" class="planner-form mt-2">
+    <form action="{{ url_for('planner.assign_outfit') }}" method="post" class="planner-form mt-2" id="planner-form-{{ entry.day }}">
       <input type="hidden" name="day_of_week" value="{{ entry.day }}">
       <div class="mb-2">
-        <select name="outfit_id" class="form-select-custom form-select-sm">
+        <label for="select-{{ entry.day }}" style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; display:block;">
+          Choose AI Outfit
+        </label>
+        <select name="outfit_id" id="select-{{ entry.day }}" class="form-select-custom form-select-sm" onchange="syncOutfitSelection(this, '{{ entry.day }}')">
           <option value="">-- Choose AI Outfit --</option>
           {% for outfit in outfits %}
             <option value="{{ outfit.id }}" {% if plan and plan.outfit_id == outfit.id %}selected{% endif %}>
-              {{ outfit.title }} ({{ outfit.occasion }})
+              {{ outfit.display_name }}
             </option>
           {% endfor %}
         </select>
       </div>
+
+      {# ── Saved Dress / Outfit dropdown directly below Choose AI Outfit ── #}
+      <details class="saved-dress-dropdown mb-2" id="saved-dress-dropdown-{{ entry.day }}">
+        <summary>
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span>👗</span> Saved Dress / Outfit
+          </span>
+          <span style="display:flex; align-items:center; gap:6px;">
+            <span style="font-size:10px; font-weight:600; color:var(--primary); background:var(--primary-pale, #f0edff); padding:2px 7px; border-radius:10px;">
+              {{ outfits|length }} saved
+            </span>
+            <span class="dropdown-chevron">▼</span>
+          </span>
+        </summary>
+
+        <div class="saved-dress-content">
+          {% if outfits %}
+            {% for outfit in outfits %}
+            <div class="saved-dress-item mb-2 p-2" id="saved-item-{{ entry.day }}-{{ outfit.id }}" style="background:#fff; border:1px solid var(--line); border-radius:8px;">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <div class="d-flex gap-1" style="flex-shrink:0;">
+                  {% for item in outfit.items %}
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}" title="{{ item.name }} ({{ item.color }})"
+                         style="width:34px; height:34px; object-fit:cover; border-radius:6px; border:1px solid #eef0f6;">
+                  {% endfor %}
+                </div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:11px; font-weight:700; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="{{ outfit.display_name }}">
+                    {{ outfit.display_name }}
+                  </div>
+                  <div style="font-size:10px; color:var(--muted);">
+                    {{ outfit.occasion }} &bull; {{ outfit.items|length }} items
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex gap-1">
+                {% if plan and plan.outfit_id == outfit.id %}
+                  <span style="flex:1; background:#e6faf5; color:#00b894; font-size:10px; font-weight:700; padding:5px; text-align:center; border-radius:6px;">
+                    ✓ Added to {{ entry.day }}
+                  </span>
+                  <button type="button" onclick="removeOutfitFromDay('{{ plan.id }}', '{{ entry.day }}')" class="btn btn-sm"
+                          style="background:#fff0f2; color:#ef4444; border:1px solid #fee2e2; border-radius:6px; font-size:10px; font-weight:700; padding:4px 8px; cursor:pointer;" title="Remove from {{ entry.day }}">
+                    ✕ Remove
+                  </button>
+                {% else %}
+                  <button type="button" onclick="assignSavedOutfit('{{ entry.day }}', '{{ outfit.id }}')" class="btn btn-sm"
+                          style="flex:1; background:var(--primary, #c99a6b); color:#12100d; font-size:11px; font-weight:700; border-radius:6px; padding:4px 8px; border:none; cursor:pointer;">
+                    + Add to {{ entry.day }}
+                  </button>
+                {% endif %}
+                <button type="button" onclick="deleteSavedOutfit('{{ outfit.id }}')" class="btn btn-sm"
+                        style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; border-radius:6px; font-size:10px; font-weight:700; padding:4px 8px; cursor:pointer;" title="Delete this saved outfit completely from collection">
+                  🗑 Delete
+                </button>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div style="font-size:11px; color:var(--muted); text-align:center; padding:10px 4px;">
+              <p style="margin:0 0 6px 0;">No saved dresses yet.</p>
+              <a href="{{ url_for('stylist.index') }}" class="btn btn-sm" style="background:var(--primary-pale, #f0edff); color:var(--primary); font-size:10px; font-weight:700; border-radius:6px; padding:4px 8px; text-decoration:none;">
+                Go to AI Stylist ✨
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </details>
+
       <div class="mb-2">
         <input type="text" name="notes" class="form-input-custom form-input-sm"
           placeholder="Add note (e.g. Work presentation)"
           value="{{ plan.notes if plan else '' }}">
       </div>
-      <button type="submit" class="btn primary-button btn-sm w-100">Save {{ entry.day }}</button>
+      <button type="submit" class="btn primary-button btn-sm w-100">
+        {% if has_ai or has_custom %}Update {{ entry.day }}{% else %}Save {{ entry.day }}{% endif %}
+      </button>
     </form>
   </div>
   {% endfor %}
 </div>
+
+<script>
+function assignSavedOutfit(day, outfitId) {
+  const select = document.getElementById('select-' + day);
+  if (select) {
+    select.value = outfitId;
+  }
+  const form = document.getElementById('planner-form-' + day);
+  if (form) {
+    form.submit();
+  }
+}
+
+function removeOutfitFromDay(planId, day) {
+  if (!confirm('Remove outfit from ' + day + '?')) return;
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '{{ url_for("planner.clear_day", plan_id=0) }}'.replace('/0/', '/' + planId + '/');
+  document.body.appendChild(form);
+  form.submit();
+}
+
+function deleteSavedOutfit(outfitId) {
+  if (!confirm('Remove this saved outfit completely from your collection?')) return;
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '{{ url_for("planner.delete_saved_outfit", outfit_id=0) }}'.replace('/0/', '/' + outfitId + '/');
+  document.body.appendChild(form);
+  form.submit();
+}
+
+function syncOutfitSelection(selectElem, day) {
+  const val = selectElem.value;
+  if (!val) return;
+  const dropdown = document.getElementById('saved-dress-dropdown-' + day);
+  if (dropdown) {
+    dropdown.open = true;
+  }
+  const target = document.getElementById('saved-item-' + day + '-' + val);
+  if (target) {
+    target.style.borderColor = 'var(--primary, #c99a6b)';
+    target.style.background = 'rgba(201, 154, 107, 0.08)';
+    target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+</script>
 {% endblock %}

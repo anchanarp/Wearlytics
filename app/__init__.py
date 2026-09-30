@@ -6,14 +6,21 @@ from config import Config
 from app.extensions import db, login_manager, migrate
 
 
-def create_app(config_class=Config):
-    """Create and configure the Flask application."""
+def create_app(config_class=Config, test_config=None):
+    """Create and configure the Flask application.
+    Accept optional test_config dict for overriding settings in tests.
+    """
     app = Flask(__name__)
     app.config.from_object(config_class)
-    # Override DB URI for test environment to use in‑memory SQLite, avoiding external MySQL dependency.
-    if app.config.get("TESTING"):
+    # Apply test configuration overrides if provided
+    if test_config:
+        app.config.update(test_config)
+    # Override DB URI for test environment to use in‑memory SQLite only if not already set.
+    if app.config.get("TESTING") and not app.config.get("SQLALCHEMY_DATABASE_URI"):
+        # Ensure a clean in‑memory SQLite database for tests.
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
     # Limit uploads to 16 MB
+    app.config.setdefault("MAX_CONTENT_LENGTH", 16 * 1024 * 1024)
     app.config.setdefault("MAX_CONTENT_LENGTH", 16 * 1024 * 1024)
 
     db.init_app(app)

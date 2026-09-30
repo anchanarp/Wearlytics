@@ -40,7 +40,7 @@
           <ul class="admin-recent-list">
             {% for u in recent_users %}
             <li class="admin-recent-item">
-              <div class="admin-avatar" style="background: {{ u.avatar_color or '#6c5ce7' }};">
+              <div class="admin-avatar" style="background: {{ u.avatar_color or '#c99a6b' }};">
                 {{ u.name[:2].upper() if u.name else 'US' }}
               </div>
               <div class="admin-recent-info">
@@ -100,7 +100,6 @@
   <div class="admin-card-header">Quick Actions</div>
   <div class="admin-card-body d-flex flex-wrap gap-2">
     <a href="{{ url_for('admin.users') }}" class="admin-btn admin-btn-primary">Manage Users</a>
-    <a href="{{ url_for('admin.clothing') }}" class="admin-btn admin-btn-ghost">View Clothing</a>
     <a href="{{ url_for('admin.outfits') }}" class="admin-btn admin-btn-ghost">View Outfits</a>
     <a href="{{ url_for('admin.feedback') }}" class="admin-btn admin-btn-ghost">View Feedback</a>
     <a href="{{ url_for('admin.analytics') }}" class="admin-btn admin-btn-ghost">Analytics</a>

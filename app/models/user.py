@@ -17,8 +17,9 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False, index=True)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)  # Admin flag
+    is_demo = db.Column(db.Boolean, default=False, nullable=False)  # Demo user flag
     password_hash = db.Column(db.String(256), nullable=False)
-    avatar_color = db.Column(db.String(20), nullable=True, default="#6c5ce7")
+    avatar_color = db.Column(db.String(20), nullable=True, default="#c99a6b")
     """Hex color for the user's avatar (profile photo placeholder)."""
     bio = db.Column(db.String(200), nullable=True)
     """Short profile bio / tagline."""

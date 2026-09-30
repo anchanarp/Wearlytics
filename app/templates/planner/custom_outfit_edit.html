@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Custom Outfit | Wearlytics{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">Weekly Planner</p>
+    <h1>Edit Custom Outfit</h1>
+    <p>Click items to select or deselect them. Changes are saved when you click <strong>Save Changes</strong>.</p>
+  </div>
+</div>
+
+<style>
+  .selectable-item {
+    cursor: pointer;
+    border: 3px solid transparent;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+    background: var(--card-bg, #fff);
+  }
+  .selectable-item:hover {
+    border-color: rgba(201, 154, 107, 0.4);
+    box-shadow: 0 4px 16px rgba(201, 154, 107, 0.2);
+  }
+  .selectable-item.selected {
+    border-color: var(--primary, #c99a6b);
+    box-shadow: 0 0 0 3px rgba(201, 154, 107, 0.25);
+  }
+  .selectable-item .overlay-check {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: var(--primary, #c99a6b);
+    color: #12100d;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 5;
+  }
+  .selectable-item.selected .overlay-check {
+    display: flex;
+  }
+  .selectable-item img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    display: block;
+  }
+  .item-label {
+    font-size: 12px;
+    text-align: center;
+    padding: 6px 4px;
+    font-weight: 600;
+    word-break: break-word;
+  }
+  #preview-section {
+    background: var(--card-bg, #f9f9f9);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    min-height: 80px;
+  }
+  #item-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  #item-preview img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--primary, #c99a6b);
+  }
+  .preview-empty {
+    color: #aaa;
+    font-size: 13px;
+  }
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 14px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+</style>
+
+<form action="{{ url_for('planner.edit_custom_outfit_post', outfit_id=outfit.id) }}" method="post" id="custom-outfit-form" class="mt-4">
+  <div class="mb-3">
+    <label for="name" class="form-label">Outfit Name (optional)</label>
+    <input type="text" name="name" id="name" class="form-control"
+           placeholder="e.g. Summer Casual"
+           value="{{ outfit.name or '' }}" />
+  </div>
+  <div class="mb-3">
+    <label for="note" class="form-label">Note (optional)</label>
+    <textarea name="note" id="note" class="form-control" rows="2"
+              placeholder="Add any notes">{{ outfit.note or '' }}</textarea>
+  </div>
+
+  <!-- Live Preview -->
+  <div id="preview-section">
+    <strong>Selected Items:</strong>
+    <div id="item-preview">
+      <span class="preview-empty">No items selected yet — click cards below to add them.</span>
+    </div>
+  </div>
+
+  <h3>Select Items</h3>
+  <p style="font-size:13px;color:#888;">Rules: At most 1 Top · At most 1 Bottom · Dresses cannot mix with Tops/Bottoms</p>
+
+  {% for category, items in categories.items() %}
+  <h4 class="mt-3">{{ category }}</h4>
+  <div class="category-grid">
+    {% for item in items %}
+    <div class="selectable-item{% if item.id in selected_ids %} selected{% endif %}"
+         data-item-id="{{ item.id }}"
+         data-category="{{ item.category }}"
+         title="{{ item.name }}">
+      <img src="{{ item.image_url }}" alt="{{ item.name }}" />
+      <div class="overlay-check">✓</div>
+      <div class="item-label">{{ item.name }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-muted">No available wardrobe items found. Upload some clothes first!</p>
+  {% endfor %}
+
+  <input type="hidden" name="item_ids" id="item_ids" value="" />
+
+  <div class="d-flex gap-3 mt-4">
+    <button type="submit" class="btn btn-primary" id="save-btn">Save Changes</button>
+    <a href="{{ url_for('planner.index') }}" class="btn btn-outline-secondary">Cancel</a>
+  </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const selectableItems = document.querySelectorAll('.selectable-item');
+  const itemIdsInput    = document.getElementById('item_ids');
+  const previewDiv      = document.getElementById('item-preview');
+  const saveBtn         = document.getElementById('save-btn');
+
+  // Pre-populate selected set from already-.selected cards (set by Jinja)
+  const selected = new Set();
+  selectableItems.forEach(card => {
+    if (card.classList.contains('selected')) {
+      selected.add(card.dataset.itemId);
+    }
+  });
+
+  function updateUI() {
+    itemIdsInput.value = Array.from(selected).join(',');
+    saveBtn.disabled   = selected.size === 0;
+
+    if (selected.size === 0) {
+      previewDiv.innerHTML = '<span class="preview-empty">No items selected yet — click cards below to add them.</span>';
+    } else {
+      previewDiv.innerHTML = '';
+      selected.forEach(id => {
+        const card = document.querySelector(`.selectable-item[data-item-id='${id}']`);
+        if (!card) return;
+        const img  = document.createElement('img');
+        img.src    = card.querySelector('img').src;
+        img.alt    = card.querySelector('.item-label').textContent.trim();
+        img.title  = img.alt;
+        previewDiv.appendChild(img);
+      });
+    }
+  }
+
+  function canSelect(card) {
+    const category = card.dataset.category;
+    const selectedCategories = Array.from(selected).map(id =>
+      document.querySelector(`.selectable-item[data-item-id='${id}']`).dataset.category
+    );
+    if (category === 'Dresses' && (selectedCategories.includes('Tops') || selectedCategories.includes('Bottoms'))) {
+      alert('Remove Tops and Bottoms before adding a Dress.');
+      return false;
+    }
+    if ((category === 'Tops' || category === 'Bottoms') && selectedCategories.includes('Dresses')) {
+      alert('Remove the Dress before adding a Top or Bottom.');
+      return false;
+    }
+    const singleItemCategories = ['Tops', 'Bottoms', 'Shoes', 'Outerwear'];
+    if (singleItemCategories.includes(category) && selectedCategories.filter(c => c === category).length >= 1) {
+      alert(`You can only select one ${category.replace(/s$/, '')} per outfit.`);
+      return false;
+    }
+    return true;
+  }
+
+  selectableItems.forEach(card => {
+    card.addEventListener('click', function () {
+      const id = this.dataset.itemId;
+      if (selected.has(id)) {
+        selected.delete(id);
+        this.classList.remove('selected');
+      } else {
+        if (!canSelect(this)) return;
+        selected.add(id);
+        this.classList.add('selected');
+      }
+      updateUI();
+    });
+  });
+
+  // Render initial preview for pre-selected items
+  updateUI();
+});
+</script>
+{% endblock %}

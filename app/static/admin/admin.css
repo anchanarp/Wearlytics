@@ -4,20 +4,29 @@
    the parent base template; defines admin-specific layout.
    ============================================================ */
 
+:root, [data-theme="dark"] {
+  --primary-color: #c99a6b;
+  --bg-secondary: #0c0c0e;
+  --sidebar-bg: #141417;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-primary: #f7f5f0;
+  --text-muted: #7e7972;
+}
+
 /* ── Layout shell ─────────────────────────────────────────── */
 .admin-shell {
   display: flex;
   min-height: 100vh;
-  background: var(--bg-secondary, #f4f5f7);
-  color: var(--text-primary, #1a1a2e);
+  background: var(--bg-secondary, #0c0c0e);
+  color: var(--text-primary, #f7f5f0);
 }
 
 /* ── Sidebar ───────────────────────────────────────────────── */
 .admin-sidebar {
-  width: 240px;
+  width: 250px;
   flex-shrink: 0;
-  background: var(--sidebar-bg, #fff);
-  border-right: 1px solid var(--border-color, #e8eaf0);
+  background: var(--sidebar-bg, #141417);
+  border-right: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
   display: flex;
   flex-direction: column;
   padding: 0 0 1.5rem;
@@ -30,38 +39,41 @@
 .admin-sidebar .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 1.4rem 1.25rem 1rem;
+  font-family: var(--font-serif, 'Playfair Display', serif);
   font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--text-primary, #1a1a2e);
+  font-size: 1.15rem;
+  color: var(--text-primary, #f7f5f0);
   text-decoration: none;
-  border-bottom: 1px solid var(--border-color, #e8eaf0);
+  border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
 }
 
 .admin-sidebar .brand-mark {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--primary-color, #6c5ce7);
-  color: #fff;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #dfb17b, #b88652);
+  color: #12100d;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 1.1rem;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(201, 154, 107, 0.3);
 }
 
 .admin-sidebar .admin-badge {
   display: inline-block;
-  background: var(--primary-color, #6c5ce7);
-  color: #fff;
-  font-size: 0.6rem;
+  background: rgba(201, 154, 107, 0.2);
+  color: #dfb17b;
+  border: 1px solid rgba(201, 154, 107, 0.4);
+  font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 2px 7px;
+  border-radius: 999px;
   text-transform: uppercase;
   margin-left: auto;
 }
@@ -96,10 +108,17 @@
   flex-shrink: 0;
 }
 
-.admin-nav-link:hover,
+.admin-nav-link:hover {
+  background: rgba(201, 154, 107, 0.1);
+  color: #dfb17b;
+}
+
 .admin-nav-link.active {
-  background: var(--primary-color, #6c5ce7);
-  color: #fff;
+  background: rgba(201, 154, 107, 0.16);
+  border: 1px solid var(--primary-color, #c99a6b);
+  color: #dfb17b;
+  font-weight: 700;
+  box-shadow: 0 0 14px rgba(201, 154, 107, 0.15);
 }
 
 .admin-sidebar-bottom {
@@ -252,7 +271,7 @@
 .admin-stat-value {
   font-size: 2rem;
   font-weight: 800;
-  color: var(--primary-color, #6c5ce7);
+  color: var(--primary-color, #c99a6b);
   line-height: 1.1;
 }
 
@@ -263,8 +282,8 @@
 
 /* ── Section Card ─────────────────────────────────────────── */
 .admin-card {
-  background: var(--sidebar-bg, #fff);
-  border: 1px solid var(--border-color, #e8eaf0);
+  background: var(--sidebar-bg, #141417);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
   border-radius: 12px;
   margin-bottom: 1.5rem;
   overflow: hidden;
@@ -272,10 +291,10 @@
 
 .admin-card-header {
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--border-color, #e8eaf0);
+  border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
   font-weight: 700;
   font-size: 0.95rem;
-  color: var(--text-primary, #1a1a2e);
+  color: var(--text-primary, #f7f5f0);
 }
 
 .admin-card-body {
@@ -292,27 +311,28 @@
 }
 
 .admin-search-input {
-  border: 1px solid var(--border-color, #e8eaf0);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
   border-radius: 8px;
   padding: 0.45rem 0.85rem;
   font-size: 0.875rem;
-  background: var(--bg-secondary, #f4f5f7);
-  color: var(--text-primary, #1a1a2e);
+  background: #111114;
+  color: var(--text-primary, #f7f5f0);
   min-width: 200px;
   outline: none;
 }
 .admin-search-input:focus {
-  border-color: var(--primary-color, #6c5ce7);
-  background: var(--sidebar-bg, #fff);
+  border-color: var(--primary-color, #c99a6b);
+  background: #18181c;
+  box-shadow: 0 0 0 2px rgba(201, 154, 107, 0.2);
 }
 
 .admin-select {
-  border: 1px solid var(--border-color, #e8eaf0);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
   border-radius: 8px;
   padding: 0.45rem 0.75rem;
   font-size: 0.875rem;
-  background: var(--bg-secondary, #f4f5f7);
-  color: var(--text-primary, #1a1a2e);
+  background: #111114;
+  color: var(--text-primary, #f7f5f0);
   cursor: pointer;
 }
 
@@ -330,7 +350,7 @@
   transition: opacity 0.15s;
 }
 .admin-btn:hover { opacity: 0.85; }
-.admin-btn-primary { background: var(--primary-color, #6c5ce7); color: #fff; }
+.admin-btn-primary { background: linear-gradient(135deg, #dfb17b, #b88652); color: #12100d; font-weight: 750; }
 .admin-btn-danger  { background: #e74c3c; color: #fff; }
 .admin-btn-warning { background: #f39c12; color: #fff; }
 .admin-btn-success { background: #27ae60; color: #fff; }
@@ -407,7 +427,7 @@
 }
 
 /* ── Badges ───────────────────────────────────────────────── */
-.badge-admin   { background: #ede9fe; color: #6c5ce7; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.badge-admin   { background: rgba(201, 154, 107, 0.18); color: var(--primary-color, #c99a6b); border: 1px solid rgba(201, 154, 107, 0.3); font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
 .badge-user    { background: #f0f0f0; color: #555; font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
 .badge-liked   { background: #d1fae5; color: #065f46; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
 .badge-disliked { background: #fee2e2; color: #991b1b; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
@@ -441,7 +461,7 @@
   transition: background 0.15s;
 }
 .admin-page-link:hover { background: var(--border-color, #e8eaf0); }
-.admin-page-link.current { background: var(--primary-color, #6c5ce7); color: #fff; border-color: transparent; }
+.admin-page-link.current { background: var(--primary-color, #c99a6b); color: #12100d; font-weight: 700; border-color: transparent; }
 .admin-page-link.disabled { opacity: 0.4; pointer-events: none; }
 
 /* ── Mini outfit collage ──────────────────────────────────── */

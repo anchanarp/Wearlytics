@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function selectOccasion(value) {
     input.value  = value;
     hidden.value = value;
+    console.log('Occasion selected:', value, 'hidden set to', hidden.value);
     hideDropdown();
     hideModal();
   }

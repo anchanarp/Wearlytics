@@ -37,22 +37,8 @@
         {% for outfit in pag.items %}
         <tr>
           <td>
-            <div class="outfit-collage">
-              {% set shown = 0 %}
-              {% for item in outfit.items %}
-                {% if shown < 3 %}
-                  {% if item.image_url %}
-                    <img src="{{ item.image_url }}" alt="{{ item.name }}">
-                  {% endif %}
-                  {% set shown = shown + 1 %}
-                {% endif %}
-              {% endfor %}
-              {% if outfit.items | length > 3 %}
-                <div class="outfit-collage-more">+{{ outfit.items | length - 3 }}</div>
-              {% endif %}
-              {% if outfit.items | length == 0 %}
-                <div class="admin-thumb-placeholder" style="width:32px; height:32px; font-size:1rem;">👗</div>
-              {% endif %}
+            <div class="admin-thumb-placeholder" style="width:34px; height:34px; font-size:1rem; border-radius:8px; display:flex; align-items:center; justify-content:center; background:var(--primary-pale, rgba(201, 154, 107, 0.15)); color:var(--primary, #c99a6b);" title="{{ outfit.items | length }} items">
+              👗
             </div>
           </td>
           <td style="font-weight:600; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">

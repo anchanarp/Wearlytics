@@ -35,6 +35,10 @@
   }
 
   document.addEventListener('DOMContentLoaded', function() {
+    var saved = localStorage.getItem('wearlytics-theme');
+    if (!saved) {
+      applyTheme('dark');
+    }
     btn = document.getElementById('themeToggle');
     if (btn) {
       btn.addEventListener('click', function() {

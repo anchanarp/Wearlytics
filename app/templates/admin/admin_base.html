@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{% block title %}Admin – Wearlytics{% endblock %}</title>
 
-  <!-- Theme (prevent flash) -->
+  <!-- Theme (prevent flash: default dark luxury) -->
   <script>
     (function() {
       var t = localStorage.getItem('wearlytics-theme');
-      if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      if (t !== 'light') document.documentElement.setAttribute('data-theme', 'dark');
     })();
   </script>
 
   <!-- Google Fonts & Bootstrap -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- App stylesheets -->
@@ -47,11 +47,6 @@
            href="{{ url_for('admin.users') }}">
           <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3Zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3Zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z"/></svg>
           Users
-        </a>
-        <a class="admin-nav-link {% if request.endpoint == 'admin.clothing' %}active{% endif %}"
-           href="{{ url_for('admin.clothing') }}">
-          <svg viewBox="0 0 24 24"><path d="M6 3h12l1 18H5L6 3Zm2 3v2h8V6H8Zm0 5h8v2H8v-2Zm0 4h5v2H8v-2Z"/></svg>
-          Clothing
         </a>
         <a class="admin-nav-link {% if request.endpoint == 'admin.outfits' %}active{% endif %}"
            href="{{ url_for('admin.outfits') }}">
@@ -90,7 +85,7 @@
       <header class="admin-topbar">
         <h1 class="admin-topbar-title">{% block page_title %}Admin Panel{% endblock %}</h1>
         <div class="admin-topbar-user">
-          <span class="avatar" style="background: {{ current_user.avatar_color or '#6c5ce7' }}; color:#fff; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;">
+          <span class="avatar" style="background: {{ current_user.avatar_color or '#c99a6b' }}; color:#fff; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;">
             {{ current_user.name[:2].upper() if current_user.name else 'AD' }}
           </span>
           <span>{{ current_user.name }}</span>

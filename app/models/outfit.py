@@ -46,3 +46,35 @@ class Outfit(db.Model):
         backref=db.backref("outfits", lazy="dynamic"),
         lazy="subquery",
     )
+
+    @property
+    def display_name(self):
+        """User-friendly name showing garments in the outfit and occasion."""
+        if self.items:
+            cat_priority = {
+                "Outerwear": 1,
+                "Tops": 2,
+                "Top": 2,
+                "One-Piece": 2,
+                "Dresses": 2,
+                "Bottoms": 3,
+                "Bottom": 3,
+                "Shoes": 4,
+                "Footwear": 4,
+                "Accessories": 5,
+            }
+            sorted_items = sorted(
+                self.items,
+                key=lambda x: cat_priority.get(x.category, 10),
+            )
+            item_names = [item.name for item in sorted_items]
+            if len(item_names) == 1:
+                names_str = item_names[0]
+            elif len(item_names) == 2:
+                names_str = f"{item_names[0]} & {item_names[1]}"
+            else:
+                names_str = f"{item_names[0]}, {item_names[1]} & {len(item_names) - 2} more"
+
+            occ = f" ({self.occasion})" if self.occasion and self.occasion not in ("Any", "Any Occasion") else ""
+            return f"{names_str}{occ}"
+        return self.title or "Outfit"

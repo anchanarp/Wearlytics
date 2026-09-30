@@ -122,17 +122,19 @@ def index():
     categories = ["All", "Tops", "Bottoms", "Shoes", "Outerwear", "Accessories", "Dresses"]
     seasons = ["All", "All Seasons", "Summer", "Winter", "Spring/Fall"]
 
+    if request.args.get('json') == '1' or request.is_json:
+        return jsonify({"items": [item.to_dict() for item in items]})
+
     return render_template(
         "wardrobe/index.html",
         items=items,
         categories=categories,
         seasons=seasons,
-        selected_category=category or "All",
-        selected_season=season or "All",
-        search_query=query,
+        query=query,
+        selected_category=category,
+        selected_season=season,
         favorite_only=favorite_only,
     )
-
 
 @wardrobe_bp.route("/upload", methods=["GET", "POST"])
 @login_required

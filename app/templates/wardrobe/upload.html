@@ -20,12 +20,12 @@
           <div style="display:flex;gap:8px;align-items:center;">
             <input type="text" id="name" name="name" class="form-input-custom" placeholder="e.g. Classic White Linen Shirt" required style="flex:1;">
             <button type="button" id="aiNameBtn" onclick="applyAiName()"
-              style="display:none;white-space:nowrap;padding:8px 14px;background:#f0eaff;color:#7c3aed;border:1.5px solid #c4b5fd;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">
+              style="display:none;white-space:nowrap;padding:8px 14px;background:rgba(201,154,107,0.15);color:var(--primary,#c99a6b);border:1.5px solid rgba(201,154,107,0.35);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">
               ✦ AI Suggest Name
             </button>
           </div>
-          <div id="aiNameSuggestion" style="display:none;margin-top:6px;font-size:12px;color:#7c3aed;">
-            💡 Suggested: <strong id="aiNameText"></strong> — <a href="#" onclick="applyAiName();return false;">Use this</a>
+          <div id="aiNameSuggestion" style="display:none;margin-top:6px;font-size:12px;color:var(--primary,#c99a6b);">
+            💡 Suggested: <strong id="aiNameText"></strong> — <a href="#" onclick="applyAiName();return false;" style="color:var(--primary-light,#dfb17b);text-decoration:underline;">Use this</a>
           </div>
         </div>
 
@@ -210,12 +210,14 @@ function triggerAiAnalysis(input) {
     document.getElementById('aiSourceLabel').textContent = sourceMap[data.source] || data.source;
 
     // Confidence bar
-    const conf = parseFloat(data.confidence) || 0;
+    const conf = Math.min(100, Math.max(0, parseFloat(data.confidence) || 0));
     const confBar  = document.getElementById('aiConfBar');
     const confText = document.getElementById('aiConfText');
+    const confColor = conf >= 70 ? '#10b981' : conf >= 50 ? '#f59e0b' : '#ef4444';
+    confBar.style.backgroundColor = confColor;
     confBar.style.width = conf + '%';
-    confBar.style.background = conf >= 70 ? 'var(--accent)' : conf >= 50 ? '#f59e0b' : '#ef4444';
     confText.textContent = conf.toFixed(1) + '%';
+    confText.style.color = confColor;
 
     // Color row
     if (data.color_hex && data.color_name) {

@@ -9,7 +9,9 @@ Flow:
 import json
 
 from flask import flash, redirect, render_template, request, session, url_for
+from flask import current_app
 from flask_login import current_user, login_required
+
 
 from app.extensions import db
 from app.models.feedback import OutfitFeedback
@@ -88,7 +90,7 @@ def index():
     result_data = None
     pinned_error = False
     if request.args.get("done") == "1":
-        raw = session.pop(SESSION_KEY, None)
+        raw = session.get(SESSION_KEY, None)
         if raw:
             result_data = json.loads(raw)
         pinned_error = session.pop("stylist_pinned_error", False)
@@ -97,10 +99,29 @@ def index():
     liked_count    = OutfitFeedback.query.filter_by(user_id=current_user.id, reaction="liked").count()
     disliked_count = OutfitFeedback.query.filter_by(user_id=current_user.id, reaction="disliked").count()
 
+    # Serialize wardrobe ORM objects → plain dicts for JSON embedding in template
+    wardrobe_json = [
+        {
+            "id":            item.id,
+            "name":          item.name,
+            "category":      item.category,
+            "color":         item.color,
+            "season":        item.season,
+            "style":         item.style or "Casual",
+            "clothing_type": item.clothing_type or "",
+            "image_url":     item.image_url,
+            "is_in_laundry": item.is_in_laundry,
+            "is_favorite":   item.is_favorite,
+        }
+        for item in wardrobe
+    ]
+
+
     return render_template(
         "stylist/index.html",
         prefs=prefs,
         wardrobe=wardrobe,
+        wardrobe_json=wardrobe_json,
         result_data=result_data,
         pinned_error=pinned_error,
         occasions=OCCASION_DISPLAY_LIST,
@@ -125,14 +146,16 @@ def generate():
     """Run the recommendation engine and store results in session, then redirect."""
     from app.models.clothing import ClothingItem
 
+    # Extract form values
     occasion_label = request.form.get("occasion", "").strip()
-    season         = request.form.get("season", "All Seasons").strip()
-    item_ids       = [int(x) for x in request.form.getlist("item_ids") if x.isdigit()]
+    season = request.form.get("season", "All Seasons").strip()
+    item_ids = [int(x) for x in request.form.getlist("item_ids") if x.isdigit()]
 
     # Map display label → engine key
     engine_occasion = _OCCASION_TO_ENGINE.get(occasion_label)  # None = Any
 
-    # Persist form state so it survives the redirect
+    # Log incoming form values
+    current_app.logger.debug(f"Stylist generate: occasion_label={occasion_label}, season={season}, item_ids={item_ids}, engine_occasion={engine_occasion}")
     session["stylist_occasion"]  = occasion_label
     session["stylist_season"]    = season
     session["stylist_item_ids"]  = item_ids
@@ -183,5 +206,24 @@ def generate():
             ],
         })
 
+    # Store serialized results in session for later display
     session[SESSION_KEY] = json.dumps(serialized)
+    session.permanent = True
+    # Redirect to GET endpoint to render results
     return redirect(url_for("stylist.index", done="1"))
+    return render_template(
+        "stylist/index.html",
+        prefs=prefs,
+        wardrobe=wardrobe,
+        wardrobe_json=wardrobe_json,
+        result_data=serialized,
+        pinned_error=False,
+        occasions=OCCASION_DISPLAY_LIST,
+        seasons=SEASONS,
+        liked_count=liked_count,
+        disliked_count=disliked_count,
+        wardrobe_gaps=recommendation_engine.detect_wardrobe_gaps(wardrobe),
+        selected_occasion=session.get("stylist_occasion", ""),
+        selected_season=session.get("stylist_season", "All Seasons"),
+        selected_item_ids=session.get("stylist_item_ids", []),
+    )
