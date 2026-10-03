@@ -3,166 +3,181 @@
 {% block title %}Upload Clothing | Wearlytics{% endblock %}
 
 {% block content %}
-<div class="page-heading">
+<div class="page-heading mb-4">
   <div>
-    <p class="eyebrow">Add Garment</p>
-    <h1>Upload Clothing Item</h1>
-    <p>Add a new piece to your digital wardrobe with attributes and photos.</p>
+    <h1 class="wardrobe-page-title">Upload Clothing</h1>
+    <p class="wardrobe-page-sub">Let AI analyze your clothing item</p>
   </div>
 </div>
 
-<div class="row g-4">
-  <div class="col-12 col-lg-7">
-    <div class="custom-card-box">
-      <form action="{{ url_for('wardrobe.upload') }}" method="post" enctype="multipart/form-data" class="upload-form" id="uploadForm">
-        <div class="form-group mb-3">
-          <label for="name" class="form-label-custom">Item Name <span class="text-danger">*</span></label>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <input type="text" id="name" name="name" class="form-input-custom" placeholder="e.g. Classic White Linen Shirt" required style="flex:1;">
-            <button type="button" id="aiNameBtn" onclick="applyAiName()"
-              style="display:none;white-space:nowrap;padding:8px 14px;background:rgba(201,154,107,0.15);color:var(--primary,#c99a6b);border:1.5px solid rgba(201,154,107,0.35);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">
-              ✦ AI Suggest Name
+<form action="{{ url_for('wardrobe.upload') }}" method="post" enctype="multipart/form-data" class="upload-form" id="uploadForm">
+  <!-- Top Split: Image Upload Dropzone (Left) & AI Analysis (Right) -->
+  <div class="row g-4 mb-4">
+    <!-- Left: Dropzone -->
+    <div class="col-12 col-lg-6">
+      <div class="upload-main-card h-100">
+        <div class="upload-dropzone" id="dropzone" onclick="document.getElementById('image_file').click()">
+          <input type="file" id="image_file" name="image_file" accept="image/*" class="file-input-hidden"
+                 onchange="previewUploadImage(this); triggerAiAnalysis(this);">
+          <div class="dropzone-content">
+            <div class="upload-icon-circle">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M19 13v6H5v-6H3v8h18v-8h-2ZM11 3v8.17L8.41 8.59 7 10l5 5 5-5-1.41-1.41L13 11.17V3h-2Z"/></svg>
+            </div>
+            <strong class="dropzone-title">Click to upload an image</strong>
+            <span class="dropzone-sub">Supports PNG, JPG, WEBP</span>
+            <button type="button" class="btn btn-mocha-gradient btn-choose-image mt-3" onclick="event.stopPropagation(); document.getElementById('image_file').click();">
+              Choose Image
             </button>
           </div>
-          <div id="aiNameSuggestion" style="display:none;margin-top:6px;font-size:12px;color:var(--primary,#c99a6b);">
-            💡 Suggested: <strong id="aiNameText"></strong> — <a href="#" onclick="applyAiName();return false;" style="color:var(--primary-light,#dfb17b);text-decoration:underline;">Use this</a>
+          <div id="imagePreview" class="image-preview-box d-none">
+            <img id="previewImg" src="#" alt="Upload preview">
           </div>
         </div>
+        <!-- AI scanning indicator -->
+        <div id="aiScanningIndicator" class="ai-scanning-indicator d-none mt-2">
+          <span class="ai-spinner"></span> Analysing garment features…
+        </div>
+      </div>
+    </div>
 
-        <!-- ✦ AI Suggestion Panel — shown after image is picked -->
-        <div id="aiSuggestionPanel" class="ai-suggestion-panel d-none mb-3">
-          <div class="ai-suggestion-header">
-            <span class="ai-badge">✦ AI Analysis</span>
-            <span id="aiSourceLabel" class="ai-source-tag"></span>
+    <!-- Right: AI Analysis Display -->
+    <div class="col-12 col-lg-6">
+      <div class="upload-main-card h-100">
+        <div class="ai-analysis-box">
+          <div class="ai-analysis-header">
+            <h3 class="ai-analysis-title">AI Analysis</h3>
+            <span class="badge-high-confidence" id="aiSourceLabel">✦ Ready for Image</span>
           </div>
-          <div class="ai-suggestion-body">
-            <div class="ai-suggestion-row">
-              <span class="ai-suggestion-label">Predicted Category:</span>
-              <strong id="aiCategory">—</strong>
-              <button type="button" class="ai-apply-btn" onclick="applyAiCategory()">Apply ↓</button>
+
+          <div class="ai-analysis-metrics" id="aiSuggestionPanel">
+            <div class="ai-metric-row">
+              <span class="ai-metric-label">Predicted Category:</span>
+              <strong class="ai-metric-val" id="aiCategory">—</strong>
+              <button type="button" class="ai-apply-pill" onclick="applyAiCategory()">Apply ↓</button>
             </div>
-            <div class="ai-suggestion-row">
-              <span class="ai-suggestion-label">Clothing Type:</span>
-              <strong id="aiType">—</strong>
-              <button type="button" class="ai-apply-btn" onclick="applyAiType()">Apply ↓</button>
+            <div class="ai-metric-row">
+              <span class="ai-metric-label">Clothing Type:</span>
+              <strong class="ai-metric-val" id="aiType">—</strong>
+              <button type="button" class="ai-apply-pill" onclick="applyAiType()">Apply ↓</button>
             </div>
-            <div class="ai-suggestion-row" id="aiColorRow" style="display:none">
-              <span class="ai-suggestion-label">Detected Color:</span>
-              <span id="aiColorSwatch" class="color-swatch-mini"></span>
-              <strong id="aiColorName">—</strong>
-              <button type="button" class="ai-apply-btn" onclick="applyAiColor()">Apply ↓</button>
-            </div>
-            <div class="ai-suggestion-row">
-              <span class="ai-suggestion-label">Confidence:</span>
-              <div class="ai-conf-bar-wrap">
-                <div class="ai-conf-bar" id="aiConfBar"></div>
+            <div class="ai-metric-row" id="aiColorRow">
+              <span class="ai-metric-label">Detected Color:</span>
+              <div class="d-flex align-items-center gap-2">
+                <span id="aiColorSwatch" class="color-swatch-circle" style="background:#555;"></span>
+                <strong class="ai-metric-val" id="aiColorName">—</strong>
               </div>
-              <span id="aiConfText" class="ai-conf-text"></span>
+              <button type="button" class="ai-apply-pill" onclick="applyAiColor()">Apply ↓</button>
+            </div>
+            <div class="ai-metric-row ai-metric-conf-row">
+              <span class="ai-metric-label">Confidence:</span>
+              <div class="ai-conf-track flex-grow-1 mx-2">
+                <div class="ai-conf-fill" id="aiConfBar" style="width: 0%;"></div>
+              </div>
+              <strong class="ai-conf-num" id="aiConfText">0.0%</strong>
             </div>
           </div>
-          <p class="ai-suggestion-hint">Review the predictions and apply what's correct. You can edit any field below.</p>
+          <p class="ai-helper-hint">Upload a photo to detect category, color tone, style, and item characteristics automatically.</p>
         </div>
-        <!-- End AI Suggestion Panel -->
-
-        <div class="row g-3 mb-3">
-          <div class="col-12 col-sm-6">
-            <label for="category" class="form-label-custom">Category</label>
-            <select id="category" name="category" class="form-select-custom">
-              <option value="Tops">Tops</option>
-              <option value="Bottoms">Bottoms</option>
-              <option value="Shoes">Shoes</option>
-              <option value="Outerwear">Outerwear</option>
-              <option value="Accessories">Accessories</option>
-              <option value="Dresses">Dresses</option>
-            </select>
-          </div>
-          <div class="col-12 col-sm-6">
-            <label for="season" class="form-label-custom">Season</label>
-            <select id="season" name="season" class="form-select-custom">
-              <option value="All Seasons">All Seasons</option>
-              <option value="Summer">Summer</option>
-              <option value="Winter">Winter</option>
-              <option value="Spring/Fall">Spring/Fall</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row g-3 mb-3">
-          <div class="col-12 col-sm-6">
-            <label for="color" class="form-label-custom">Primary Color</label>
-            <input type="text" id="color" name="color" class="form-input-custom" placeholder="e.g. White, Black, Navy, Denim">
-          </div>
-          <div class="col-12 col-sm-6">
-            <label for="brand" class="form-label-custom">Brand / Store</label>
-            <input type="text" id="brand" name="brand" class="form-input-custom" placeholder="e.g. Uniqlo, Levi's, ZARA">
-          </div>
-        </div>
-
-        <!-- AI-Enhanced Fields -->
-        <div class="row g-3 mb-3">
-          <div class="col-12 col-sm-6">
-            <label for="style" class="form-label-custom">Style <span class="ai-tag">✦ Smart</span></label>
-            <select id="style" name="style" class="form-select-custom">
-              {% for s in all_styles %}
-                <option value="{{ s }}" {% if s == 'Casual' %}selected{% endif %}>{{ s }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-12 col-sm-6">
-            <label for="clothing_type" class="form-label-custom">Clothing Type <span class="ai-tag">✦ AI Detected</span></label>
-            <input type="text" id="clothing_type" name="clothing_type" class="form-input-custom"
-                   placeholder="e.g. T-Shirt, Jeans, Sneakers"
-                   value="{{ ai_prediction.clothing_type if ai_prediction else '' }}">
-            <small class="form-hint">Auto-detected from your uploaded image. Correct if needed.</small>
-          </div>
-        </div>
-
-        <div class="form-group mb-3">
-          <label class="form-label-custom">Choose Image Method</label>
-          <div class="upload-dropzone" id="dropzone">
-            <input type="file" id="image_file" name="image_file" accept="image/*" class="file-input-hidden"
-                   onchange="previewUploadImage(this); triggerAiAnalysis(this);">
-            <label for="image_file" class="dropzone-label">
-              <div class="upload-icon">📸</div>
-              <strong>Click to upload an image</strong>
-              <span>Supports PNG, JPG, WEBP</span>
-            </label>
-            <div id="imagePreview" class="image-preview-box d-none">
-              <img id="previewImg" src="#" alt="Upload preview">
-            </div>
-          </div>
-          <!-- AI scanning indicator -->
-          <div id="aiScanningIndicator" class="ai-scanning-indicator d-none">
-            <span class="ai-spinner"></span> Analysing with MobileNetV2…
-          </div>
-        </div>
-
-        <input type="hidden" id="preset_url" name="preset_url" value="">
-
-        <div class="form-check mb-4">
-          <input type="checkbox" id="is_favorite" name="is_favorite" class="form-check-input">
-          <label for="is_favorite" class="form-check-label">Add to Favorites ★</label>
-        </div>
-
-        <button type="submit" class="btn primary-button w-100 py-3">Save to Wardrobe</button>
-      </form>
+      </div>
     </div>
   </div>
 
-  <div class="col-12 col-lg-5">
-    <div class="custom-card-box">
-      <h3>Or Select Stock Presets</h3>
-      <p class="text-muted small mb-3">Don't have a photo ready? Pick from our high-resolution preset gallery:</p>
-      
-      <div class="preset-gallery-grid">
-        {% for preset in preset_images %}
-        <div class="preset-card" onclick="selectPreset('{{ preset.url }}', this)">
-          <img src="{{ preset.url }}" alt="{{ preset.label }}">
-          <span>{{ preset.label }}</span>
-        </div>
-        {% endfor %}
+  <!-- Form Fields Card -->
+  <div class="custom-card-box mb-4">
+    <div class="form-group mb-3">
+      <label for="name" class="form-label-custom">Item Name <span class="text-danger">*</span></label>
+      <div class="d-flex gap-2 align-items-center">
+        <input type="text" id="name" name="name" class="form-input-custom" placeholder="e.g. Classic White Linen Shirt" required style="flex:1;">
+        <button type="button" id="aiNameBtn" onclick="applyAiName()"
+          style="display:none;white-space:nowrap;padding:9px 16px;background:rgba(201,154,107,0.15);color:var(--primary,#c99a6b);border:1.5px solid rgba(201,154,107,0.35);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;">
+          ✦ AI Suggest Name
+        </button>
+      </div>
+      <div id="aiNameSuggestion" style="display:none;margin-top:6px;font-size:12px;color:var(--primary,#c99a6b);">
+        💡 Suggested: <strong id="aiNameText"></strong> — <a href="#" onclick="applyAiName();return false;" style="color:var(--primary-light,#dfb17b);text-decoration:underline;">Use this</a>
       </div>
     </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-sm-6">
+        <label for="category" class="form-label-custom">Category</label>
+        <select id="category" name="category" class="form-select-custom">
+          <option value="Tops">Tops</option>
+          <option value="Bottoms">Bottoms</option>
+          <option value="Shoes">Shoes</option>
+          <option value="Outerwear">Outerwear</option>
+          <option value="Accessories">Accessories</option>
+          <option value="Dresses">Dresses</option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-6">
+        <label for="season" class="form-label-custom">Season</label>
+        <select id="season" name="season" class="form-select-custom">
+          <option value="All Seasons">All Seasons</option>
+          <option value="Summer">Summer</option>
+          <option value="Winter">Winter</option>
+          <option value="Spring/Fall">Spring/Fall</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-sm-6">
+        <label for="color" class="form-label-custom">Primary Color</label>
+        <input type="text" id="color" name="color" class="form-input-custom" placeholder="e.g. White, Black, Navy, Denim">
+      </div>
+      <div class="col-12 col-sm-6">
+        <label for="brand" class="form-label-custom">Brand / Store</label>
+        <input type="text" id="brand" name="brand" class="form-input-custom" placeholder="e.g. Uniqlo, Levi's, ZARA">
+      </div>
+    </div>
+
+    <!-- AI-Enhanced Fields -->
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-sm-6">
+        <label for="style" class="form-label-custom">Style <span class="ai-tag">✦ Smart</span></label>
+        <select id="style" name="style" class="form-select-custom">
+          {% for s in all_styles %}
+            <option value="{{ s }}" {% if s == 'Casual' %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 col-sm-6">
+        <label for="clothing_type" class="form-label-custom">Clothing Type <span class="ai-tag">✦ AI Detected</span></label>
+        <input type="text" id="clothing_type" name="clothing_type" class="form-input-custom"
+               placeholder="e.g. T-Shirt, Jeans, Sneakers"
+               value="{{ ai_prediction.clothing_type if ai_prediction else '' }}">
+        <small class="form-hint">Auto-detected from your uploaded image. Correct if needed.</small>
+      </div>
+    </div>
+
+    <input type="hidden" id="preset_url" name="preset_url" value="">
+
+    <div class="form-check mb-4">
+      <input type="checkbox" id="is_favorite" name="is_favorite" class="form-check-input">
+      <label for="is_favorite" class="form-check-label">Add to Favorites ★</label>
+    </div>
+
+    <button type="submit" class="btn btn-mocha-gradient w-100 py-3 font-weight-bold" style="font-size:16px;">Save to Wardrobe</button>
+  </div>
+</form>
+
+<!-- Preset Gallery -->
+<div class="custom-card-box mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h3 style="font-size:17px; margin-bottom:2px;">Stock Presets</h3>
+      <p class="text-muted small mb-0">Don't have a photo ready? Pick from our curated presets:</p>
+    </div>
+  </div>
+  
+  <div class="preset-gallery-grid">
+    {% for preset in preset_images %}
+    <div class="preset-card" onclick="selectPreset('{{ preset.url }}', this)">
+      <img src="{{ preset.url }}" alt="{{ preset.label }}" loading="lazy">
+      <span>{{ preset.label }}</span>
+    </div>
+    {% endfor %}
   </div>
 </div>
 

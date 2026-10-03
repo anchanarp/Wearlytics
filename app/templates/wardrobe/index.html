@@ -3,38 +3,58 @@
 {% block title %}My Wardrobe | Wearlytics{% endblock %}
 
 {% block content %}
-<div class="page-heading">
+<div class="page-heading wardrobe-heading-row mb-4">
   <div>
-    <p class="eyebrow">Digital Closet</p>
-    <h1>My Wardrobe</h1>
-    <p>Browse, filter, and manage your clothing items.</p>
+    <h1 class="wardrobe-page-title">My Wardrobe</h1>
+    <p class="wardrobe-page-sub">All your favorite pieces in one place</p>
   </div>
-  <a href="{{ url_for('wardrobe.upload') }}" class="btn primary-button">
-    <span aria-hidden="true">+</span> Add Clothing
+  <a href="{{ url_for('wardrobe.upload') }}" class="btn btn-mocha-gradient">
+    <span aria-hidden="true">+</span> Add New Item
   </a>
 </div>
 
 <!-- Filters & Search Toolbar -->
-<div class="toolbar-wrap">
+<div class="wardrobe-toolbar mb-4">
   <form action="{{ url_for('wardrobe.index') }}" method="get" class="filter-form">
-    <div class="filter-pills">
-      {% for cat in categories %}
-        <a href="{{ url_for('wardrobe.index', category=cat if cat != 'All' else '', season=request.args.get('season',''), q=search_query) }}" 
-           class="pill-item {% if selected_category == cat or (cat == 'All' and not selected_category) %}active{% endif %}">
-          {{ cat }}
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+      <!-- Category Pills -->
+      <div class="category-pill-group">
+        {% for cat in categories %}
+          <a href="{{ url_for('wardrobe.index', category=cat if cat != 'All' else '', season=request.args.get('season',''), q=search_query, favorite='1' if favorite_only else '') }}" 
+             class="wardrobe-pill {% if selected_category == cat or (cat == 'All' and not selected_category) %}active{% endif %}">
+            {{ cat }}
+          </a>
+        {% endfor %}
+      </div>
+
+      <!-- Quick Layout and Filter Badges -->
+      <div class="d-flex align-items-center gap-2">
+        <a href="{{ url_for('wardrobe.index', favorite='1' if not favorite_only else '', category=selected_category, season=selected_season, q=search_query) }}" 
+           class="wardrobe-pill-outline {% if favorite_only %}active{% endif %}" title="Toggle Favorites Only">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" class="me-1"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          Favorites
         </a>
-      {% endfor %}
+        <div class="view-mode-toggle">
+          <button type="button" class="view-toggle-btn active" title="Grid View" aria-label="Grid View">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/></svg>
+          </button>
+          <button type="button" class="view-toggle-btn" title="List View" aria-label="List View">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="filter-options row g-2 mt-2">
-      <div class="col-12 col-sm-6 col-md-4">
+    <!-- Secondary Search & Season Row -->
+    <div class="row g-2 align-items-center">
+      <div class="col-12 col-md-6 col-lg-5">
         <div class="search-wrap w-100">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.8 4a6.8 6.8 0 1 1 0 13.6A6.8 6.8 0 0 1 10.8 4Zm0 2a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Zm6.75 10.14 3.16 3.15-1.42 1.42-3.15-3.16 1.41-1.41Z"/></svg>
           <input name="q" type="search" placeholder="Search by name, brand, color..." value="{{ search_query }}">
         </div>
       </div>
       
-      <div class="col-6 col-sm-3 col-md-3">
+      <div class="col-6 col-md-3">
         <select name="season" class="form-select-custom" onchange="this.form.submit()">
           <option value="">All Seasons</option>
           <option value="Summer" {% if selected_season == 'Summer' %}selected{% endif %}>Summer</option>
@@ -43,11 +63,8 @@
         </select>
       </div>
 
-      <div class="col-6 col-sm-3 col-md-3">
-        <a href="{{ url_for('wardrobe.index', favorite='1' if not favorite_only else '') }}" 
-           class="btn filter-fav-btn {% if favorite_only %}active{% endif %}">
-          ★ Favorites Only
-        </a>
+      <div class="col-6 col-md-4 col-lg-4 text-md-end">
+        <span class="wardrobe-count-pill">{{ items|length }} Pieces</span>
       </div>
     </div>
   </form>

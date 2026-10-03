@@ -5,7 +5,13 @@
 {% block auth_content %}
 <main class="auth-page">
   <section class="auth-card" aria-labelledby="register-heading">
-    <a class="auth-brand" href="{{ url_for('auth.login') }}"><span>W</span>Wearlytics</a>
+    <a class="auth-brand" href="{{ url_for('auth.login') }}" aria-label="Wearlytics">
+      <img src="{{ url_for('static', filename='img/wearlytics_icon_transparent.png') }}" alt="Wearlytics logo" class="brand-logo-icon auth-logo-icon">
+      <div class="brand-text-block">
+        <span class="brand-title">Wearlytics</span>
+        <span class="brand-sub">STYLE SMARTER</span>
+      </div>
+    </a>
     <div class="auth-intro">
       <p>Start your style journey</p>
       <h1 id="register-heading">Create your account</h1>

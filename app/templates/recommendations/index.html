@@ -20,7 +20,7 @@
       <div class="occasion-selector" style="position:relative; min-width:150px;">
         <input type="text" id="occasion-input" class="form-select-custom" placeholder="Any Occasion" autocomplete="off" />
         <input type="hidden" name="occasion" id="occasion-hidden" value="{{ selected_occasion or '' }}" />
-        <div id="occasion-dropdown" class="dropdown-menu" style="position:absolute; top:100%; left:0; right:0; z-index:1000; display:none; max-height:200px; overflow-y:auto; background:#fff; border:1px solid var(--line);"></div>
+        <div id="occasion-dropdown" class="dropdown-menu" style="position:absolute; top:100%; left:0; right:0; z-index:1000; display:none; max-height:200px; overflow-y:auto; background:#181614; border:1px solid rgba(201, 154, 107, 0.25); border-radius:12px; box-shadow:0 12px 32px rgba(0,0,0,0.7);"></div>
         <script type="application/json" id="occasions-data">{{ occasions|tojson }}</script>
         <script>
           const COMMON_OCCASIONS = ["Casual", "Work / Business", "College / Campus", "Formal", "Party", "Date Night", "Sporty / Workout"];
@@ -28,14 +28,14 @@
       </div>
 
       <!-- Modal for full options -->
-      <div id="more-options-modal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
-        <div class="modal-content" style="background:#fff; padding:20px; border-radius:8px; max-width:400px; width:90%; max-height:80vh; overflow:auto;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h3 style="margin:0;">Select Occasion</h3>
-            <button id="modal-close" type="button" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
+      <div id="more-options-modal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); justify-content:center; align-items:center; z-index:2000;">
+        <div class="modal-content" style="background:#181614; color:var(--ink); padding:24px; border-radius:18px; border:1px solid rgba(201, 154, 107, 0.25); max-width:420px; width:90%; max-height:80vh; overflow:auto; box-shadow:0 24px 60px rgba(0,0,0,0.85);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h3 style="margin:0; font-family:var(--font-apple); font-size:20px;">Select Occasion</h3>
+            <button id="modal-close" type="button" style="background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--ink-light);">&times;</button>
           </div>
-          <input type="text" id="more-options-search" placeholder="Search..." style="width:100%; padding:6px; margin-bottom:10px;" autocomplete="off" />
-          <div id="more-options-list" style="max-height:60vh; overflow-y:auto; border:1px solid var(--line);"></div>
+          <input type="text" id="more-options-search" placeholder="Search..." class="form-input-custom" style="width:100%; margin-bottom:12px;" autocomplete="off" />
+          <div id="more-options-list" style="max-height:60vh; overflow-y:auto; border:1px solid rgba(255,255,255,0.08); border-radius:10px;"></div>
         </div>
       </div>
     </div>

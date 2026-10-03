@@ -5,18 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{% block title %}Admin – Wearlytics{% endblock %}</title>
 
+  <!-- Favicon & Brand Icons -->
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon.png') }}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='img/favicon.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
   <!-- Theme (prevent flash: default dark luxury) -->
   <script>
     (function() {
       var t = localStorage.getItem('wearlytics-theme');
-      if (t !== 'light') document.documentElement.setAttribute('data-theme', 'dark');
+      if (t === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
     })();
   </script>
 
-  <!-- Google Fonts & Bootstrap -->
+  <!-- Apple SF Pro / Inter Typography & Bootstrap -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- App stylesheets -->
@@ -31,8 +42,11 @@
     <!-- ── Sidebar ── -->
     <aside class="admin-sidebar">
       <a class="brand" href="{{ url_for('admin.dashboard') }}" aria-label="Admin home">
-        <span class="brand-mark">W</span>
-        <span>Wearlytics</span>
+        <img src="{{ url_for('static', filename='img/wearlytics_icon_transparent.png') }}" alt="Wearlytics logo" class="brand-logo-icon">
+        <div class="brand-text-block">
+          <span class="brand-title">Wearlytics</span>
+          <span class="brand-sub">STYLE SMARTER</span>
+        </div>
         <span class="admin-badge">Admin</span>
       </a>
 

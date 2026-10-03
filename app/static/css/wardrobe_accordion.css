@@ -74,17 +74,23 @@
 /* ── Style Me button in unified bar ─────────────────────────── */
 .style-me-btn {
   height: 42px;
-  padding: 0 1.4rem;
+  padding: 0 1.6rem;
   font-size: 0.92rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: .01em;
-  border-radius: 10px;
+  border-radius: 9999px;
   white-space: nowrap;
-  box-shadow: 0 4px 14px rgba(108, 92, 231, 0.28);
+  background: linear-gradient(135deg, #74573e 0%, #4f3b2a 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(217, 185, 155, 0.4) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .style-me-btn:hover {
-  box-shadow: 0 6px 18px rgba(108, 92, 231, 0.38);
-  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(116, 87, 62, 0.4), 0 0 16px rgba(201, 154, 107, 0.25);
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #856448 0%, #5d4633 100%) !important;
+  color: #ffffff !important;
 }
 
 /* ── Responsive: stack on small screens ─────────────────────── */

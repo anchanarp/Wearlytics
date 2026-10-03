@@ -3,11 +3,15 @@
 {% block title %}Weekly Planner | Wearlytics{% endblock %}
 
 {% block content %}
-<div class="page-heading">
+<div class="page-heading d-flex justify-content-between align-items-center mb-4">
   <div>
-    <p class="eyebrow">Schedule</p>
-    <h1>Weekly Outfit Planner</h1>
-    <p>Plan your daily looks for the week ahead to stay organized and stylish.</p>
+    <h1 class="wardrobe-page-title">Weekly Planner</h1>
+    <p class="wardrobe-page-sub">Plan your outfits for the week</p>
+  </div>
+  <div class="planner-week-switcher">
+    <button type="button" class="btn-week-arrow" title="Previous Week">‹</button>
+    <span class="badge-week-pill">This Week</span>
+    <button type="button" class="btn-week-arrow" title="Next Week">›</button>
   </div>
 </div>
 

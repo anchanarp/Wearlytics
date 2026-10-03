@@ -1,20 +1,135 @@
 /* Wearlytics Client JavaScript */
 
 // ============================================================
-// Dark Mode Toggle
+// Premium Hero Carousel — Auto-slide, arrows, dots, Ken Burns
+// ============================================================
+document.addEventListener('DOMContentLoaded', function () {
+  var carousel = document.getElementById('heroCarousel');
+  if (!carousel) return;
+
+  var slides   = carousel.querySelectorAll('.hero-slide');
+  var dots     = carousel.querySelectorAll('.hero-dot');
+  var prevBtn  = document.getElementById('heroPrev');
+  var nextBtn  = document.getElementById('heroNext');
+  var total    = slides.length;
+  var current  = 0;
+  var autoInterval;
+  var INTERVAL = 5000; // 5 seconds between slides
+
+  function goTo(idx) {
+    // Clamp & wrap
+    idx = ((idx % total) + total) % total;
+
+    // Deactivate current
+    slides[current].classList.remove('active');
+    if (dots[current]) {
+      dots[current].classList.remove('active');
+      dots[current].setAttribute('aria-selected', 'false');
+    }
+
+    // Force Ken Burns reset on new slide background before activating
+    var newBg = slides[idx].querySelector('.hero-slide-img');
+    if (newBg) {
+      newBg.style.transition = 'none';
+      newBg.style.transform  = 'scale(1.04)';
+      // Force reflow so the browser registers the reset
+      void newBg.offsetWidth;
+      newBg.style.transition = '';
+    }
+
+    current = idx;
+
+    // Activate new slide
+    slides[current].classList.add('active');
+    if (dots[current]) {
+      dots[current].classList.add('active');
+      dots[current].setAttribute('aria-selected', 'true');
+    }
+  }
+
+  function startAuto() {
+    clearInterval(autoInterval);
+    autoInterval = setInterval(function () { goTo(current + 1); }, INTERVAL);
+  }
+
+  function stopAuto() {
+    clearInterval(autoInterval);
+  }
+
+  // Arrow buttons
+  if (prevBtn) {
+    prevBtn.addEventListener('click', function () {
+      goTo(current - 1);
+      stopAuto(); startAuto();
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', function () {
+      goTo(current + 1);
+      stopAuto(); startAuto();
+    });
+  }
+
+  // Dot navigation
+  dots.forEach(function (dot) {
+    dot.addEventListener('click', function () {
+      var idx = parseInt(this.getAttribute('data-dot'), 10);
+      goTo(idx);
+      stopAuto(); startAuto();
+    });
+  });
+
+  // Pause on hover; resume on leave
+  carousel.addEventListener('mouseenter', stopAuto);
+  carousel.addEventListener('mouseleave', startAuto);
+
+  // Touch/swipe support
+  var touchStartX = 0;
+  carousel.addEventListener('touchstart', function (e) {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  carousel.addEventListener('touchend', function (e) {
+    var delta = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(delta) > 40) {
+      goTo(delta < 0 ? current + 1 : current - 1);
+      stopAuto(); startAuto();
+    }
+  }, { passive: true });
+
+  // Keyboard accessibility
+  carousel.setAttribute('tabindex', '0');
+  carousel.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft')  { goTo(current - 1); stopAuto(); startAuto(); }
+    if (e.key === 'ArrowRight') { goTo(current + 1); stopAuto(); startAuto(); }
+  });
+
+  // Pause when tab is hidden to save battery
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) stopAuto(); else startAuto();
+  });
+
+  // Kick off
+  startAuto();
+});
+
+// ============================================================
+// Dark & Light Mode Toggle
 // ============================================================
 (function() {
   var html = document.documentElement;
-  var btn = null;
 
   function applyTheme(theme) {
-    if (theme === 'dark') {
-      html.setAttribute('data-theme', 'dark');
+    if (theme === 'light') {
+      html.setAttribute('data-theme', 'light');
     } else {
-      html.removeAttribute('data-theme');
+      html.setAttribute('data-theme', 'dark');
+      theme = 'dark';
     }
     updateToggleIcon(theme);
-    localStorage.setItem('wearlytics-theme', theme);
+    try {
+      localStorage.setItem('wearlytics-theme', theme);
+    } catch(e) {}
   }
 
   function updateToggleIcon(theme) {
@@ -22,33 +137,39 @@
     var moon = document.querySelector('.icon-moon');
     if (!sun || !moon) return;
     if (theme === 'dark') {
-      sun.style.display = '';
+      // In Dark Mode, show the Sun icon so user can switch to Light Mode
+      sun.style.display = 'block';
       moon.style.display = 'none';
     } else {
+      // In Light Mode, show the Moon icon so user can switch to Dark Mode
       sun.style.display = 'none';
-      moon.style.display = '';
+      moon.style.display = 'block';
     }
   }
 
   function currentTheme() {
-    return html.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    return html.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
+  function initTheme() {
     var saved = localStorage.getItem('wearlytics-theme');
-    if (!saved) {
-      applyTheme('dark');
-    }
-    btn = document.getElementById('themeToggle');
+    var theme = (saved === 'light') ? 'light' : 'dark';
+    applyTheme(theme);
+
+    var btn = document.getElementById('themeToggle');
     if (btn) {
-      btn.addEventListener('click', function() {
+      btn.onclick = function() {
         var next = currentTheme() === 'dark' ? 'light' : 'dark';
         applyTheme(next);
-      });
+      };
     }
-    // Sync icon with current theme on page load
-    updateToggleIcon(currentTheme());
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTheme);
+  } else {
+    initTheme();
+  }
 })();
 
 
@@ -104,3 +225,47 @@ function selectPreset(url, element) {
     previewBox.classList.remove('d-none');
   }
 }
+
+// ============================================================
+// Top Navigation Search & Mobile Drawer
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+  // Top nav search popover
+  var searchTrigger = document.getElementById('navSearchTrigger');
+  var searchBar = document.getElementById('navSearchBar');
+  var searchClose = document.getElementById('navSearchClose');
+
+  if (searchTrigger && searchBar) {
+    searchTrigger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      searchBar.classList.toggle('active');
+      if (searchBar.classList.contains('active')) {
+        var input = searchBar.querySelector('input');
+        if (input) input.focus();
+      }
+    });
+
+    if (searchClose) {
+      searchClose.addEventListener('click', function(e) {
+        e.stopPropagation();
+        searchBar.classList.remove('active');
+      });
+    }
+
+    document.addEventListener('click', function(e) {
+      if (!searchBar.contains(e.target) && e.target !== searchTrigger && !searchTrigger.contains(e.target)) {
+        searchBar.classList.remove('active');
+      }
+    });
+  }
+
+  // Mobile drawer toggle
+  var mobileToggle = document.getElementById('mobileMenuToggle');
+  var mobileDrawer = document.getElementById('mobileDrawer');
+  if (mobileToggle && mobileDrawer) {
+    mobileToggle.addEventListener('click', function() {
+      mobileDrawer.classList.toggle('active');
+    });
+  }
+});
+

@@ -79,7 +79,7 @@
               <input type="radio" name="avatar_color" value="{{ color }}" 
                      {% if (current_user.avatar_color or '#c99a6b') == color %}checked{% endif %}
                      style="display:none;" onchange="updateAvatarPreview('{{ color }}')">
-              <span class="color-dot" style="background:{{ color }}; {% if (current_user.avatar_color or '#c99a6b') == color %}box-shadow: 0 0 0 3px #fff, 0 0 0 5px {{ color }};{% endif %}"></span>
+              <span class="color-dot" style="background:{{ color }}; {% if (current_user.avatar_color or '#c99a6b') == color %}box-shadow: 0 0 0 3px #161513, 0 0 0 5px {{ color }};{% endif %}"></span>
             </label>
             {% endfor %}
           </div>
@@ -167,7 +167,7 @@
       <h3>Account Actions</h3>
       <p class="text-muted" style="font-size:0.88rem;">Sign out of your Wearlytics account on this device.</p>
       <form action="{{ url_for('auth.logout') }}" method="post">
-        <button type="submit" class="btn" style="background:#fff0f0;color:#e74c3c;border:1px solid #ffcccc;padding:10px 22px;border-radius:10px;font-weight:700;cursor:pointer;">
+        <button type="submit" class="btn" style="background:rgba(239, 68, 68, 0.08);color:#f87171;border:1px solid rgba(239, 68, 68, 0.28);padding:10px 24px;border-radius:12px;font-weight:700;cursor:pointer;transition:all 0.2s ease;">
           Sign Out
         </button>
       </form>
@@ -185,7 +185,7 @@ function updateAvatarPreview(color) {
   });
   const checked = document.querySelector('input[name="avatar_color"]:checked');
   if (checked) {
-    checked.nextElementSibling.style.boxShadow = `0 0 0 3px #fff, 0 0 0 5px ${color}`;
+    checked.nextElementSibling.style.boxShadow = `0 0 0 3px #161513, 0 0 0 5px ${color}`;
   }
 }
 </script>

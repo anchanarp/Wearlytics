@@ -4,13 +4,24 @@
 {% block content %}
 
 {# ── Page Header ──────────────────────────────────────────────────────────── #}
-<div class="stylist-page-header">
+<div class="stylist-page-header mb-3">
   <div>
-    <p class="eyebrow" style="color:var(--primary);font-weight:700;letter-spacing:.08em;">✦ AI-POWERED</p>
     <h1 class="stylist-page-title">AI Stylist</h1>
-    <p class="stylist-page-sub">Your personal AI-powered wardrobe stylist.</p>
+    <p class="stylist-page-sub">Get personalized outfit ideas from your wardrobe</p>
   </div>
   <a href="{{ url_for('recommendations.preferences') }}" class="btn light-button stylist-prefs-btn">⚙ My Preferences</a>
+</div>
+
+<!-- Quick Occasion Filter Tabs (Reference Aesthetic) -->
+<div class="stylist-quick-occasions mb-4">
+  {% for occ in ['Casual', 'Formal', 'Work / Business', 'Party', 'Travel / Vacation', 'Date Night'] %}
+    {% set occ_label = 'Office' if occ == 'Work / Business' else ('Travel' if occ == 'Travel / Vacation' else occ) %}
+    <button type="button" 
+            class="stylist-occ-pill {% if selected_occasion == occ or (not selected_occasion and occ == 'Casual') %}active{% endif %}"
+            onclick="quickPickOccasion('{{ occ }}')">
+      {{ occ_label }}
+    </button>
+  {% endfor %}
 </div>
 
 {# ── Feedback Learning Banner ─────────────────────────────────────────────── #}
@@ -218,17 +229,45 @@
   {# Right — score + accordions + actions #}
   <div class="rec-result-right">
 
-    {# Compatibility Score #}
+    <div class="rec-editorial-header mb-3">
+      <h3 class="rec-editorial-title">{{ best.title or 'Effortless Chic' }}</h3>
+      <p class="rec-editorial-desc">A clean, refined look tailored for your comfort and style harmony.</p>
+    </div>
+
+    {# Style Compatibility Circular Score & Checklist #}
     <div class="rec-score-card">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="circular-score-wrap">
+          <svg class="circular-chart" viewBox="0 0 36 36">
+            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            <path class="circle-progress" stroke-dasharray="{{ best.score }}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          </svg>
+          <div class="circular-score-text">
+            <strong>{{ "%.0f"|format(best.score) }}%</strong>
+          </div>
+        </div>
+
+        <div class="rec-checklist ms-3">
+          <div class="rec-check-item">
+            <span class="check-icon">✓</span> Color Match
+          </div>
+          <div class="rec-check-item">
+            <span class="check-icon">✓</span> Style Match
+          </div>
+          <div class="rec-check-item">
+            <span class="check-icon">✓</span> Occasion Fit
+          </div>
+          <div class="rec-check-item">
+            <span class="check-icon">✓</span> Season Fit
+          </div>
+        </div>
+      </div>
+      
       <div class="rec-score-header">
-        <span class="rec-score-label">Compatibility Score</span>
+        <span class="rec-score-label">Style Compatibility</span>
         <strong class="rec-score-value {% if best.score >= 75 %}score-high{% elif best.score >= 50 %}score-mid{% else %}score-low{% endif %}">
           {{ "%.1f"|format(best.score) }} / 100
         </strong>
-      </div>
-      <div class="score-bar-track mt-2">
-        <div class="score-bar-fill {% if best.score >= 75 %}fill-high{% elif best.score >= 50 %}fill-mid{% else %}fill-low{% endif %}"
-             style="width:{{ best.score }}%;"></div>
       </div>
     </div>
 
@@ -307,24 +346,17 @@
     {% endif %}
 
     {# Feedback actions #}
-    <div class="rec-action-row">
-      <form method="post" action="{{ url_for('recommendations.submit_feedback') }}">
-        <input type="hidden" name="reaction" value="liked">
+    <div class="rec-action-row d-flex align-items-center gap-2 mt-4">
+      <form method="post" action="{{ url_for('recommendations.save_outfit') }}" class="flex-grow-1">
         <input type="hidden" name="occasion" value="{{ best.occasion }}">
         <input type="hidden" name="season" value="{{ best.season }}">
         <input type="hidden" name="score" value="{{ best.score }}">
-        <input type="hidden" name="title" value="AI Stylist Liked Outfit ({{ '%.1f'|format(best.score) }}/100)">
+        <input type="hidden" name="title" value="{% for item in best['items'] %}{{ item.name }}{% if not loop.last %} & {% endif %}{% endfor %}{% if best.occasion and best.occasion != 'Any' %} ({{ best.occasion }}){% endif %}">
         {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
-        <button type="submit" class="rec-action-btn btn-like">👍 Like</button>
-      </form>
-      <form method="post" action="{{ url_for('recommendations.submit_feedback') }}">
-        <input type="hidden" name="reaction" value="disliked">
-        <input type="hidden" name="occasion" value="{{ best.occasion }}">
-        <input type="hidden" name="season" value="{{ best.season }}">
-        <input type="hidden" name="score" value="{{ best.score }}">
-        <input type="hidden" name="title" value="AI Stylist Disliked Outfit">
-        {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
-        <button type="submit" class="rec-action-btn btn-dislike">👎 Dislike</button>
+        <button type="submit" class="btn btn-mocha-gradient w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+          Save Outfit
+        </button>
       </form>
       <form method="post" action="{{ url_for('recommendations.submit_feedback') }}">
         <input type="hidden" name="reaction" value="favorited">
@@ -333,16 +365,30 @@
         <input type="hidden" name="score" value="{{ best.score }}">
         <input type="hidden" name="title" value="⭐ AI Stylist Outfit ({{ '%.1f'|format(best.score) }}/100)">
         {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
-        <button type="submit" class="rec-action-btn btn-fav">⭐ Favorite</button>
+        <button type="submit" class="icon-button heart-fav-btn" title="Favorite this look" aria-label="Favorite">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </button>
       </form>
-      <form method="post" action="{{ url_for('recommendations.save_outfit') }}">
-        <input type="hidden" name="occasion" value="{{ best.occasion }}">
-        <input type="hidden" name="season" value="{{ best.season }}">
-        <input type="hidden" name="score" value="{{ best.score }}">
-        <input type="hidden" name="title" value="{% for item in best['items'] %}{{ item.name }}{% if not loop.last %} & {% endif %}{% endfor %}{% if best.occasion and best.occasion != 'Any' %} ({{ best.occasion }}){% endif %}">
-        {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
-        <button type="submit" class="rec-action-btn btn-save">💾 Save</button>
-      </form>
+      <div class="d-flex gap-1 ms-1">
+        <form method="post" action="{{ url_for('recommendations.submit_feedback') }}">
+          <input type="hidden" name="reaction" value="liked">
+          <input type="hidden" name="occasion" value="{{ best.occasion }}">
+          <input type="hidden" name="season" value="{{ best.season }}">
+          <input type="hidden" name="score" value="{{ best.score }}">
+          <input type="hidden" name="title" value="AI Stylist Liked Outfit ({{ '%.1f'|format(best.score) }}/100)">
+          {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
+          <button type="submit" class="rec-action-btn btn-like" title="Thumbs Up">👍</button>
+        </form>
+        <form method="post" action="{{ url_for('recommendations.submit_feedback') }}">
+          <input type="hidden" name="reaction" value="disliked">
+          <input type="hidden" name="occasion" value="{{ best.occasion }}">
+          <input type="hidden" name="season" value="{{ best.season }}">
+          <input type="hidden" name="score" value="{{ best.score }}">
+          <input type="hidden" name="title" value="AI Stylist Disliked Outfit">
+          {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
+          <button type="submit" class="rec-action-btn btn-dislike" title="Thumbs Down">👎</button>
+        </form>
+      </div>
     </div>
 
   </div>{# /rec-result-right #}
@@ -508,6 +554,23 @@
       if (smBtn) { smBtn.disabled = true; smBtn.textContent = '⏳ Styling…'; }
     });
   }
+
+  // Global helper for quick occasion pills
+  window.quickPickOccasion = function(occ) {
+    var occInput  = document.getElementById('occasion-input');
+    var occHidden = document.getElementById('occasion-hidden');
+    if (occInput)  occInput.value  = occ;
+    if (occHidden) occHidden.value = occ;
+    document.querySelectorAll('.stylist-occ-pill').forEach(function(pill) {
+      pill.classList.remove('active');
+    });
+    if (window.event && window.event.target) {
+      window.event.target.classList.add('active');
+    }
+    if (stylistForm) {
+      stylistForm.submit();
+    }
+  };
 })();
 </script>
 
