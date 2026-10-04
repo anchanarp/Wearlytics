@@ -162,24 +162,6 @@
   </div>
 </form>
 
-<!-- Preset Gallery -->
-<div class="custom-card-box mb-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <h3 style="font-size:17px; margin-bottom:2px;">Stock Presets</h3>
-      <p class="text-muted small mb-0">Don't have a photo ready? Pick from our curated presets:</p>
-    </div>
-  </div>
-  
-  <div class="preset-gallery-grid">
-    {% for preset in preset_images %}
-    <div class="preset-card" onclick="selectPreset('{{ preset.url }}', this)">
-      <img src="{{ preset.url }}" alt="{{ preset.label }}" loading="lazy">
-      <span>{{ preset.label }}</span>
-    </div>
-    {% endfor %}
-  </div>
-</div>
 
 <!-- ✦ AI Analysis Script -->
 <script>

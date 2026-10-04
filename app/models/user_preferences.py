@@ -26,6 +26,7 @@ class UserPreferences(db.Model):
     preferred_occasions = db.Column(db.Text, nullable=True, default="[]")
     preferred_seasons = db.Column(db.Text, nullable=True, default="[]")
     disliked_colors = db.Column(db.Text, nullable=True, default="[]")
+    profile_meta = db.Column(db.Text, nullable=True, default="{}")
 
     updated_at = db.Column(
         db.DateTime(timezone=True),
@@ -113,6 +114,32 @@ class UserPreferences(db.Model):
     @disliked_colors_list.setter
     def disliked_colors_list(self, value: list):
         self._set_list("disliked_colors", value)
+
+    @property
+    def meta_dict(self) -> dict:
+        """Parse profile_meta JSON into a dictionary."""
+        if not self.profile_meta:
+            return {}
+        try:
+            return json.loads(self.profile_meta)
+        except (json.JSONDecodeError, TypeError):
+            return {}
+
+    def get_meta(self, key: str, default=None):
+        """Retrieve a specific profile metadata value."""
+        return self.meta_dict.get(key, default)
+
+    def set_meta(self, key: str, value) -> None:
+        """Store a single key-value pair in profile_meta."""
+        data = self.meta_dict
+        data[key] = value
+        self.profile_meta = json.dumps(data)
+
+    def update_meta(self, new_dict: dict) -> None:
+        """Batch update profile metadata."""
+        data = self.meta_dict
+        data.update(new_dict)
+        self.profile_meta = json.dumps(data)
 
     # ── Effective preference view (respects toggles) ──────────────────────────
 

@@ -61,7 +61,7 @@
       <div class="color-palette-bubbles">
         {% for col in colors_data %}
         <div class="color-bubble-item" title="{{ col.color }} ({{ col.percentage }}%)">
-          <div class="color-bubble" style="background-color: {{ col.color.lower() if col.color.lower() not in ['denim', 'multicolor'] else '#4a777a' }};"></div>
+          <div class="color-bubble" style="background-color: {{ col.hex or (col.color|color_hex) }};"></div>
           <span class="color-bubble-name">{{ col.color }}</span>
         </div>
         {% endfor %}
@@ -152,7 +152,7 @@
       <div class="color-swatch-list">
         {% for col in colors_data %}
         <div class="color-swatch-item">
-          <div class="color-dot" style="background-color: {{ col.color.lower() if col.color.lower() not in ['denim', 'multicolor'] else '#4a777a' }};"></div>
+          <div class="color-dot" style="background-color: {{ col.hex or (col.color|color_hex) }};"></div>
           <div class="flex-grow-1">
             <strong>{{ col.color }}</strong>
             <span class="text-muted small">({{ col.count }} pieces)</span>

@@ -3,190 +3,1551 @@
 {% block title %}User Profile | Wearlytics{% endblock %}
 
 {% block content %}
-<div class="page-heading">
-  <div>
-    <p class="eyebrow">Account Settings</p>
-    <h1>Your Profile</h1>
-    <p>Manage your account, preferences, and style settings.</p>
-  </div>
-</div>
+<div class="luxury-profile-page">
 
-<div class="row g-4">
-  <!-- Left Column: Avatar & Stats -->
-  <div class="col-12 col-lg-4">
-    <div class="profile-summary-card">
-      <!-- Avatar with customizable color -->
-      <div class="profile-avatar-large" style="background: {{ current_user.avatar_color or '#c99a6b' }};">
-        {{ current_user.name[:2].upper() if current_user.name else 'US' }}
+  <!-- ── Main Layout: Sidebar (Left) + Content (Right) ── -->
+  <div class="luxury-profile-layout">
+
+    <!-- ── Left Column: Sticky Sidebar Navigation & Overview ── -->
+    <aside class="luxury-sidebar-sticky">
+      <div class="luxury-sidebar-card">
+        <!-- Botanical & Silk Texture Banner Header -->
+        <div class="sidebar-silk-banner" style="background-image: url('{{ url_for('static', filename='img/profile_silk_banner.jpg') }}');">
+          <div class="sidebar-silk-overlay"></div>
+        </div>
+
+        <div class="sidebar-profile-body">
+          <!-- Overlapping Avatar with Edit Badge -->
+          <div class="sidebar-avatar-container">
+            <div class="sidebar-avatar-circle" id="sidebarAvatarPreview" style="background: {{ current_user.avatar_color or '#c99a6b' }};">
+              {{ current_user.name[:2].upper() if current_user.name else 'AN' }}
+            </div>
+            <button type="button" class="sidebar-avatar-edit-badge" title="Customize avatar accent color" onclick="switchProfileTab('settings');">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+              </svg>
+            </button>
+          </div>
+
+          <h2 class="sidebar-user-name">{{ current_user.name }}</h2>
+          <p class="sidebar-user-email">{{ current_user.email }}</p>
+          <span class="sidebar-role-pill">STYLE ENTHUSIAST</span>
+
+          <!-- 4-Item Horizontal Stats Strip -->
+          <div class="sidebar-stats-strip">
+            <div class="sidebar-stat-item">
+              <span class="sidebar-stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a3 3 0 0 0-3 3c0 .8.3 1.5.8 2.1L2 14v2h20v-2l-7.8-6.9c.5-.6.8-1.3.8-2.1a3 3 0 0 0-3-3z"/>
+                  <path d="M2 16v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3"/>
+                </svg>
+              </span>
+              <strong class="sidebar-stat-val">{{ items_count }}</strong>
+              <span class="sidebar-stat-lbl">Clothes</span>
+            </div>
+
+            <div class="sidebar-stat-item">
+              <span class="sidebar-stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </span>
+              <strong class="sidebar-stat-val">{{ outfits_count }}</strong>
+              <span class="sidebar-stat-lbl">Outfits</span>
+            </div>
+
+            <div class="sidebar-stat-item">
+              <span class="sidebar-stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                </svg>
+              </span>
+              <strong class="sidebar-stat-val">{{ favorites_count }}</strong>
+              <span class="sidebar-stat-lbl">Favorites</span>
+            </div>
+
+            <div class="sidebar-stat-item">
+              <span class="sidebar-stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+              </span>
+              <strong class="sidebar-stat-val">{{ laundry_count }}</strong>
+              <span class="sidebar-stat-lbl">In Laundry</span>
+            </div>
+          </div>
+
+          <!-- Sidebar Primary Navigation -->
+          <nav class="sidebar-nav-list" aria-label="Profile Navigation">
+            <button type="button" class="sidebar-nav-item active" data-tab="overview" onclick="switchProfileTab('overview');">
+              <div class="sidebar-nav-item-left">
+                <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>Profile Overview</span>
+              </div>
+              <svg class="sidebar-nav-chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+
+            <button type="button" class="sidebar-nav-item" data-tab="personal-info" onclick="switchProfileTab('personal-info');">
+              <div class="sidebar-nav-item-left">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Personal Information</span>
+              </div>
+              <svg class="sidebar-nav-chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+
+            <button type="button" class="sidebar-nav-item" data-tab="body-fit" onclick="switchProfileTab('body-fit');">
+              <div class="sidebar-nav-item-left">
+                <svg viewBox="0 0 24 24"><path d="M21.3 8.7 8.7 21.3a2.5 2.5 0 0 1-3.5 0l-2.5-2.5a2.5 2.5 0 0 1 0-3.5L15.3 2.7a2.5 2.5 0 0 1 3.5 0l2.5 2.5a2.5 2.5 0 0 1 0 3.5Z"/><line x1="13" y1="5" x2="16" y2="8"/><line x1="10" y1="8" x2="13" y2="11"/><line x1="7" y1="11" x2="10" y2="14"/></svg>
+                <span>Body &amp; Fit Profile</span>
+              </div>
+              <svg class="sidebar-nav-chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+
+            <button type="button" class="sidebar-nav-item" data-tab="style-prefs" onclick="switchProfileTab('style-prefs');">
+              <div class="sidebar-nav-item-left">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span>Style Preferences</span>
+              </div>
+              <svg class="sidebar-nav-chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+
+            <button type="button" class="sidebar-nav-item" data-tab="style-identity" onclick="switchProfileTab('style-identity');">
+              <div class="sidebar-nav-item-left">
+                <svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.7-.8 1.7-1.8 0-.5-.2-1-.5-1.4-.3-.4-.5-.9-.5-1.5 0-1.1.9-2 2-2h2.3c3.7 0 6.7-3 6.7-6.7C23.7 5.2 18.5 2 12 2z"/></svg>
+                <span>Style Identity</span>
+              </div>
+              <svg class="sidebar-nav-chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+
+            <button type="button" class="sidebar-nav-item" data-tab="ai-personalization" onclick="switchProfileTab('ai-personalization');">
+              <div class="sidebar-nav-item-left">
+                <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                <span>AI Personalization</span>
+              </div>
+              <svg class="sidebar-nav-chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+
+            <!-- ACCOUNT Group -->
+            <p class="sidebar-nav-section-title">ACCOUNT</p>
+
+            <button type="button" class="sidebar-nav-item" data-tab="settings" onclick="switchProfileTab('settings');">
+              <div class="sidebar-nav-item-left">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Settings</span>
+              </div>
+              <svg class="sidebar-nav-chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+
+            <button type="button" class="sidebar-nav-item" data-tab="security" onclick="switchProfileTab('security');">
+              <div class="sidebar-nav-item-left">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Security</span>
+              </div>
+              <svg class="sidebar-nav-chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+
+            <button type="button" class="sidebar-nav-item logout-item" onclick="confirmLogout();">
+              <div class="sidebar-nav-item-left">
+                <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span>Sign Out</span>
+              </div>
+            </button>
+          </nav>
+        </div>
       </div>
-      <h2>{{ current_user.name }}</h2>
-      <p class="text-muted mb-1">{{ current_user.email }}</p>
-      {% if current_user.bio %}
-      <p class="profile-bio">{{ current_user.bio }}</p>
-      {% endif %}
-      <span class="chip">Style Enthusiast</span>
+    </aside>
 
-      <div class="profile-stats-row">
-        <div>
-          <strong>{{ items_count }}</strong>
-          <span>Clothes</span>
+    <!-- Hidden Sign Out Form -->
+    <form id="globalLogoutForm" action="{{ url_for('auth.logout') }}" method="post" style="display:none;"></form>
+
+    <!-- ── Right Column: Dynamic Tab Content Area ── -->
+    <main class="luxury-main-tab-viewport">
+
+      <!-- ══════════════════════════════════════════════════════════════
+           TAB 1: PROFILE OVERVIEW (DEFAULT VIEW — Exact Reference Match)
+           ══════════════════════════════════════════════════════════════ -->
+      <div class="profile-tab-pane active" id="pane-overview">
+
+        <!-- Top Header for Overview -->
+        <div class="luxury-profile-header">
+          <div>
+            <p class="header-eyebrow">Profile</p>
+            <h1 class="header-title">Profile Overview</h1>
+            <p class="header-subtitle">Here's a quick summary of your style profile and wardrobe.</p>
+          </div>
+          <div>
+            <button type="button" class="luxury-edit-profile-btn" onclick="switchProfileTab('personal-info');">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              Edit Profile
+            </button>
+          </div>
         </div>
-        <div>
-          <strong>{{ outfits_count }}</strong>
-          <span>Outfits</span>
+
+        <!-- Featured Hero Banner Card -->
+        <div class="overview-hero-card">
+          <div class="overview-hero-left">
+            <h2 class="overview-hero-greeting">Hi, {{ current_user.name.split()[0] if current_user.name else 'Anna' }} 👋</h2>
+            <p class="overview-hero-tagline">Let's make every day a stylish day!</p>
+
+            <!-- Profile Completion Inner Box -->
+            <div class="overview-completion-box">
+              <div class="completion-gauge-circle {% if profile_completion_pct == 100 %}is-complete{% endif %}"
+                   style="--completion-pct: {{ profile_completion_pct }}%;"
+                   aria-label="{{ profile_completion_pct }} percent complete">
+                {{ profile_completion_pct }}%
+              </div>
+              <div class="completion-info">
+                <h3 class="completion-title">Profile Completion</h3>
+                {% if profile_completion_pct >= 100 %}
+                  <p class="completion-sub">Your style profile is fully complete! Ready for optimal AI styling.</p>
+                {% else %}
+                  <p class="completion-sub">Add a few more details to get better outfit recommendations.</p>
+                {% endif %}
+              </div>
+              {% if profile_completion_pct >= 100 %}
+                <button type="button" class="completion-action-btn" onclick="switchProfileTab('personal-info');">
+                  Edit Profile →
+                </button>
+              {% else %}
+                <button type="button" class="completion-action-btn" onclick="switchProfileTab('personal-info');">
+                  Complete Profile →
+                </button>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="overview-hero-right">
+            <img src="{{ url_for('static', filename='img/profile_overview_hero.jpg') }}" alt="Wearlytics Wardrobe" class="overview-hero-img">
+            <div class="overview-hero-gradient-overlay"></div>
+          </div>
         </div>
-        <div>
-          <strong>{{ favorites_count }}</strong>
-          <span>Favorites</span>
-        </div>
-        <div>
-          <strong>{{ laundry_count }}</strong>
-          <span>In Laundry</span>
+
+        <!-- 2x2 Overview Summary Cards Grid -->
+        <div class="overview-summary-grid">
+
+          <!-- 1. Wardrobe Summary -->
+          <div class="luxury-card">
+            <div class="luxury-card-head">
+              <div class="luxury-card-head-left">
+                <div class="luxury-card-icon-bubble">
+                  <svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3c0 .8.3 1.5.8 2.1L2 14v2h20v-2l-7.8-6.9c.5-.6.8-1.3.8-2.1a3 3 0 0 0-3-3z"/><path d="M2 16v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3"/></svg>
+                </div>
+                <div class="luxury-card-titles">
+                  <h3>Wardrobe Summary</h3>
+                  <p>Your wardrobe at a glance.</p>
+                </div>
+              </div>
+              <a href="{{ url_for('wardrobe.index') }}" class="card-view-link">View All →</a>
+            </div>
+
+            <div class="luxury-card-body">
+              <div class="summary-stat-boxes-grid">
+                <a href="{{ url_for('wardrobe.index') }}" class="summary-stat-mini-box" style="text-decoration:none;">
+                  <svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3c0 .8.3 1.5.8 2.1L2 14v2h20v-2l-7.8-6.9c.5-.6.8-1.3.8-2.1a3 3 0 0 0-3-3z"/><path d="M2 16v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3"/></svg>
+                  <strong class="summary-stat-mini-val">{{ items_count }}</strong>
+                  <span class="summary-stat-mini-lbl">Clothes</span>
+                </a>
+                <a href="{{ url_for('outfits.index') }}" class="summary-stat-mini-box" style="text-decoration:none;">
+                  <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  <strong class="summary-stat-mini-val">{{ outfits_count }}</strong>
+                  <span class="summary-stat-mini-lbl">Outfits</span>
+                </a>
+                <a href="{{ url_for('wardrobe.index', favorite='1') }}" class="summary-stat-mini-box" style="text-decoration:none;">
+                  <svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                  <strong class="summary-stat-mini-val">{{ favorites_count }}</strong>
+                  <span class="summary-stat-mini-lbl">Favorites</span>
+                </a>
+                <a href="{{ url_for('wardrobe.index') }}" class="summary-stat-mini-box" style="text-decoration:none;">
+                  <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                  <strong class="summary-stat-mini-val">{{ laundry_count }}</strong>
+                  <span class="summary-stat-mini-lbl">In Laundry</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Style Snapshot -->
+          <div class="luxury-card">
+            <div class="luxury-card-head">
+              <div class="luxury-card-head-left">
+                <div class="luxury-card-icon-bubble">
+                  <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                </div>
+                <div class="luxury-card-titles">
+                  <h3>Style Snapshot</h3>
+                  <p>Your style preferences.</p>
+                </div>
+              </div>
+              <button type="button" class="card-view-link" onclick="switchProfileTab('style-prefs');">View Details →</button>
+            </div>
+
+            <div class="luxury-card-body">
+              <div class="style-snapshot-row">
+                <div class="snapshot-item">
+                  <span class="snapshot-label">Top Style</span>
+                  <span class="snapshot-pill">{{ prefs.preferred_styles_list[0] if prefs.preferred_styles_list else 'Casual' }} +</span>
+                </div>
+                <div class="snapshot-item">
+                  <span class="snapshot-label">Top Occasion</span>
+                  <span class="snapshot-pill">{{ prefs.preferred_occasions_list[0] if prefs.preferred_occasions_list else 'College' }}</span>
+                </div>
+                <div class="snapshot-item">
+                  <span class="snapshot-label">Top Season</span>
+                  <span class="snapshot-pill">{{ prefs.preferred_seasons_list[0] if prefs.preferred_seasons_list else 'All Seasons' }}</span>
+                </div>
+                <div class="snapshot-item">
+                  <span class="snapshot-label">Favorite Colors</span>
+                  <div class="swatches-row" style="margin-top:4px;">
+                    {% set fav_colors = prefs.preferred_colors_list if prefs.preferred_colors_list else ['#cbb39c', '#7a5840', '#5c5957', '#e89b9b', '#f7eee5'] %}
+                    {% for c in fav_colors[:5] %}
+                    <span class="color-circle-swatch" style="background:{{ c }};width:20px;height:20px;"></span>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Personal Details Summary -->
+          <div class="luxury-card">
+            <div class="luxury-card-head">
+              <div class="luxury-card-head-left">
+                <div class="luxury-card-icon-bubble">
+                  <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div class="luxury-card-titles">
+                  <h3>Personal Details</h3>
+                  <p>Your basic information.</p>
+                </div>
+              </div>
+              <button type="button" class="card-view-link" onclick="switchProfileTab('personal-info');">View Details →</button>
+            </div>
+
+            <div class="luxury-card-body">
+              <div class="summary-details-list">
+                <div class="summary-detail-row">
+                  <span class="summary-detail-label">
+                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    Full Name
+                  </span>
+                  <span class="summary-detail-val">{{ current_user.name }}</span>
+                </div>
+
+                <div class="summary-detail-row">
+                  <span class="summary-detail-label">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    Email
+                  </span>
+                  <span class="summary-detail-val">{{ current_user.email }}</span>
+                </div>
+
+                <div class="summary-detail-row">
+                  <span class="summary-detail-label">
+                    <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    Phone
+                  </span>
+                  <span class="summary-detail-val">{{ meta.get('phone', '+91 98765 43210') }}</span>
+                </div>
+
+                <div class="summary-detail-row">
+                  <span class="summary-detail-label">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    Date of Birth
+                  </span>
+                  <span class="summary-detail-val">{{ meta.get('dob', '07 Aug 2004') }}</span>
+                </div>
+
+                <div class="summary-detail-row">
+                  <span class="summary-detail-label">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M12 15v7M9 19h6"/></svg>
+                    Gender
+                  </span>
+                  <span class="summary-detail-val">{{ meta.get('gender', 'Female') }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Body & Fit Summary -->
+          <div class="luxury-card">
+            <div class="luxury-card-head">
+              <div class="luxury-card-head-left">
+                <div class="luxury-card-icon-bubble">
+                  <svg viewBox="0 0 24 24"><path d="M21.3 8.7 8.7 21.3a2.5 2.5 0 0 1-3.5 0l-2.5-2.5a2.5 2.5 0 0 1 0-3.5L15.3 2.7a2.5 2.5 0 0 1 3.5 0l2.5 2.5a2.5 2.5 0 0 1 0 3.5Z"/></svg>
+                </div>
+                <div class="luxury-card-titles">
+                  <h3>Body &amp; Fit Summary</h3>
+                  <p>Your measurements and fit preferences.</p>
+                </div>
+              </div>
+              <button type="button" class="card-view-link" onclick="switchProfileTab('body-fit');">View Details →</button>
+            </div>
+
+            <div class="luxury-card-body">
+              <div class="summary-fit-grid">
+                <div class="summary-fit-item">
+                  <div class="summary-fit-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M8 5h8M9 12h6M8 19h8"/></svg>
+                  </div>
+                  <div class="summary-fit-meta">
+                    <span class="summary-fit-lbl">Height</span>
+                    <strong class="summary-fit-val">{{ meta.get('height', '169') }} cm</strong>
+                  </div>
+                </div>
+
+                <div class="summary-fit-item">
+                  <div class="summary-fit-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+                  </div>
+                  <div class="summary-fit-meta">
+                    <span class="summary-fit-lbl">Clothing Size</span>
+                    <strong class="summary-fit-val">{{ meta.get('clothing_size', 'M') }}</strong>
+                  </div>
+                </div>
+
+                <div class="summary-fit-item">
+                  <div class="summary-fit-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 0 0-9 9 9 9 0 0 0 6 8.5V22h6v-1.5A9 9 0 0 0 21 12a9 9 0 0 0-9-9z"/></svg>
+                  </div>
+                  <div class="summary-fit-meta">
+                    <span class="summary-fit-lbl">Weight</span>
+                    <strong class="summary-fit-val">{{ meta.get('weight', '46') }} kg</strong>
+                  </div>
+                </div>
+
+                <div class="summary-fit-item">
+                  <div class="summary-fit-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 18h20v2H2zM4 14l4-7 4 3 6-3 4 7H4z"/></svg>
+                  </div>
+                  <div class="summary-fit-meta">
+                    <span class="summary-fit-lbl">Shoe Size</span>
+                    <strong class="summary-fit-val">{{ meta.get('shoe_size', '38') }}</strong>
+                  </div>
+                </div>
+
+                <div class="summary-fit-item">
+                  <div class="summary-fit-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="4" width="10" height="16" rx="2"/></svg>
+                  </div>
+                  <div class="summary-fit-meta">
+                    <span class="summary-fit-lbl">Body Shape</span>
+                    <strong class="summary-fit-val">{{ meta.get('body_shape', 'Rectangle') }}</strong>
+                  </div>
+                </div>
+
+                <div class="summary-fit-item">
+                  <div class="summary-fit-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                  </div>
+                  <div class="summary-fit-meta">
+                    <span class="summary-fit-lbl">Preferred Fit</span>
+                    <span class="snapshot-pill" style="font-size:11.5px;padding:3px 10px;">{{ meta.get('preferred_fit', 'Slim') }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Right Column: Edit Forms -->
-  <div class="col-12 col-lg-8">
-    <!-- Edit Profile -->
-    <div class="custom-card-box mb-4">
-      <h3>Edit Profile</h3>
-      <form action="{{ url_for('profile.index') }}" method="post" class="mt-3">
-        <input type="hidden" name="action" value="profile">
-        <div class="mb-3">
-          <label for="name" class="form-label-custom">Full Name</label>
-          <input type="text" id="name" name="name" class="form-input-custom" value="{{ current_user.name }}" required>
-        </div>
-
-        <div class="mb-3">
-          <label for="email" class="form-label-custom">Email Address</label>
-          <input type="email" id="email" class="form-input-custom" value="{{ current_user.email }}" disabled readonly>
-          <small class="text-muted">Email address cannot be changed.</small>
-        </div>
-
-        <div class="mb-3">
-          <label for="bio" class="form-label-custom">Short Bio <small class="text-muted">(optional)</small></label>
-          <input type="text" id="bio" name="bio" class="form-input-custom" 
-                 value="{{ current_user.bio or '' }}" placeholder="e.g. Fashion lover, minimalist style" maxlength="200">
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label-custom">Avatar Color</label>
-          <div class="avatar-color-picker">
-            {% for color in ['#c99a6b','#dfb17b','#8f683e','#1e1e22','#2d3436','#b91c1c','#059669','#2563eb'] %}
-            <label class="avatar-color-swatch" title="{{ color }}">
-              <input type="radio" name="avatar_color" value="{{ color }}" 
-                     {% if (current_user.avatar_color or '#c99a6b') == color %}checked{% endif %}
-                     style="display:none;" onchange="updateAvatarPreview('{{ color }}')">
-              <span class="color-dot" style="background:{{ color }}; {% if (current_user.avatar_color or '#c99a6b') == color %}box-shadow: 0 0 0 3px #161513, 0 0 0 5px {{ color }};{% endif %}"></span>
-            </label>
-            {% endfor %}
+      <!-- ══════════════════════════════════════════════════════════════
+           TAB 2: PERSONAL INFORMATION
+           ══════════════════════════════════════════════════════════════ -->
+      <div class="profile-tab-pane" id="pane-personal-info">
+        <div class="luxury-profile-header">
+          <div>
+            <p class="header-eyebrow">Profile › Personal Details</p>
+            <h1 class="header-title">Personal Information</h1>
+            <p class="header-subtitle">Basic details and contact information.</p>
+          </div>
+          <div>
+            <button type="button" class="card-edit-pill-btn" onclick="switchProfileTab('overview');">
+              ← Back to Overview
+            </button>
           </div>
         </div>
 
-        <button type="submit" class="btn primary-button py-2 px-4">Update Profile</button>
-      </form>
-    </div>
+        <section class="luxury-card luxury-card-fullwidth">
+          <form action="{{ url_for('profile.index') }}" method="post" id="formPersonalInfo">
+            <input type="hidden" name="action" value="personal_info">
 
-    <!-- Change Password -->
-    <div class="custom-card-box mb-4">
-      <h3>Change Password</h3>
-      <form action="{{ url_for('profile.index') }}" method="post" class="mt-3">
-        <input type="hidden" name="action" value="password">
-        <div class="mb-3">
-          <label for="current_password" class="form-label-custom">Current Password</label>
-          <input type="password" id="current_password" name="current_password" class="form-input-custom" required>
-        </div>
-        <div class="row g-3 mb-4">
-          <div class="col-12 col-sm-6">
-            <label for="new_password" class="form-label-custom">New Password</label>
-            <input type="password" id="new_password" name="new_password" class="form-input-custom" placeholder="Min 8 characters" required>
+            <div class="luxury-card-body">
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <div class="luxury-form-group">
+                    <label for="name" class="luxury-field-label">Full Name</label>
+                    <input type="text" id="name" name="name" class="luxury-input-control" value="{{ current_user.name }}" required>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <div class="luxury-form-group">
+                    <label for="email" class="luxury-field-label">Email Address</label>
+                    <input type="email" id="email" class="luxury-input-control" value="{{ current_user.email }}" readonly disabled>
+                    <p class="luxury-input-hint">Email address cannot be changed.</p>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <div class="luxury-form-group">
+                    <label for="phone" class="luxury-field-label">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" class="luxury-input-control" value="{{ meta.get('phone', '+91 98765 43210') }}" placeholder="+91 98765 43210">
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <div class="luxury-form-group">
+                    <label for="dob" class="luxury-field-label">Date of Birth</label>
+                    <input type="date" id="dob" name="dob" class="luxury-input-control" value="{{ meta.get('dob', '2004-08-07') }}">
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <div class="luxury-form-group">
+                    <label for="gender" class="luxury-field-label">Gender <small>(optional)</small></label>
+                    <select id="gender" name="gender" class="luxury-input-control">
+                      <option value="Female" {% if meta.get('gender', 'Female') == 'Female' %}selected{% endif %}>Female</option>
+                      <option value="Male" {% if meta.get('gender') == 'Male' %}selected{% endif %}>Male</option>
+                      <option value="Non-Binary" {% if meta.get('gender') == 'Non-Binary' %}selected{% endif %}>Non-Binary</option>
+                      <option value="Prefer not to say" {% if meta.get('gender') == 'Prefer not to say' %}selected{% endif %}>Prefer not to say</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <div class="luxury-form-group">
+                    <label for="bio" class="luxury-field-label">Short Bio <small>(optional)</small></label>
+                    <input type="text" id="bio" name="bio" class="luxury-input-control" value="{{ current_user.bio or '' }}" placeholder="e.g. Fashion lover, minimalist capsule wardrobe">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="luxury-card-footer">
+              <button type="submit" class="luxury-save-btn">Save Personal Information</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════════
+           TAB 3: BODY & FIT PROFILE
+           ══════════════════════════════════════════════════════════════ -->
+      <div class="profile-tab-pane" id="pane-body-fit">
+        <div class="luxury-profile-header">
+          <div>
+            <p class="header-eyebrow">Profile › Body &amp; Fit</p>
+            <h1 class="header-title">Body &amp; Fit Profile</h1>
+            <p class="header-subtitle">Your measurements help personalize outfit suggestions.</p>
           </div>
-          <div class="col-12 col-sm-6">
-            <label for="confirm_password" class="form-label-custom">Confirm New Password</label>
-            <input type="password" id="confirm_password" name="confirm_password" class="form-input-custom" placeholder="Re-type new password" required>
-          </div>
-        </div>
-        <button type="submit" class="btn primary-button py-2 px-4">Change Password</button>
-      </form>
-    </div>
-
-    <!-- Style Preferences -->
-    <div class="custom-card-box mb-4">
-      <h3>Style Preferences</h3>
-      <p class="text-muted mb-3" style="font-size:0.88rem;">Select your preferred styles, occasions, and seasons to improve recommendations.</p>
-      <form action="{{ url_for('profile.index') }}" method="post">
-        <input type="hidden" name="action" value="preferences">
-
-        <div class="mb-3">
-          <label class="form-label-custom">Preferred Styles</label>
-          <div class="pref-chips-wrap">
-            {% for style in all_styles %}
-            <label class="pref-chip">
-              <input type="checkbox" name="styles" value="{{ style }}"
-                     {% if style in prefs.preferred_styles_list %}checked{% endif %}>
-              <span>{{ style }}</span>
-            </label>
-            {% endfor %}
+          <div>
+            <button type="button" class="card-edit-pill-btn" onclick="switchProfileTab('overview');">
+              ← Back to Overview
+            </button>
           </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label-custom">Preferred Occasions</label>
-          <div class="pref-chips-wrap">
-            {% for occ in all_occasions %}
-            <label class="pref-chip">
-              <input type="checkbox" name="occasions" value="{{ occ }}"
-                     {% if occ in prefs.preferred_occasions_list %}checked{% endif %}>
-              <span>{{ occ }}</span>
-            </label>
-            {% endfor %}
+        <section class="luxury-card luxury-card-fullwidth">
+          <form action="{{ url_for('profile.index') }}" method="post" id="formBodyFit">
+            <input type="hidden" name="action" value="body_fit">
+
+            <div class="luxury-card-body">
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <label for="height" class="luxury-field-label">Height</label>
+                  <div class="luxury-input-with-suffix">
+                    <input type="number" id="height" name="height" class="luxury-input-control" value="{{ meta.get('height', '169') }}" placeholder="169" min="50" max="250">
+                    <span class="luxury-input-suffix">cm</span>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label for="weight" class="luxury-field-label">Weight</label>
+                  <div class="luxury-input-with-suffix">
+                    <input type="number" id="weight" name="weight" class="luxury-input-control" value="{{ meta.get('weight', '46') }}" placeholder="46" min="20" max="250">
+                    <span class="luxury-input-suffix">kg</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Body Shape -->
+              <div class="luxury-form-group mt-3">
+                <label class="luxury-field-label">Body Shape <small>(optional)</small></label>
+                {% set active_shape = meta.get('body_shape', 'Rectangle') %}
+                <div class="body-shapes-grid">
+                  <label>
+                    <input type="radio" name="body_shape" value="Rectangle" class="body-shape-radio" style="display:none;" {% if active_shape == 'Rectangle' %}checked{% endif %}>
+                    <div class="body-shape-card">
+                      <svg viewBox="0 0 24 36"><rect x="7" y="4" width="10" height="28" rx="2" /><line x1="7" y1="14" x2="17" y2="14" stroke-dasharray="1 1" opacity="0.6"/></svg>
+                      <span>Rectangle</span>
+                    </div>
+                  </label>
+
+                  <label>
+                    <input type="radio" name="body_shape" value="Hourglass" class="body-shape-radio" style="display:none;" {% if active_shape == 'Hourglass' %}checked{% endif %}>
+                    <div class="body-shape-card">
+                      <svg viewBox="0 0 24 36"><path d="M5 6 C10 6, 10 16, 7 20 C10 24, 9 30, 5 30" /><path d="M19 6 C14 6, 14 16, 17 20 C14 24, 15 30, 19 30" /></svg>
+                      <span>Hourglass</span>
+                    </div>
+                  </label>
+
+                  <label>
+                    <input type="radio" name="body_shape" value="Pear" class="body-shape-radio" style="display:none;" {% if active_shape == 'Pear' %}checked{% endif %}>
+                    <div class="body-shape-card">
+                      <svg viewBox="0 0 24 36"><path d="M9 7 C9 14, 4 22, 6 29 C8 31, 16 31, 18 29 C20 22, 15 14, 15 7 Z" /></svg>
+                      <span>Pear</span>
+                    </div>
+                  </label>
+
+                  <label>
+                    <input type="radio" name="body_shape" value="Apple" class="body-shape-radio" style="display:none;" {% if active_shape == 'Apple' %}checked{% endif %}>
+                    <div class="body-shape-card">
+                      <svg viewBox="0 0 24 36"><path d="M12 7 C9 3, 14 3, 12 7" stroke-width="1.8"/><circle cx="12" cy="19" r="9"/></svg>
+                      <span>Apple</span>
+                    </div>
+                  </label>
+
+                  <label>
+                    <input type="radio" name="body_shape" value="Inverted Triangle" class="body-shape-radio" style="display:none;" {% if active_shape == 'Inverted Triangle' %}checked{% endif %}>
+                    <div class="body-shape-card">
+                      <svg viewBox="0 0 24 36"><polygon points="4,7 20,7 12,30" /></svg>
+                      <span>Inverted<br>Triangle</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Sizes Row -->
+              <div class="row g-3 mt-2">
+                <div class="col-12 col-md-6">
+                  <label for="clothing_size" class="luxury-field-label">Usual Clothing Size</label>
+                  <select id="clothing_size" name="clothing_size" class="luxury-input-control">
+                    {% set active_size = meta.get('clothing_size', 'M') %}
+                    {% for sz in ['XS', 'S', 'M', 'L', 'XL', 'XXL'] %}
+                    <option value="{{ sz }}" {% if active_size == sz %}selected{% endif %}>{{ sz }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label for="shoe_size" class="luxury-field-label">Shoe Size <small>(optional)</small></label>
+                  <select id="shoe_size" name="shoe_size" class="luxury-input-control">
+                    {% set active_shoe = meta.get('shoe_size', '38') %}
+                    {% for s in [35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45] %}
+                    <option value="{{ s }}" {% if active_shoe|string == s|string %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <!-- Preferred Fit -->
+              <div class="luxury-form-group mt-3">
+                <label class="luxury-field-label">Preferred Fit <small>(optional)</small></label>
+                {% set active_fit = meta.get('preferred_fit', 'Slim') %}
+                <div class="luxury-pill-toggles">
+                  {% for fit in ['Slim', 'Regular', 'Relaxed', 'Oversized'] %}
+                  <label class="fit-toggle-label">
+                    <input type="radio" name="preferred_fit" value="{{ fit }}" class="fit-toggle-input" style="display:none;" {% if active_fit == fit %}checked{% endif %}>
+                    <span class="fit-toggle-pill">{{ fit }}</span>
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <div class="luxury-card-footer">
+              <button type="submit" class="luxury-save-btn">Save Body &amp; Fit Profile</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════════
+           TAB 4: STYLE PREFERENCES
+           ══════════════════════════════════════════════════════════════ -->
+      <div class="profile-tab-pane" id="pane-style-prefs">
+        <div class="luxury-profile-header">
+          <div>
+            <p class="header-eyebrow">Profile › Style Preferences</p>
+            <h1 class="header-title">Style Preferences</h1>
+            <p class="header-subtitle">Your style choices for better outfit recommendations.</p>
+          </div>
+          <div>
+            <button type="button" class="card-edit-pill-btn" onclick="switchProfileTab('overview');">
+              ← Back to Overview
+            </button>
           </div>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label-custom">Preferred Seasons</label>
-          <div class="pref-chips-wrap">
-            {% for s in all_seasons %}
-            <label class="pref-chip">
-              <input type="checkbox" name="seasons" value="{{ s }}"
-                     {% if s in prefs.preferred_seasons_list %}checked{% endif %}>
-              <span>{{ s }}</span>
-            </label>
-            {% endfor %}
+        <section class="luxury-card luxury-card-fullwidth">
+          <form action="{{ url_for('profile.index') }}" method="post" id="formPreferences">
+            <input type="hidden" name="action" value="preferences">
+
+            <div class="luxury-card-body">
+              <div class="luxury-form-group">
+                <label class="luxury-field-label">Preferred Styles</label>
+                <div class="luxury-pill-toggles">
+                  {% set user_styles = prefs.preferred_styles_list if prefs.preferred_styles_list else ['Casual'] %}
+                  {% for style in ['Casual', 'Formal', 'Sporty', 'Streetwear', 'Ethnic', 'Business', 'Party', 'Vintage'] %}
+                  <label class="fit-toggle-label">
+                    <input type="checkbox" name="styles" value="{{ style }}" class="fit-toggle-input" style="display:none;" {% if style in user_styles %}checked{% endif %}>
+                    <span class="fit-toggle-pill">{{ style }}</span>
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="luxury-form-group mt-3">
+                <label class="luxury-field-label">Preferred Occasions</label>
+                <div class="luxury-pill-toggles">
+                  {% set user_occasions = prefs.preferred_occasions_list if prefs.preferred_occasions_list else ['College'] %}
+                  {% for occ in ['College', 'Office', 'Casual', 'Party', 'Interview', 'Wedding', 'Gym', 'Date'] %}
+                  <label class="fit-toggle-label">
+                    <input type="checkbox" name="occasions" value="{{ occ }}" class="fit-toggle-input" style="display:none;" {% if occ in user_occasions %}checked{% endif %}>
+                    <span class="fit-toggle-pill">{{ occ }}</span>
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="luxury-form-group mt-3">
+                <label class="luxury-field-label">Preferred Seasons</label>
+                <div class="luxury-pill-toggles">
+                  {% set user_seasons = prefs.preferred_seasons_list if prefs.preferred_seasons_list else ['All Seasons'] %}
+                  {% for s in ['All Seasons', 'Summer', 'Rainy', 'Winter'] %}
+                  <label class="fit-toggle-label">
+                    <input type="checkbox" name="seasons" value="{{ s }}" class="fit-toggle-input" style="display:none;" {% if s in user_seasons %}checked{% endif %}>
+                    <span class="fit-toggle-pill">{{ s }}</span>
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <div class="luxury-card-footer">
+              <button type="submit" class="luxury-save-btn">Save Preferences</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════════
+           TAB 5: STYLE IDENTITY
+           ══════════════════════════════════════════════════════════════ -->
+      <div class="profile-tab-pane" id="pane-style-identity">
+        <div class="luxury-profile-header">
+          <div>
+            <p class="header-eyebrow">Profile › Style Identity</p>
+            <h1 class="header-title">Style Identity</h1>
+            <p class="header-subtitle">Your color, pattern and clothing preferences.</p>
+          </div>
+          <div>
+            <button type="button" class="card-edit-pill-btn" onclick="switchProfileTab('overview');">
+              ← Back to Overview
+            </button>
           </div>
         </div>
 
-        <button type="submit" class="btn primary-button py-2 px-4">Save Preferences</button>
-      </form>
-    </div>
+        <section class="luxury-card luxury-card-fullwidth">
+          <form action="{{ url_for('profile.index') }}" method="post" id="formStyleIdentity">
+            <input type="hidden" name="action" value="style_identity">
 
-    <!-- Logout -->
-    <div class="custom-card-box">
-      <h3>Account Actions</h3>
-      <p class="text-muted" style="font-size:0.88rem;">Sign out of your Wearlytics account on this device.</p>
-      <form action="{{ url_for('auth.logout') }}" method="post">
-        <button type="submit" class="btn" style="background:rgba(239, 68, 68, 0.08);color:#f87171;border:1px solid rgba(239, 68, 68, 0.28);padding:10px 24px;border-radius:12px;font-weight:700;cursor:pointer;transition:all 0.2s ease;">
-          Sign Out
-        </button>
-      </form>
-    </div>
+            <div class="luxury-card-body">
+              <div class="row g-4">
+                <!-- Favorite Colors -->
+                <div class="col-12 col-md-6">
+                  <div class="palette-header-row">
+                    <div class="palette-header-icon heart-icon-bg">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                      </svg>
+                    </div>
+                    <div class="palette-header-text">
+                      <label class="luxury-field-label">Favorite Colors</label>
+                      <span class="palette-subtext">Add colors you love to wear.</span>
+                    </div>
+                  </div>
+
+                  <div class="palette-swatches-container" id="container_favorite_colors">
+                    <!-- Hidden inputs container for form submission -->
+                    <div class="palette-hidden-inputs" id="inputs_favorite_colors">
+                      {% set user_fav_colors = fav_colors if fav_colors is defined else (prefs.preferred_colors_list if prefs.preferred_colors_list else ['#891C1C', '#E8DDD0', '#1C1C1C', '#C59B6D']) %}
+                      {% for c in user_fav_colors %}
+                      <input type="hidden" name="favorite_colors" value="{{ c }}">
+                      {% endfor %}
+                    </div>
+
+                    <!-- Added Color Swatches with "x" remove badge -->
+                    <div class="style-identity-swatches-row" id="swatches_favorite_colors">
+                      {% for c in user_fav_colors %}
+                      <div class="style-identity-swatch" data-hex="{{ c }}" style="background: {{ c }};" title="{{ c }}">
+                        <button type="button" class="swatch-remove-badge" onclick="removeStyleColorSwatch(this, 'favorite_colors', '{{ c }}')" aria-label="Remove {{ c }}">
+                          <svg viewBox="0 0 24 24" width="9" height="9" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                        </button>
+                      </div>
+                      {% endfor %}
+                    </div>
+
+                    <!-- + Add Custom Color Button & Color Picker Card -->
+                    <div class="custom-color-picker-wrapper">
+                      <button type="button" class="custom-color-toggle-btn" onclick="togglePickerCard('favorite_colors')">
+                        <span class="custom-color-wheel"></span>
+                        <span>+ Add Custom Color</span>
+                      </button>
+
+                      <div class="custom-color-card" id="card_favorite_colors">
+                        <!-- 2D Saturation / Value Gradient Box -->
+                        <div class="sat-val-canvas" id="canvas_favorite_colors" onmousedown="startSatValDrag(event, 'favorite_colors')" ontouchstart="startSatValDrag(event, 'favorite_colors')">
+                          <div class="sat-val-white"></div>
+                          <div class="sat-val-black"></div>
+                          <div class="sat-val-cursor" id="cursor_favorite_colors" style="left: 85%; top: 27%;"></div>
+                        </div>
+
+                        <!-- Rainbow Hue Slider -->
+                        <div class="hue-slider-wrapper">
+                          <input type="range" min="0" max="360" value="0" class="hue-slider" id="hue_favorite_colors" oninput="updateHue(this.value, 'favorite_colors')">
+                        </div>
+
+                        <!-- Color Preview & Hex Display Row -->
+                        <div class="picker-value-row">
+                          <div class="picker-preview-dot" id="preview_favorite_colors" style="background: #B91C1C;"></div>
+                          <input type="text" class="picker-hex-box" id="hex_favorite_colors" value="#B91C1C" maxlength="7" oninput="updateFromHexInput(this.value, 'favorite_colors')">
+                        </div>
+
+                        <!-- Add Button -->
+                        <button type="button" class="picker-submit-btn" onclick="addPickedColor('favorite_colors')">
+                          Add to Favorite Colors
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Colors to Avoid -->
+                <div class="col-12 col-md-6">
+                  <div class="palette-header-row">
+                    <div class="palette-header-icon avoid-icon-bg">
+                      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.2" fill="none">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                      </svg>
+                    </div>
+                    <div class="palette-header-text">
+                      <label class="luxury-field-label">Colors to Avoid <small class="text-muted">(optional)</small></label>
+                      <span class="palette-subtext">Add colors you prefer to avoid.</span>
+                    </div>
+                  </div>
+
+                  <div class="palette-swatches-container" id="container_colors_to_avoid">
+                    <!-- Hidden inputs container for form submission -->
+                    <div class="palette-hidden-inputs" id="inputs_colors_to_avoid">
+                      {% set user_avoid_colors = avoid_colors if avoid_colors is defined else (prefs.disliked_colors_list if prefs.disliked_colors_list else ['#9E9E9E', '#4CAF50', '#F48FB1']) %}
+                      {% for c in user_avoid_colors %}
+                      <input type="hidden" name="colors_to_avoid" value="{{ c }}">
+                      {% endfor %}
+                    </div>
+
+                    <!-- Added Color Swatches with "x" remove badge -->
+                    <div class="style-identity-swatches-row" id="swatches_colors_to_avoid">
+                      {% for c in user_avoid_colors %}
+                      <div class="style-identity-swatch" data-hex="{{ c }}" style="background: {{ c }};" title="{{ c }}">
+                        <button type="button" class="swatch-remove-badge" onclick="removeStyleColorSwatch(this, 'colors_to_avoid', '{{ c }}')" aria-label="Remove {{ c }}">
+                          <svg viewBox="0 0 24 24" width="9" height="9" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                        </button>
+                      </div>
+                      {% endfor %}
+                    </div>
+
+                    <!-- + Add Custom Color Button & Color Picker Card -->
+                    <div class="custom-color-picker-wrapper">
+                      <button type="button" class="custom-color-toggle-btn" onclick="togglePickerCard('colors_to_avoid')">
+                        <span class="custom-color-wheel"></span>
+                        <span>+ Add Custom Color</span>
+                      </button>
+
+                      <div class="custom-color-card" id="card_colors_to_avoid">
+                        <!-- 2D Saturation / Value Gradient Box -->
+                        <div class="sat-val-canvas" id="canvas_colors_to_avoid" style="background-color: #55ff00;" onmousedown="startSatValDrag(event, 'colors_to_avoid')" ontouchstart="startSatValDrag(event, 'colors_to_avoid')">
+                          <div class="sat-val-white"></div>
+                          <div class="sat-val-black"></div>
+                          <div class="sat-val-cursor" id="cursor_colors_to_avoid" style="left: 54%; top: 31%;"></div>
+                        </div>
+
+                        <!-- Rainbow Hue Slider -->
+                        <div class="hue-slider-wrapper">
+                          <input type="range" min="0" max="360" value="82" class="hue-slider" id="hue_colors_to_avoid" oninput="updateHue(this.value, 'colors_to_avoid')">
+                        </div>
+
+                        <!-- Color Preview & Hex Display Row -->
+                        <div class="picker-value-row">
+                          <div class="picker-preview-dot" id="preview_colors_to_avoid" style="background: #8CAF50;"></div>
+                          <input type="text" class="picker-hex-box" id="hex_colors_to_avoid" value="#8CAF50" maxlength="7" oninput="updateFromHexInput(this.value, 'colors_to_avoid')">
+                        </div>
+
+                        <!-- Add Button -->
+                        <button type="button" class="picker-submit-btn" onclick="addPickedColor('colors_to_avoid')">
+                          Add to Avoid Colors
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Preferred Clothing Types -->
+              <div class="luxury-form-group mt-3">
+                <label class="luxury-field-label">Preferred Clothing Types</label>
+                {% set active_types = meta.get('preferred_clothing_types', ['Tops', 'Jeans', 'Dresses']) %}
+                <div class="luxury-pill-toggles">
+                  {% for ctype in ['Tops', 'Jeans', 'Dresses', 'Skirts', 'Jackets', 'Ethnic Wear', 'Active Wear', 'Formals'] %}
+                  <label class="fit-toggle-label">
+                    <input type="checkbox" name="clothing_types" value="{{ ctype }}" class="fit-toggle-input" style="display:none;" {% if ctype in active_types %}checked{% endif %}>
+                    <span class="fit-toggle-pill">{{ ctype }}</span>
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <!-- Preferred Fabrics -->
+              <div class="luxury-form-group mt-4">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <svg viewBox="0 0 24 24" width="18" height="18" stroke="#7b5936" stroke-width="2" fill="none">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                  </svg>
+                  <label class="luxury-field-label m-0">Preferred Fabrics <small class="text-muted">(optional)</small></label>
+                </div>
+                {% set active_fabrics = meta.get('preferred_fabrics', ['Cotton', 'Silk']) %}
+                <div class="luxury-pill-toggles">
+                  {% for fabric in ['Cotton', 'Linen', 'Denim', 'Silk', 'Wool', 'Leather'] %}
+                  <label class="fit-toggle-label">
+                    <input type="checkbox" name="fabrics" value="{{ fabric }}" class="fit-toggle-input" style="display:none;" {% if fabric in active_fabrics %}checked{% endif %}>
+                    <span class="fit-toggle-pill">{{ fabric }}</span>
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <!-- Preferred Patterns -->
+              <div class="luxury-form-group mt-3">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <svg viewBox="0 0 24 24" width="18" height="18" stroke="#7b5936" stroke-width="2" fill="none">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                  </svg>
+                  <label class="luxury-field-label m-0">Preferred Patterns <small class="text-muted">(optional)</small></label>
+                </div>
+                {% set active_patterns = meta.get('preferred_patterns', ['Solid']) %}
+                <div class="luxury-pill-toggles">
+                  {% for pat in ['Solid', 'Stripes', 'Floral', 'Checks', 'Printed', 'Polka Dots'] %}
+                  <label class="fit-toggle-label">
+                    <input type="checkbox" name="patterns" value="{{ pat }}" class="fit-toggle-input" style="display:none;" {% if pat in active_patterns %}checked{% endif %}>
+                    <span class="fit-toggle-pill">{{ pat }}</span>
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <div class="luxury-card-footer">
+              <button type="submit" class="luxury-save-btn">Save Identity</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════════
+           TAB 6: AI PERSONALIZATION
+           ══════════════════════════════════════════════════════════════ -->
+      <div class="profile-tab-pane" id="pane-ai-personalization">
+        <div class="luxury-profile-header">
+          <div>
+            <p class="header-eyebrow">Profile › AI Personalization</p>
+            <h1 class="header-title">AI Personalization</h1>
+            <p class="header-subtitle">Customize how AI gives you recommendations.</p>
+          </div>
+          <div>
+            <button type="button" class="card-edit-pill-btn" onclick="switchProfileTab('overview');">
+              ← Back to Overview
+            </button>
+          </div>
+        </div>
+
+        <section class="luxury-card luxury-card-fullwidth">
+          <form action="{{ url_for('profile.index') }}" method="post" id="formAiPersonalization">
+            <input type="hidden" name="action" value="ai_personalization">
+
+            <div class="luxury-card-body">
+              <div class="luxury-toggle-grid">
+                <div class="luxury-toggle-item">
+                  <span class="luxury-toggle-text">Use my style preferences</span>
+                  <label class="apple-switch">
+                    <input type="checkbox" name="ai_use_preferences" {% if prefs.use_preferences %}checked{% endif %}>
+                    <span class="apple-switch-slider"></span>
+                  </label>
+                </div>
+
+                <div class="luxury-toggle-item">
+                  <span class="luxury-toggle-text">Consider my favorite colors</span>
+                  <label class="apple-switch">
+                    <input type="checkbox" name="ai_consider_favorite_colors" {% if prefs.use_color %}checked{% endif %}>
+                    <span class="apple-switch-slider"></span>
+                  </label>
+                </div>
+
+                <div class="luxury-toggle-item">
+                  <span class="luxury-toggle-text">Consider my disliked colors</span>
+                  <label class="apple-switch">
+                    <input type="checkbox" name="ai_consider_disliked_colors" {% if meta.get('ai_consider_disliked_colors', True) %}checked{% endif %}>
+                    <span class="apple-switch-slider"></span>
+                  </label>
+                </div>
+
+                <div class="luxury-toggle-item">
+                  <span class="luxury-toggle-text">Consider wardrobe usage</span>
+                  <label class="apple-switch">
+                    <input type="checkbox" name="ai_consider_wardrobe_usage" {% if meta.get('ai_consider_wardrobe_usage', True) %}checked{% endif %}>
+                    <span class="apple-switch-slider"></span>
+                  </label>
+                </div>
+
+                <div class="luxury-toggle-item">
+                  <span class="luxury-toggle-text">Avoid clothes currently in laundry</span>
+                  <label class="apple-switch">
+                    <input type="checkbox" name="ai_avoid_laundry" {% if meta.get('ai_avoid_laundry', True) %}checked{% endif %}>
+                    <span class="apple-switch-slider"></span>
+                  </label>
+                </div>
+
+                <div class="luxury-toggle-item">
+                  <span class="luxury-toggle-text">Prefer new outfit combinations</span>
+                  <label class="apple-switch">
+                    <input type="checkbox" name="ai_prefer_new_combinations" {% if meta.get('ai_prefer_new_combinations', True) %}checked{% endif %}>
+                    <span class="apple-switch-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="luxury-card-footer">
+              <button type="submit" class="luxury-save-btn">Save AI Settings</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════════
+           TAB 7: SETTINGS & NOTIFICATIONS
+           ══════════════════════════════════════════════════════════════ -->
+      <div class="profile-tab-pane" id="pane-settings">
+        <div class="luxury-profile-header">
+          <div>
+            <p class="header-eyebrow">Account › Settings</p>
+            <h1 class="header-title">Account Settings</h1>
+            <p class="header-subtitle">Appearance, notifications, and application settings.</p>
+          </div>
+          <div>
+            <button type="button" class="card-edit-pill-btn" onclick="switchProfileTab('overview');">
+              ← Back to Overview
+            </button>
+          </div>
+        </div>
+
+        <section class="luxury-card luxury-card-fullwidth">
+          <form action="{{ url_for('profile.index') }}" method="post" id="formSettings">
+            <input type="hidden" name="action" value="settings">
+
+            <div class="luxury-card-body">
+              <h4 style="font-size:16px;font-weight:700;color:var(--ink-heading);margin-bottom:12px;">Appearance &amp; Theme</h4>
+              <div class="luxury-form-group mb-4">
+                <label class="luxury-field-label">Interface Mode</label>
+                <div class="luxury-pill-toggles">
+                  <label class="fit-toggle-label">
+                    <input type="radio" name="theme_appearance" value="light" class="fit-toggle-input" style="display:none;" onchange="setSiteTheme('light');" checked>
+                    <span class="fit-toggle-pill">☀️ Light Warm Mode</span>
+                  </label>
+                  <label class="fit-toggle-label">
+                    <input type="radio" name="theme_appearance" value="dark" class="fit-toggle-input" style="display:none;" onchange="setSiteTheme('dark');">
+                    <span class="fit-toggle-pill">🌙 Dark Luxury</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Notifications Sub-section -->
+              <h4 style="font-size:16px;font-weight:700;color:var(--ink-heading);margin:20px 0 12px 0;">Notification Preferences</h4>
+              <div class="row g-2 mb-4">
+                <div class="col-12 col-md-6">
+                  <div class="notif-row-item">
+                    <div class="notif-row-left">
+                      <svg viewBox="0 0 24 24"><path d="m12 3-1.9 4.8L5 9.7l3.8 3.5-1 5.1L12 16l4.2 2.3-1-5.1 3.8-3.5-5.1-1.9L12 3z"/></svg>
+                      <span>Outfit suggestions</span>
+                    </div>
+                    <label class="apple-switch">
+                      <input type="checkbox" name="notif_outfit_suggestions" {% if meta.get('notif_outfit_suggestions', True) %}checked{% endif %}>
+                      <span class="apple-switch-slider"></span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <div class="notif-row-item">
+                    <div class="notif-row-left">
+                      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                      <span>Weekly planner reminders</span>
+                    </div>
+                    <label class="apple-switch">
+                      <input type="checkbox" name="notif_weekly_planner_reminders" {% if meta.get('notif_weekly_planner_reminders', True) %}checked{% endif %}>
+                      <span class="apple-switch-slider"></span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <div class="notif-row-item">
+                    <div class="notif-row-left">
+                      <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                      <span>Laundry reminders</span>
+                    </div>
+                    <label class="apple-switch">
+                      <input type="checkbox" name="notif_laundry_reminders" {% if meta.get('notif_laundry_reminders', True) %}checked{% endif %}>
+                      <span class="apple-switch-slider"></span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <div class="notif-row-item">
+                    <div class="notif-row-left">
+                      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                      <span>Recommendation alerts</span>
+                    </div>
+                    <label class="apple-switch">
+                      <input type="checkbox" name="notif_recommendation_alerts" {% if meta.get('notif_recommendation_alerts', True) %}checked{% endif %}>
+                      <span class="apple-switch-slider"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Avatar Color Customizer -->
+              <h4 style="font-size:16px;font-weight:700;color:var(--ink-heading);margin:20px 0 12px 0;">Avatar Accent Color</h4>
+              <div class="luxury-form-group mb-3">
+                <div class="swatches-row">
+                  {% for color in ['#c99a6b','#dfb17b','#8f683e','#1e1e22','#2d3436','#b91c1c','#059669','#2563eb'] %}
+                  <label class="avatar-color-swatch" title="{{ color }}" style="cursor:pointer;margin:0;">
+                    <input type="radio" name="avatar_color" value="{{ color }}" 
+                           {% if (current_user.avatar_color or '#c99a6b') == color %}checked{% endif %}
+                           style="display:none;" onchange="updateAvatarPreview('{{ color }}')">
+                    <span class="color-circle-swatch" style="background:{{ color }}; {% if (current_user.avatar_color or '#c99a6b') == color %}box-shadow: 0 0 0 2px #fff, 0 0 0 4px {{ color }};{% endif %}"></span>
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <div class="luxury-card-footer">
+              <button type="submit" class="luxury-save-btn">Save Settings</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════════════
+           TAB 8: SECURITY & PASSWORD
+           ══════════════════════════════════════════════════════════════ -->
+      <div class="profile-tab-pane" id="pane-security">
+        <div class="luxury-profile-header">
+          <div>
+            <p class="header-eyebrow">Account › Security</p>
+            <h1 class="header-title">Security &amp; Password</h1>
+            <p class="header-subtitle">Manage your password, session security, and account access.</p>
+          </div>
+          <div>
+            <button type="button" class="card-edit-pill-btn" onclick="switchProfileTab('overview');">
+              ← Back to Overview
+            </button>
+          </div>
+        </div>
+
+        <section class="luxury-card luxury-card-fullwidth">
+          <form action="{{ url_for('profile.index') }}" method="post" id="formPassword">
+            <input type="hidden" name="action" value="password">
+
+            <div class="luxury-card-body">
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <div class="luxury-form-group">
+                    <label for="current_password" class="luxury-field-label">Current Password</label>
+                    <input type="password" id="current_password" name="current_password" class="luxury-input-control" required placeholder="••••••••">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row g-3 mt-1">
+                <div class="col-12 col-md-6">
+                  <div class="luxury-form-group">
+                    <label for="new_password" class="luxury-field-label">New Password</label>
+                    <input type="password" id="new_password" name="new_password" class="luxury-input-control" placeholder="Min 8 characters" required>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <div class="luxury-form-group">
+                    <label for="confirm_password" class="luxury-field-label">Confirm New Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="luxury-input-control" placeholder="Re-type new password" required>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 pt-3" style="border-top:1px solid rgba(180, 150, 120, 0.14);">
+                <h5 style="font-size:14px;font-weight:700;color:var(--ink-heading);margin-bottom:6px;">Session &amp; Access</h5>
+                <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:14px;">Sign out of your Wearlytics account on this device or session.</p>
+                <button type="button" class="btn" style="background:rgba(239, 68, 68, 0.08);color:#ef4444;border:1px solid rgba(239, 68, 68, 0.28);padding:9px 22px;border-radius:9999px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s ease;" onclick="confirmLogout();">
+                  Sign Out of Account
+                </button>
+              </div>
+            </div>
+
+            <div class="luxury-card-footer">
+              <button type="submit" class="luxury-save-btn">Change Password</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+    </main>
   </div>
 </div>
 
 <script>
+// ── Profile Tab Navigation Engine ──
+const VALID_TABS = [
+  'overview',
+  'personal-info',
+  'body-fit',
+  'style-prefs',
+  'style-identity',
+  'ai-personalization',
+  'settings',
+  'security'
+];
+
+function switchProfileTab(tabName) {
+  if (!VALID_TABS.includes(tabName)) {
+    tabName = 'overview';
+  }
+
+  // 1. Hide all tab panes
+  document.querySelectorAll('.profile-tab-pane').forEach(pane => {
+    pane.classList.remove('active');
+  });
+
+  // 2. Show the targeted pane
+  const targetPane = document.getElementById('pane-' + tabName);
+  if (targetPane) {
+    targetPane.classList.add('active');
+  }
+
+  // 3. Update active sidebar item
+  document.querySelectorAll('.sidebar-nav-item').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.getAttribute('data-tab') === tabName) {
+      btn.classList.add('active');
+    }
+  });
+
+  // 4. Update URL hash without jumping
+  if (history.pushState) {
+    history.pushState(null, null, '#' + tabName);
+  } else {
+    location.hash = '#' + tabName;
+  }
+
+  // 5. Scroll to top of tab smoothly
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function confirmLogout() {
+  if (confirm("Are you sure you want to sign out of Wearlytics?")) {
+    const form = document.getElementById('globalLogoutForm');
+    if (form) form.submit();
+  }
+}
+
 function updateAvatarPreview(color) {
-  const avatarEl = document.querySelector('.profile-avatar-large');
+  const avatarEl = document.getElementById('sidebarAvatarPreview');
   if (avatarEl) avatarEl.style.background = color;
-  // Update ring on selected swatch
-  document.querySelectorAll('.color-dot').forEach(dot => {
+  document.querySelectorAll('.avatar-color-swatch .color-circle-swatch').forEach(dot => {
     dot.style.boxShadow = '';
   });
   const checked = document.querySelector('input[name="avatar_color"]:checked');
-  if (checked) {
-    checked.nextElementSibling.style.boxShadow = `0 0 0 3px #161513, 0 0 0 5px ${color}`;
+  if (checked && checked.nextElementSibling) {
+    checked.nextElementSibling.style.boxShadow = `0 0 0 2px #fff, 0 0 0 4px ${color}`;
   }
 }
+
+function setSiteTheme(theme) {
+  if (theme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    localStorage.setItem('theme', 'light');
+  } else if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('theme', 'dark');
+  }
+}
+
+// ── Style Identity Custom Color Picker Controller ──
+const colorPickers = {
+  favorite_colors: {
+    hue: 0,
+    s: 0.85,
+    v: 0.73,
+    hex: '#B91C1C',
+    isDragging: false
+  },
+  colors_to_avoid: {
+    hue: 82,
+    s: 0.54,
+    v: 0.69,
+    hex: '#8CAF50',
+    isDragging: false
+  }
+};
+
+function hsvToRgb(h, s, v) {
+  let c = v * s;
+  let x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  let m = v - c;
+  let r = 0, g = 0, b = 0;
+  if (0 <= h && h < 60) { r = c; g = x; b = 0; }
+  else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
+  else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
+  else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
+  else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
+  else if (300 <= h && h <= 360) { r = c; g = 0; b = x; }
+  r = Math.round((r + m) * 255);
+  g = Math.round((g + m) * 255);
+  b = Math.round((b + m) * 255);
+  return [r, g, b];
+}
+
+function rgbToHex(r, g, b) {
+  return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+
+function hexToHsv(hex) {
+  hex = (hex || '').replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  if (hex.length !== 6) return null;
+  let r = parseInt(hex.substring(0, 2), 16) / 255;
+  let g = parseInt(hex.substring(2, 4), 16) / 255;
+  let b = parseInt(hex.substring(4, 6), 16) / 255;
+  if (isNaN(r) || isNaN(g) || isNaN(b)) return null;
+  let max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let d = max - min;
+  let h = 0;
+  let s = max === 0 ? 0 : d / max;
+  let v = max;
+  if (d !== 0) {
+    if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) * 60;
+    else if (max === g) h = ((b - r) / d + 2) * 60;
+    else if (max === b) h = ((r - g) / d + 4) * 60;
+  }
+  return { h, s, v };
+}
+
+function updatePickerVisuals(pickerId) {
+  const p = colorPickers[pickerId];
+  if (!p) return;
+  const canvas = document.getElementById('canvas_' + pickerId);
+  const cursor = document.getElementById('cursor_' + pickerId);
+  const hueSlider = document.getElementById('hue_' + pickerId);
+  const preview = document.getElementById('preview_' + pickerId);
+  const hexBox = document.getElementById('hex_' + pickerId);
+
+  if (canvas) canvas.style.backgroundColor = `hsl(${p.hue}, 100%, 50%)`;
+  if (cursor) {
+    cursor.style.left = (p.s * 100) + '%';
+    cursor.style.top = ((1 - p.v) * 100) + '%';
+  }
+  if (hueSlider) hueSlider.value = p.hue;
+  if (preview) preview.style.backgroundColor = p.hex;
+  if (hexBox && document.activeElement !== hexBox) hexBox.value = p.hex;
+}
+
+function updateHue(val, pickerId) {
+  const p = colorPickers[pickerId];
+  if (!p) return;
+  p.hue = parseFloat(val) || 0;
+  const rgb = hsvToRgb(p.hue, p.s, p.v);
+  p.hex = rgbToHex(...rgb);
+  updatePickerVisuals(pickerId);
+}
+
+function setSatValFromCoords(clientX, clientY, pickerId) {
+  const canvas = document.getElementById('canvas_' + pickerId);
+  if (!canvas) return;
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.max(0, Math.min(rect.width, clientX - rect.left));
+  const y = Math.max(0, Math.min(rect.height, clientY - rect.top));
+  const p = colorPickers[pickerId];
+  if (!p) return;
+  p.s = x / rect.width;
+  p.v = 1 - (y / rect.height);
+  const rgb = hsvToRgb(p.hue, p.s, p.v);
+  p.hex = rgbToHex(...rgb);
+  updatePickerVisuals(pickerId);
+}
+
+function startSatValDrag(e, pickerId) {
+  e.preventDefault();
+  const p = colorPickers[pickerId];
+  if (!p) return;
+  p.isDragging = true;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  setSatValFromCoords(clientX, clientY, pickerId);
+
+  function onMove(evt) {
+    if (!p.isDragging) return;
+    const cx = evt.touches ? evt.touches[0].clientX : evt.clientX;
+    const cy = evt.touches ? evt.touches[0].clientY : evt.clientY;
+    setSatValFromCoords(cx, cy, pickerId);
+  }
+
+  function onEnd() {
+    p.isDragging = false;
+    window.removeEventListener('mousemove', onMove);
+    window.removeEventListener('mouseup', onEnd);
+    window.removeEventListener('touchmove', onMove);
+    window.removeEventListener('touchend', onEnd);
+  }
+
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onEnd);
+  window.addEventListener('touchmove', onMove, { passive: false });
+  window.addEventListener('touchend', onEnd);
+}
+
+function updateFromHexInput(val, pickerId) {
+  val = (val || '').trim();
+  if (!val.startsWith('#')) val = '#' + val;
+  const p = colorPickers[pickerId];
+  if (!p) return;
+  const hsv = hexToHsv(val);
+  if (hsv) {
+    p.hue = hsv.h;
+    p.s = hsv.s;
+    p.v = hsv.v;
+    p.hex = val.toUpperCase();
+    updatePickerVisuals(pickerId);
+  }
+}
+
+function togglePickerCard(pickerId) {
+  const card = document.getElementById('card_' + pickerId);
+  if (!card) return;
+  if (card.style.display === 'none') {
+    card.style.display = 'block';
+  } else {
+    card.style.display = 'none';
+  }
+}
+
+function addPickedColor(pickerId) {
+  const p = colorPickers[pickerId];
+  if (!p || !p.hex) return;
+  const hex = p.hex.toUpperCase();
+  const swatchesRow = document.getElementById('swatches_' + pickerId);
+  const inputsContainer = document.getElementById('inputs_' + pickerId);
+  if (!swatchesRow || !inputsContainer) return;
+
+  // Check if swatch already exists
+  const existing = swatchesRow.querySelector(`[data-hex="${hex}"]`);
+  if (existing) {
+    existing.style.transform = 'scale(1.2)';
+    setTimeout(() => { existing.style.transform = ''; }, 200);
+    return;
+  }
+
+  // Create new swatch with "x" remove badge
+  const swatchEl = document.createElement('div');
+  swatchEl.className = 'style-identity-swatch';
+  swatchEl.setAttribute('data-hex', hex);
+  swatchEl.style.background = hex;
+  swatchEl.title = hex;
+
+  const removeBtn = document.createElement('button');
+  removeBtn.type = 'button';
+  removeBtn.className = 'swatch-remove-badge';
+  removeBtn.setAttribute('aria-label', 'Remove ' + hex);
+  removeBtn.onclick = function() { removeStyleColorSwatch(removeBtn, pickerId, hex); };
+  removeBtn.innerHTML = '<svg viewBox="0 0 24 24" width="9" height="9" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+
+  swatchEl.appendChild(removeBtn);
+  swatchesRow.appendChild(swatchEl);
+
+  // Add hidden form input
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = pickerId;
+  input.value = hex;
+  inputsContainer.appendChild(input);
+}
+
+function removeStyleColorSwatch(btn, fieldName, hex) {
+  const swatch = btn.closest('.style-identity-swatch');
+  if (swatch) swatch.remove();
+
+  const container = document.getElementById('inputs_' + fieldName);
+  if (!container) return;
+  const inputs = container.querySelectorAll(`input[name="${fieldName}"]`);
+  inputs.forEach(input => {
+    if ((input.value || '').toUpperCase() === hex.toUpperCase()) {
+      input.remove();
+    }
+  });
+}
+
+function addColorPrompt(targetName) {
+  togglePickerCard(targetName);
+}
+
+// Initialize active tab from URL hash on load
+document.addEventListener('DOMContentLoaded', function() {
+  updatePickerVisuals('favorite_colors');
+  updatePickerVisuals('colors_to_avoid');
+
+  let hash = window.location.hash.replace('#', '').trim();
+  if (hash && VALID_TABS.includes(hash)) {
+    switchProfileTab(hash);
+  } else {
+    switchProfileTab('overview');
+  }
+
+  // Handle browser back/forward buttons
+  window.addEventListener('popstate', function() {
+    let currentHash = window.location.hash.replace('#', '').trim();
+    if (currentHash && VALID_TABS.includes(currentHash)) {
+      switchProfileTab(currentHash);
+    } else {
+      switchProfileTab('overview');
+    }
+  });
+});
 </script>
 {% endblock %}

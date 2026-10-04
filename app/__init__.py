@@ -55,6 +55,10 @@ def create_app(config_class=Config, test_config=None):
     app.register_blueprint(recommendations_bp)
     app.register_blueprint(stylist_bp)
 
+    # Register custom Jinja filters
+    from app.utils.colors import resolve_color_hex
+    app.jinja_env.filters["color_hex"] = resolve_color_hex
+
     # --- Global Error Handlers ---
     @app.errorhandler(404)
     def page_not_found(e):

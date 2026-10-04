@@ -75,18 +75,31 @@
 
   const openWardrobe = () => {
     wardrobeOpen = true;
-    wardrobeSection.style.display = '';
-    wardrobeToggleBtn.classList.add('wardrobe-toggle--active');
-    wardrobeToggleBtn.setAttribute('aria-expanded', 'true');
+    if (wardrobeSection) {
+      wardrobeSection.style.display = '';
+      wardrobeSection.classList.add('anchor-highlight');
+      setTimeout(() => wardrobeSection.classList.remove('anchor-highlight'), 1600);
+    }
+    if (wardrobeToggleBtn) {
+      wardrobeToggleBtn.classList.add('wardrobe-toggle--active');
+      wardrobeToggleBtn.setAttribute('aria-expanded', 'true');
+    }
     // Scroll gently into view
-    setTimeout(() => wardrobeSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+    setTimeout(() => {
+      const anchor = document.getElementById('pinned-section') || wardrobeSection;
+      if (anchor) {
+        anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   const closeWardrobe = () => {
     wardrobeOpen = false;
-    wardrobeSection.style.display = 'none';
-    wardrobeToggleBtn.classList.remove('wardrobe-toggle--active');
-    wardrobeToggleBtn.setAttribute('aria-expanded', 'false');
+    if (wardrobeSection) wardrobeSection.style.display = 'none';
+    if (wardrobeToggleBtn) {
+      wardrobeToggleBtn.classList.remove('wardrobe-toggle--active');
+      wardrobeToggleBtn.setAttribute('aria-expanded', 'false');
+    }
   };
 
   if (wardrobeToggleBtn) {
@@ -209,12 +222,14 @@
       items.forEach(item => {
         const card = document.createElement('div');
         card.className = 'wardrobe-card' + (item.is_in_laundry ? ' disabled' : '');
+        card.dataset.id = item.id;
         card.dataset.item = JSON.stringify(item);
 
         const thumbWrap = document.createElement('div');
         thumbWrap.className = 'wardrobe-card-thumb';
         const img = document.createElement('img');
         img.src = item.image_url; img.alt = item.name; img.loading = 'lazy';
+        img.onerror = function() { this.onerror = null; this.src = '/static/img/placeholder_cloth.svg'; };
         thumbWrap.appendChild(img);
 
         const nameEl = document.createElement('div');
@@ -260,7 +275,10 @@
       card.classList.remove('selected');
     } else {
       const inp = document.createElement('input');
-      inp.type = 'hidden'; inp.name = 'item_ids'; inp.value = item.id;
+      inp.type = 'hidden';
+      inp.name = 'item_ids';
+      inp.value = item.id;
+      inp.setAttribute('form', 'stylist-form');
       pinnedContainer.appendChild(inp);
       card.classList.add('selected');
     }
@@ -295,6 +313,7 @@
       thumbWrap.className = 'pinned-tag-thumb';
       const tImg = document.createElement('img');
       tImg.src = item.image_url; tImg.alt = item.name;
+      tImg.onerror = function() { this.onerror = null; this.src = '/static/img/placeholder_cloth.svg'; };
       thumbWrap.appendChild(tImg);
 
       const info = document.createElement('div');
@@ -312,7 +331,8 @@
         const inp = pinnedContainer.querySelector(`input[value="${id}"]`);
         if (inp) inp.remove();
         if (accordionRoot) {
-          const card = accordionRoot.querySelector(`.wardrobe-card[data-item*='"id":${id}']`);
+          const card = accordionRoot.querySelector(`.wardrobe-card[data-id="${id}"]`)
+                    || accordionRoot.querySelector(`.wardrobe-card[data-item*='"id":${id}']`);
           if (card) card.classList.remove('selected');
         }
         renderSelection();
@@ -333,6 +353,44 @@
       if (accordionRoot) accordionRoot.querySelectorAll('.wardrobe-card.selected').forEach(c => c.classList.remove('selected'));
       renderSelection();
       updateToggleUI();
+    });
+  }
+
+  /* ── Style With Selected (button in selection panel) ────────────────── */
+  const selectionStyleMeBtn = document.getElementById('selection-style-me-btn');
+  if (selectionStyleMeBtn) {
+    selectionStyleMeBtn.addEventListener('click', () => {
+      const mainForm = document.getElementById('stylist-form');
+      if (mainForm) {
+        if (mainForm.requestSubmit) {
+          mainForm.requestSubmit();
+        } else {
+          mainForm.submit();
+        }
+      }
+    });
+  }
+
+  /* ── Synchronize Form Inputs on Submit ─────────────────────────────── */
+  const mainForm = document.getElementById('stylist-form');
+  if (mainForm) {
+    mainForm.addEventListener('submit', () => {
+      if (!pinnedContainer) return;
+      const currentValSet = new Set([...pinnedContainer.querySelectorAll('input[name="item_ids"]')].map(i => i.value));
+      if (accordionRoot) {
+        accordionRoot.querySelectorAll('.wardrobe-card.selected').forEach(card => {
+          const id = card.dataset.id;
+          if (id && !currentValSet.has(String(id))) {
+            const inp = document.createElement('input');
+            inp.type = 'hidden';
+            inp.name = 'item_ids';
+            inp.value = id;
+            inp.setAttribute('form', 'stylist-form');
+            pinnedContainer.appendChild(inp);
+            currentValSet.add(String(id));
+          }
+        });
+      }
     });
   }
 
@@ -358,9 +416,44 @@
   }
 
   /* ── Init ──────────────────────────────────────────────────────────── */
+  // Sync selected cards if pinnedContainer already has input values (e.g. from server template)
+  if (pinnedContainer && accordionRoot) {
+    const existingInputs = pinnedContainer.querySelectorAll('input[name="item_ids"]');
+    existingInputs.forEach(inp => {
+      const id = inp.value;
+      const card = accordionRoot.querySelector(`.wardrobe-card[data-id="${id}"]`)
+                || accordionRoot.querySelector(`.wardrobe-card[data-item*='"id":${id}']`);
+      if (card) {
+        card.classList.add('selected');
+        // open category accordion group so the user sees their pinned items
+        const body = card.closest('.accordion-body');
+        if (body) {
+          body.classList.add('active');
+          const header = body.previousElementSibling;
+          if (header) header.setAttribute('aria-expanded', 'true');
+        }
+      }
+    });
+  }
+
   renderSelection();
   updateToggleUI();
-  // Start with wardrobe closed (clean unified bar)
-  if (wardrobeSection) wardrobeSection.style.display = 'none';
+
+  // Hash check: open wardrobe if arriving at #pinned-section or #wardrobe-section
+  const checkHash = () => {
+    const h = (window.location.hash || '').toLowerCase();
+    if (h === '#pinned-section' || h === '#wardrobe-section' || h === '#wardrobe') {
+      openWardrobe();
+    }
+  };
+
+  const initialHash = (window.location.hash || '').toLowerCase();
+  if (initialHash === '#pinned-section' || initialHash === '#wardrobe-section' || initialHash === '#wardrobe') {
+    openWardrobe();
+  } else {
+    if (wardrobeSection) wardrobeSection.style.display = 'none';
+  }
+
+  window.addEventListener('hashchange', checkHash);
 
 })();

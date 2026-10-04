@@ -128,6 +128,7 @@ def index():
     return render_template(
         "wardrobe/index.html",
         items=items,
+        items_json=[item.to_dict() for item in items],
         categories=categories,
         seasons=seasons,
         query=query,
@@ -239,6 +240,8 @@ def edit_item(item_id):
     if request.method == "POST":
         name = request.form.get("name", "").strip()
         if not name:
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json:
+                return jsonify({"success": False, "error": "Item name cannot be empty."}), 400
             flash("Item name cannot be empty.", "error")
             return redirect(url_for("wardrobe.edit_item", item_id=item_id))
 
@@ -247,6 +250,8 @@ def edit_item(item_id):
         item.color = request.form.get("color", item.color).strip() or item.color
         item.season = request.form.get("season", item.season)
         item.brand = request.form.get("brand", "").strip() or None
+        if "notes" in request.form:
+            item.notes = request.form.get("notes", "").strip() or None
         item.is_favorite = request.form.get("is_favorite") == "on"
         item.style = request.form.get("style", item.style or "Casual")
         item.clothing_type = request.form.get("clothing_type", "").strip() or item.clothing_type
@@ -257,6 +262,14 @@ def edit_item(item_id):
             item.image_url, _ = _save_uploaded_image(file)
 
         db.session.commit()
+
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json:
+            return jsonify({
+                "success": True,
+                "message": f"'{item.name}' updated successfully!",
+                "item": item.to_dict()
+            })
+
         flash(f"'{item.name}' updated successfully!", "success")
         return redirect(url_for("wardrobe.index"))
 
@@ -267,6 +280,43 @@ def edit_item(item_id):
         all_types=clothing_classifier.get_types_for_category(item.category),
         all_seasons=clothing_classifier.ALL_SEASONS,
     )
+
+
+@wardrobe_bp.route("/<int:item_id>/details", methods=["GET"])
+@login_required
+def item_details(item_id):
+    """Return JSON details for a clothing item (used by Edit modal & Lightbox)."""
+    item = ClothingItem.query.filter_by(id=item_id, user_id=current_user.id).first_or_404()
+    return jsonify({"success": True, "item": item.to_dict()})
+
+
+@wardrobe_bp.post("/<int:item_id>/duplicate")
+@login_required
+def duplicate_item(item_id):
+    """Duplicate a clothing item."""
+    orig = ClothingItem.query.filter_by(id=item_id, user_id=current_user.id).first_or_404()
+    dup = ClothingItem(
+        user_id=current_user.id,
+        name=f"{orig.name} (Copy)",
+        category=orig.category,
+        color=orig.color,
+        season=orig.season,
+        brand=orig.brand,
+        image_url=orig.image_url,
+        style=orig.style,
+        clothing_type=orig.clothing_type,
+        detected_color_hex=orig.detected_color_hex,
+        notes=orig.notes,
+        is_favorite=orig.is_favorite,
+    )
+    db.session.add(dup)
+    db.session.commit()
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return jsonify({"success": True, "message": f"'{orig.name}' duplicated!", "item": dup.to_dict()})
+
+    flash(f"'{orig.name}' duplicated as '{dup.name}'.", "success")
+    return redirect(url_for("wardrobe.index"))
 
 
 @wardrobe_bp.post("/<int:item_id>/wear")

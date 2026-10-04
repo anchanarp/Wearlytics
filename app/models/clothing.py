@@ -45,6 +45,9 @@ class ClothingItem(db.Model):
     ai_confidence = db.Column(db.Float, nullable=True)
     """Classifier confidence score (0.0–1.0) for the auto-detected category."""
 
+    notes = db.Column(db.String(255), nullable=True)
+    """Optional user notes/styling tips for the clothing item."""
+
     # Relationships
     user = db.relationship(
         "User",
@@ -61,6 +64,7 @@ class ClothingItem(db.Model):
             "color": self.color,
             "season": self.season,
             "brand": self.brand or "",
+            "notes": self.notes or "",
             "image_url": self.image_url,
             "wear_count": self.wear_count,
             "last_worn_at": self.last_worn_at.isoformat() if self.last_worn_at else None,

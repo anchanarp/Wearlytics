@@ -106,11 +106,19 @@
 
     </div>{# /stylist-bar #}
 
+    <!-- Hidden container for pinned item IDs INSIDE the form -->
+    <div id="pinned-hidden-inputs">
+      {% for iid in selected_item_ids %}
+      <input type="hidden" name="item_ids" value="{{ iid }}" form="stylist-form">
+      {% endfor %}
+    </div>
+
   </form>
 </div>
 
-{# ── Wardrobe Selection Area (hidden by default, toggled by button) ─────── #}
-<div id="wardrobe-section" class="wardrobe-container" style="display:none;">
+{# ── Wardrobe Selection Area (hidden by default, toggled by button / #pinned-section) ─────── #}
+<div id="pinned-section" style="scroll-margin-top: 80px;"></div>
+<div id="wardrobe-section" class="wardrobe-container" data-anchor="pinned-section" style="display:none;">
 
   <!-- LEFT: Accordion -->
   <div class="accordion-section">
@@ -141,9 +149,13 @@
         <small>Select clothing from your wardrobe.</small>
       </div>
     </div>
-    <div id="pinned-hidden-inputs"></div>
     <div class="selection-panel-footer" id="selection-footer" style="display:none;">
-      <button type="button" class="btn light-button btn-sm" id="clear-all-btn">✕ Clear All</button>
+      <button type="button" class="btn primary-button btn-sm" id="selection-style-me-btn" style="width:100%;">
+        ✨ Style With Selected
+      </button>
+      <button type="button" class="btn light-button btn-sm" id="clear-all-btn" style="width:100%;">
+        ✕ Clear All
+      </button>
     </div>
   </div>
 
@@ -205,7 +217,8 @@
       {% for item in best["items"] %}
       <div class="rec-product-card">
         <div class="rec-product-img-wrap">
-          <img src="{{ item.image_url }}" alt="{{ item.name }}" class="rec-product-img">
+          <img src="{{ item.image_url }}" alt="{{ item.name }}" class="rec-product-img"
+               onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_cloth.svg') }}';">
           {% if item.is_favorite %}<span class="rec-fav-badge">★</span>{% endif %}
         </div>
         <div class="rec-product-info">
@@ -215,7 +228,9 @@
             <span class="rec-color-dot" style="background:{{ item.detected_color_hex or '#ccc' }};"></span>
             {{ item.color }}
           </span>
-          {% if item.wear_count == 0 %}
+          {% if selected_item_ids and item.id in selected_item_ids %}
+            <span class="rec-product-badge badge-pinned">📌 Pinned</span>
+          {% elif item.wear_count == 0 %}
             <span class="rec-product-badge badge-new">New</span>
           {% elif item.wear_count <= 2 %}
             <span class="rec-product-badge badge-rare">Rarely worn</span>
@@ -417,7 +432,8 @@
 
       <div class="more-outfit-thumbs">
         {% for item in rec["items"] %}
-        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="more-outfit-thumb">
+        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="more-outfit-thumb"
+             onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_cloth.svg') }}';">
         {% endfor %}
       </div>
 

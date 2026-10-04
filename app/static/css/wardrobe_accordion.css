@@ -477,3 +477,25 @@
   margin-top: 4px;
   margin-bottom: 4px;
 }
+
+.badge-pinned {
+  background: var(--primary, #5c3d2e) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  border-radius: 4px;
+}
+
+/* Flash highlight when arriving via #pinned-section anchor */
+.wardrobe-container.anchor-highlight {
+  animation: wardrobeAnchorPulse 1.5s ease-out;
+}
+
+@keyframes wardrobeAnchorPulse {
+  0% {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 50%, transparent);
+  }
+  100% {
+    box-shadow: none;
+  }
+}
+

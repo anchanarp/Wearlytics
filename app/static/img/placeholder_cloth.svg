@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="360" viewBox="0 0 300 360" fill="none">
+  <rect width="300" height="360" fill="#f7f4ef"/>
+  <path d="M150 100 C140 100 132 108 132 116 C132 126 150 134 150 144 L85 180 C78 184 78 192 84 195 C87 197 91 197 95 195 L150 166 L205 195 C209 197 213 197 216 195 C222 192 222 184 215 180 L150 144" stroke="#8c6d58" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="150" y="235" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="600" fill="#a0826d" text-anchor="middle" letter-spacing="1">WEARLYTICS</text>
+</svg>

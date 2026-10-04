@@ -9,6 +9,9 @@ from app.models.clothing import ClothingItem
 from app.models.outfit import Outfit
 
 
+from app.utils.colors import resolve_color_hex
+
+
 @analytics_bp.route("/")
 @login_required
 def index():
@@ -34,10 +37,20 @@ def index():
         for s, count in seasons_counter.most_common()
     ]
 
-    # Color Breakdown
-    colors_counter = Counter(i.color for i in items)
+    # Color Breakdown with resolved CSS hex codes
+    colors_counter = Counter(i.color.strip() for i in items if i.color and i.color.strip())
+    color_samples = {}
+    for i in items:
+        if i.color and i.detected_color_hex and i.color.strip() not in color_samples:
+            color_samples[i.color.strip()] = i.detected_color_hex
+
     colors_data = [
-        {"color": col, "count": count, "percentage": round((count / total_items) * 100) if total_items > 0 else 0}
+        {
+            "color": col,
+            "hex": resolve_color_hex(col, color_samples.get(col)),
+            "count": count,
+            "percentage": round((count / total_items) * 100) if total_items > 0 else 0,
+        }
         for col, count in colors_counter.most_common(5)
     ]
 
