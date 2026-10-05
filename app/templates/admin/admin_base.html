@@ -47,46 +47,73 @@
           <span class="brand-title">Wearlytics</span>
           <span class="brand-sub">STYLE SMARTER</span>
         </div>
-        <span class="admin-badge">Admin</span>
+        <span class="admin-badge">ADMIN</span>
       </a>
 
-      <p class="admin-nav-label">Navigation</p>
-      <nav aria-label="Admin navigation">
+      <p class="admin-nav-label">NAVIGATION</p>
+      <nav aria-label="Admin navigation" class="admin-nav-list">
         <a class="admin-nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}"
            href="{{ url_for('admin.dashboard') }}">
-          <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10Zm0 8h8v-6H3v6Zm10 0h8V11h-8v10Zm0-18v6h8V3h-8Z"/></svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          </svg>
           Dashboard
         </a>
         <a class="admin-nav-link {% if request.endpoint == 'admin.users' %}active{% endif %}"
            href="{{ url_for('admin.users') }}">
-          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3Zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3Zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z"/></svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
           Users
         </a>
         <a class="admin-nav-link {% if request.endpoint == 'admin.outfits' %}active{% endif %}"
            href="{{ url_for('admin.outfits') }}">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2Zm-2 14.5v-9l6 4.5-6 4.5Z"/></svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 4a3 3 0 0 0-3 3c0 .8.4 1.5 1 2l-7.7 5.2A2 2 0 0 0 2 16v1a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-1a2 2 0 0 0-.3-1.2L14 9c.6-.5 1-1.2 1-2a3 3 0 0 0-3-3z"/>
+          </svg>
           Outfits
         </a>
         <a class="admin-nav-link {% if request.endpoint == 'admin.feedback' %}active{% endif %}"
            href="{{ url_for('admin.feedback') }}">
-          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2Zm-7 9h-2V5h2v6Zm0 4h-2v-2h2v2Z"/></svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <circle cx="9" cy="10" r="1.2" fill="currentColor"/>
+            <circle cx="15" cy="10" r="1.2" fill="currentColor"/>
+          </svg>
           Feedback
         </a>
         <a class="admin-nav-link {% if request.endpoint == 'admin.analytics' %}active{% endif %}"
            href="{{ url_for('admin.analytics') }}">
-          <svg viewBox="0 0 24 24"><path d="M5 20H3V10h2v10Zm5 0H8V4h2v16Zm5 0h-2v-7h2v7Zm5 0h-2V7h2v13Z"/></svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
           Analytics
         </a>
       </nav>
 
       <div class="admin-sidebar-bottom">
-        <a class="admin-nav-link" href="{{ url_for('main.home') }}" style="margin: 0 0 0.25rem;">
-          <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <a class="admin-nav-link" href="{{ url_for('main.home') }}">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
           User Home
         </a>
-        <form action="{{ url_for('auth.logout') }}" method="post">
+        <form action="{{ url_for('auth.logout') }}" method="post" style="margin: 0;">
           <button type="submit" class="admin-logout-btn">
-            <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
             Sign out
           </button>
         </form>
@@ -97,19 +124,99 @@
     <div class="admin-main">
       <!-- Topbar -->
       <header class="admin-topbar">
-        <h1 class="admin-topbar-title">{% block page_title %}Admin Panel{% endblock %}</h1>
-        <div class="admin-topbar-user">
-          <span class="avatar" style="background: {{ current_user.avatar_color or '#c99a6b' }}; color:#fff; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.8rem;">
-            {{ current_user.name[:2].upper() if current_user.name else 'AD' }}
-          </span>
-          <span>{{ current_user.name }}</span>
+        <div class="admin-topbar-left">
+          <h1 class="admin-topbar-title">{% block page_title %}Dashboard{% endblock %}</h1>
+          <p class="admin-topbar-sub">{% block page_sub %}Overview of your platform activity{% endblock %}</p>
+        </div>
+        <div class="admin-topbar-right">
+          <!-- Search with live dropdown -->
+          <div class="admin-search-wrap" id="adminSearchWrap">
+            <form class="admin-topbar-search" action="{{ url_for('admin.global_search') }}" method="get" id="adminSearchForm" autocomplete="off">
+              <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" name="q" placeholder="Search users, outfits or feedback..." class="admin-header-search-input" id="adminHeaderSearch" autocomplete="off">
+              <span class="admin-kbd-shortcut">⌘ K</span>
+            </form>
+            <div class="admin-search-dropdown" id="adminSearchDropdown" hidden>
+              <div class="search-dropdown-body" id="adminSearchResults">
+                <p class="search-no-results">Type to search...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications Dropdown -->
+          <div class="admin-notif-wrap" id="adminNotifWrap">
+            <button type="button" class="admin-icon-btn admin-notification-btn" id="adminNotifBtn" aria-label="Notifications" aria-expanded="false">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span class="notification-badge-dot" id="adminNotifDot"></span>
+            </button>
+
+            <div class="admin-notif-dropdown" id="adminNotifDropdown" hidden>
+              <div class="notif-header">
+                <span class="notif-title">Notifications</span>
+                <button class="notif-mark-read-btn" id="adminMarkAllRead" type="button">Mark all read</button>
+              </div>
+              <div class="notif-body" id="adminNotifBody">
+                <!-- Populated by JS from API -->
+                <div class="notif-loading">Loading…</div>
+              </div>
+              <div class="notif-footer">
+                <a href="{{ url_for('admin.feedback') }}" class="notif-view-all">View all activity →</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Theme Toggle Button -->
+          <button type="button" class="admin-icon-btn admin-theme-toggle-btn" id="adminThemeToggle" title="Toggle Light / Dark Mode" aria-label="Toggle theme">
+            <svg class="admin-icon-sun" viewBox="0 0 24 24" width="17" height="17" fill="currentColor">
+              <path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0v-1a1 1 0 0 1 1-1Zm0-16a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0V4a1 1 0 0 1 1-1Zm10 9a1 1 0 0 1-1 1h-1a1 1 0 0 1 0-2h1a1 1 0 0 1 1 1ZM4 12a1 1 0 0 1-1 1H2a1 1 0 0 1 0-2h1a1 1 0 0 1 1 1Zm15.07-7.07a1 1 0 0 1 0 1.41l-.71.71a1 1 0 0 1-1.41-1.41l.71-.71a1 1 0 0 1 1.41 0ZM6.34 17.66a1 1 0 0 1 0 1.41l-.71.71a1 1 0 1 1-1.41-1.41l.71-.71a1 1 0 0 1 1.41 0Zm12.73 1.41a1 1 0 0 1-1.41 0l-.71-.71a1 1 0 0 1 1.41-1.41l.71.71a1 1 0 0 1 0 1.41ZM6.34 6.34a1 1 0 0 1-1.41 0l-.71-.71a1 1 0 1 1 1.41-1.41l.71.71a1 1 0 0 1 0 1.41Z"/>
+            </svg>
+            <svg class="admin-icon-moon" viewBox="0 0 24 24" width="17" height="17" fill="currentColor">
+              <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1Z"/>
+            </svg>
+          </button>
+
+          <div class="dropdown">
+            <div class="admin-topbar-profile dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ current_user.name or 'Admin' }}">
+              <span class="admin-profile-avatar" style="background: {{ current_user.avatar_color or '#c89e6c' }};">
+                {{ current_user.name[:2].upper() if current_user.name else 'AD' }}
+              </span>
+              <span class="admin-profile-name">{{ current_user.name or 'Admin' }}</span>
+              <svg class="admin-profile-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow-lg" style="min-width: 210px; border-radius: 12px; border: 1px solid #2a3347; background: #161a24; padding: 0.5rem 0;">
+              <li class="px-3 py-2 border-bottom border-secondary border-opacity-25">
+                <div class="fw-semibold text-light small">{{ current_user.name or 'Administrator' }}</div>
+                <div class="text-muted" style="font-size: 0.74rem;">{{ current_user.email }}</div>
+              </li>
+              <li><a class="dropdown-item py-2 small" href="{{ url_for('main.home') }}">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="me-2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>User Home
+              </a></li>
+              <li><a class="dropdown-item py-2 small" href="{{ url_for('admin.users') }}">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="me-2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Manage Users
+              </a></li>
+              <li><hr class="dropdown-divider border-secondary border-opacity-25"></li>
+              <li>
+                <form action="{{ url_for('auth.logout') }}" method="post" class="m-0">
+                  <button type="submit" class="dropdown-item py-2 small text-danger">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" class="me-2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </div>
         </div>
       </header>
 
       <!-- Flash messages -->
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-          <div class="admin-toast-wrap" style="padding: 0.75rem 1.5rem 0;">
+          <div class="admin-toast-wrap" style="padding: 0.75rem 2rem 0;">
             {% for category, message in messages %}
               <div class="admin-toast {{ category }}">
                 <span>{{ message }}</span>
@@ -121,14 +228,255 @@
       {% endwith %}
 
       <!-- Content -->
-      <div class="admin-content">
+      <main class="admin-content">
         {% block content %}{% endblock %}
-      </div>
+      </main>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script>
+    (function () {
+      const input   = document.getElementById('adminHeaderSearch');
+      const dropdown = document.getElementById('adminSearchDropdown');
+      const results  = document.getElementById('adminSearchResults');
+      let debounceTimer = null;
+
+      // ── Cmd+K / Ctrl+K to focus ──────────────────────────────
+      document.addEventListener('keydown', function (e) {
+        if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+          e.preventDefault();
+          if (input) { input.focus(); input.select(); }
+        }
+        if (e.key === 'Escape') { closeDropdown(); }
+      });
+
+      if (!input) return;
+
+      // ── Input handler with 220ms debounce ────────────────────
+      input.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        const q = input.value.trim();
+        if (!q) { closeDropdown(); return; }
+        debounceTimer = setTimeout(() => fetchResults(q), 220);
+      });
+
+      input.addEventListener('focus', function () {
+        if (input.value.trim()) fetchResults(input.value.trim());
+      });
+
+      // ── Close on outside click ───────────────────────────────
+      document.addEventListener('click', function (e) {
+        const wrap = document.getElementById('adminSearchWrap');
+        if (wrap && !wrap.contains(e.target)) closeDropdown();
+      });
+
+      function closeDropdown() {
+        if (dropdown) dropdown.hidden = true;
+      }
+
+      // ── Fetch & Render ───────────────────────────────────────
+      function fetchResults(q) {
+        fetch(`/admin/api/search?q=${encodeURIComponent(q)}`)
+          .then(r => r.json())
+          .then(data => {
+            if (data.total === 0) {
+              results.innerHTML = `<p class="search-no-results">No results for "<strong>${escHtml(q)}</strong>"</p>`;
+            } else {
+              results.innerHTML = buildHTML(data, q);
+            }
+            dropdown.hidden = false;
+          })
+          .catch(() => { closeDropdown(); });
+      }
+
+      function buildHTML(data, q) {
+        let html = '';
+
+        if (data.users.length) {
+          html += `<div class="search-group-label">Users</div>`;
+          data.users.forEach(u => {
+            html += `
+              <a class="search-result-item" href="${u.url}">
+                <span class="search-item-icon search-icon-user">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </span>
+                <span class="search-item-body">
+                  <span class="search-item-title">${highlight(u.name, q)}</span>
+                  <span class="search-item-meta">${escHtml(u.email)} &nbsp;·&nbsp; ${u.role}</span>
+                </span>
+              </a>`;
+          });
+        }
+
+        if (data.outfits.length) {
+          html += `<div class="search-group-label">Outfits</div>`;
+          data.outfits.forEach(o => {
+            html += `
+              <a class="search-result-item" href="${o.url}">
+                <span class="search-item-icon search-icon-outfit">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.5a2 2 0 0 0 1.5 1.63L6 11.2V20a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8.8l1.64-.38a2 2 0 0 0 1.5-1.63l.58-3.5a2 2 0 0 0-1.34-2.23z"/></svg>
+                </span>
+                <span class="search-item-body">
+                  <span class="search-item-title">${highlight(o.title, q)}</span>
+                  <span class="search-item-meta">${escHtml(o.occasion)}${o.score ? ' &nbsp;·&nbsp; ' + o.score : ''}</span>
+                </span>
+              </a>`;
+          });
+        }
+
+        if (data.feedback.length) {
+          html += `<div class="search-group-label">Feedback</div>`;
+          data.feedback.forEach(fb => {
+            const reactionIcon = fb.reaction === 'liked' ? '👍' : fb.reaction === 'favorited' ? '⭐' : '👎';
+            html += `
+              <a class="search-result-item" href="${fb.url}">
+                <span class="search-item-icon search-icon-feedback">${reactionIcon}</span>
+                <span class="search-item-body">
+                  <span class="search-item-title">${escHtml(fb.user)} on ${escHtml(fb.outfit)}</span>
+                  <span class="search-item-meta">${fb.notes ? escHtml(fb.notes) : fb.reaction}</span>
+                </span>
+              </a>`;
+          });
+        }
+
+        return html;
+      }
+
+      function highlight(text, q) {
+        if (!text) return '';
+        const safe = escHtml(text);
+        const re = new RegExp(`(${escRegex(q)})`, 'gi');
+        return safe.replace(re, '<mark class="search-highlight">$1</mark>');
+      }
+
+      function escHtml(s) {
+        return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+
+      function escRegex(s) {
+        return String(s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      }
+    })();
+
+    // ── Notification Dropdown Handler ──────────────────────────
+    (function () {
+      const notifBtn      = document.getElementById('adminNotifBtn');
+      const notifDropdown = document.getElementById('adminNotifDropdown');
+      const notifBody     = document.getElementById('adminNotifBody');
+      const notifDot      = document.getElementById('adminNotifDot');
+      const markAllRead   = document.getElementById('adminMarkAllRead');
+      let notifsLoaded    = false;
+
+      if (!notifBtn || !notifDropdown) return;
+
+      notifBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const isHidden = notifDropdown.hidden;
+        // Close search dropdown if open
+        const searchDropdown = document.getElementById('adminSearchDropdown');
+        if (searchDropdown) searchDropdown.hidden = true;
+
+        if (isHidden) {
+          notifDropdown.hidden = false;
+          notifBtn.setAttribute('aria-expanded', 'true');
+          if (!notifsLoaded) {
+            loadNotifications();
+          }
+        } else {
+          closeNotif();
+        }
+      });
+
+      function closeNotif() {
+        notifDropdown.hidden = true;
+        notifBtn.setAttribute('aria-expanded', 'false');
+      }
+
+      function loadNotifications() {
+        fetch('/admin/api/notifications')
+          .then(r => r.json())
+          .then(data => {
+            notifsLoaded = true;
+            if (!data.notifications || data.notifications.length === 0) {
+              notifBody.innerHTML = `<div class="notif-empty">No new notifications</div>`;
+              if (notifDot) notifDot.style.display = 'none';
+              return;
+            }
+
+            let html = '';
+            data.notifications.forEach(n => {
+              const iconSvg = n.type === 'user' 
+                ? `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`
+                : `<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+              const iconClass = n.type === 'user' ? 'notif-icon-user' : 'notif-icon-fb';
+
+              html += `
+                <a href="${n.url}" class="notif-item">
+                  <div class="notif-item-icon ${iconClass}">
+                    ${iconSvg}
+                  </div>
+                  <div class="notif-item-content">
+                    <div class="notif-item-title">${escHtml(n.title)}</div>
+                    <div class="notif-item-meta">${escHtml(n.meta)}</div>
+                    <div class="notif-item-time">${escHtml(n.time)}</div>
+                  </div>
+                </a>
+              `;
+            });
+            notifBody.innerHTML = html;
+          })
+          .catch(() => {
+            notifBody.innerHTML = `<div class="notif-empty">Failed to load notifications</div>`;
+          });
+      }
+
+      if (markAllRead) {
+        markAllRead.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (notifDot) notifDot.style.display = 'none';
+          const items = notifBody.querySelectorAll('.notif-item');
+          items.forEach(el => el.classList.add('read'));
+          markAllRead.textContent = 'All read ✓';
+          markAllRead.disabled = true;
+          markAllRead.style.opacity = '0.5';
+        });
+      }
+
+      document.addEventListener('click', function (e) {
+        const wrap = document.getElementById('adminNotifWrap');
+        if (wrap && !wrap.contains(e.target)) {
+          closeNotif();
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          closeNotif();
+        }
+      });
+
+      function escHtml(s) {
+        return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+    })();
+
+    // ── Admin Theme Toggle Handler ───────────────────────────
+    (function () {
+      const themeBtn = document.getElementById('adminThemeToggle');
+      if (!themeBtn) return;
+
+      themeBtn.addEventListener('click', function () {
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = current === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', next);
+        try {
+          localStorage.setItem('wearlytics-theme', next);
+        } catch (e) {}
+      });
+    })();
+  </script>
   {% block extra_scripts %}{% endblock %}
 </body>
 </html>

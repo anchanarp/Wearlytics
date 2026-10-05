@@ -141,6 +141,89 @@ class UserPreferences(db.Model):
         data.update(new_dict)
         self.profile_meta = json.dumps(data)
 
+    # ── Profile Metadata Properties ───────────────────────────────────────────
+    @property
+    def gender(self) -> str:
+        return self.get_meta("gender") or ""
+
+    @gender.setter
+    def gender(self, value: str):
+        self.set_meta("gender", value or "")
+
+    @property
+    def height_cm(self):
+        val = self.get_meta("height_cm") or self.get_meta("height", "")
+        return val or ""
+
+    @height_cm.setter
+    def height_cm(self, value):
+        v = str(value).strip() if value is not None else ""
+        self.set_meta("height_cm", v)
+        self.set_meta("height", v)
+
+    @property
+    def weight_kg(self):
+        val = self.get_meta("weight_kg") or self.get_meta("weight", "")
+        return val or ""
+
+    @weight_kg.setter
+    def weight_kg(self, value):
+        v = str(value).strip() if value is not None else ""
+        self.set_meta("weight_kg", v)
+        self.set_meta("weight", v)
+
+    @property
+    def body_shape(self) -> str:
+        return self.get_meta("body_shape") or ""
+
+    @body_shape.setter
+    def body_shape(self, value: str):
+        self.set_meta("body_shape", value or "")
+
+    @property
+    def clothing_size(self) -> str:
+        return self.get_meta("clothing_size") or ""
+
+    @clothing_size.setter
+    def clothing_size(self, value: str):
+        self.set_meta("clothing_size", value or "")
+
+    @property
+    def fit_preference(self) -> str:
+        val = self.get_meta("fit_preference") or self.get_meta("preferred_fit", "")
+        mapping = {
+            "Slim": "Slim Fit",
+            "Regular": "Regular Fit",
+            "Relaxed": "Relaxed Fit",
+            "Oversized": "Oversized / Loose",
+        }
+        return mapping.get(val, val or "")
+
+    @fit_preference.setter
+    def fit_preference(self, value: str):
+        self.set_meta("fit_preference", value or "")
+        short_mapping = {
+            "Slim Fit": "Slim",
+            "Regular Fit": "Regular",
+            "Relaxed Fit": "Relaxed",
+            "Oversized / Loose": "Oversized",
+            "No Preference": "Regular",
+        }
+        self.set_meta("preferred_fit", short_mapping.get(value, value or ""))
+
+    def has_preferred_color(self, color_name: str) -> bool:
+        """Check if color_name (or its resolved hex) is in preferred_colors_list."""
+        from app.utils.colors import resolve_color_hex
+        norm = (color_name or "").strip().lower()
+        hex_code = resolve_color_hex(color_name).lower()
+        for pc in self.preferred_colors_list:
+            pc_clean = pc.strip().lower()
+            if pc_clean == norm or pc_clean == hex_code:
+                return True
+            if resolve_color_hex(pc_clean).lower() == hex_code:
+                return True
+        return False
+
     # ── Effective preference view (respects toggles) ──────────────────────────
 
     def effective_preferred_colors(self) -> list:

@@ -192,7 +192,8 @@ def register():
                 if db.session.scalar(db.select(User).where(User.email == email_to_use)):
                     email_to_use = f"{clean_phone}_{int(datetime.now(timezone.utc).timestamp())}@user.wearlytics.com"
 
-            user = User(name=name, email=email_to_use)
+            is_demo = request.form.get("is_demo") in ("1", "true", "True")
+            user = User(name=name, email=email_to_use, is_demo=is_demo)
             user.set_password(password)
             db.session.add(user)
             db.session.commit()
@@ -210,7 +211,7 @@ def register():
     return render_template("auth/register.html")
 
 
-@auth_bp.post("/logout")
+@auth_bp.route("/logout", methods=["GET", "POST"])
 @login_required
 def logout():
     """End the active user session."""

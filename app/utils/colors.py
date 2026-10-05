@@ -194,3 +194,137 @@ def resolve_color_hex(color_name: str | None, sample_hex: str | None = None) -> 
         return sample_hex
 
     return "#808080"
+
+
+# Canonical named colors with reference RGBs for perceptual nearest-color matching
+_COLOR_NAME_PALETTE: list[tuple[tuple[int, int, int], str]] = [
+    # Neutrals
+    ((0, 0, 0), "Black"),
+    ((17, 17, 17), "Black"),
+    ((255, 255, 255), "White"),
+    ((245, 245, 245), "Off White"),
+    ((255, 253, 208), "Cream"),
+    ((245, 245, 220), "Beige"),
+    ((210, 180, 140), "Tan"),
+    ((128, 128, 128), "Grey"),
+    ((192, 192, 192), "Silver"),
+    ((54, 69, 79), "Charcoal"),
+    ((64, 64, 64), "Charcoal"),
+
+    # Browns
+    ((139, 69, 19), "Brown"),
+    ((165, 42, 42), "Brown"),
+    ((128, 0, 0), "Maroon"),
+    ((128, 128, 0), "Olive"),
+
+    # Reds
+    ((255, 0, 0), "Red"),
+    ((220, 20, 60), "Crimson"),
+    ((255, 36, 0), "Cherry Red"),
+    ((137, 28, 28), "Maroon"),
+
+    # Pinks
+    ((255, 192, 203), "Pink"),
+    ((255, 105, 180), "Hot Pink"),
+    ((244, 143, 177), "Pink"),
+    ((255, 127, 80), "Coral"),
+    ((255, 99, 71), "Coral"),
+
+    # Oranges & Yellows
+    ((255, 165, 0), "Orange"),
+    ((255, 140, 0), "Orange"),
+    ((255, 215, 0), "Gold"),
+    ((255, 255, 0), "Yellow"),
+    ((225, 173, 1), "Mustard"),
+
+    # Greens
+    ((76, 175, 80), "Green"),
+    ((0, 255, 0), "Green"),
+    ((0, 128, 0), "Dark Green"),
+    ((46, 139, 87), "Sea Green"),
+    ((111, 122, 92), "Olive Green"),
+    ((85, 107, 47), "Olive"),
+    ((107, 142, 35), "Olive"),
+    ((152, 251, 152), "Mint"),
+    ((0, 128, 128), "Teal"),
+
+    # Blues
+    ((0, 0, 255), "Blue"),
+    ((0, 0, 128), "Navy"),
+    ((70, 130, 180), "Steel Blue"),
+    ((30, 144, 255), "Blue"),
+    ((135, 206, 235), "Light Blue"),
+
+    # Purples
+    ((128, 0, 128), "Purple"),
+    ((147, 51, 234), "Purple"),
+    ((138, 43, 226), "Violet"),
+    ((216, 191, 216), "Lavender"),
+]
+
+
+def resolve_color_name(color_val: str | None) -> str:
+    """Convert any color string (name or hex code) to a friendly human-readable name.
+
+    Examples:
+        '#4caf50' -> 'Green'
+        '#f48fb1' -> 'Pink'
+        '#6f7a5c' -> 'Olive Green'
+        '#891c1c' -> 'Maroon'
+        'Black'    -> 'Black'
+    """
+    if not color_val:
+        return ""
+    val = color_val.strip()
+    if not val.startswith("#"):
+        return val.title()
+
+    clean = val.lstrip("#")
+    if len(clean) == 3:
+        clean = "".join(c * 2 for c in clean)
+    if len(clean) != 6:
+        return val
+
+    try:
+        r = int(clean[0:2], 16)
+        g = int(clean[2:4], 16)
+        b = int(clean[4:6], 16)
+    except ValueError:
+        return val
+
+    # Exact reverse lookup in COLOR_NAME_TO_HEX
+    upper_hex = f"#{clean.upper()}"
+    for name, hex_code in COLOR_NAME_TO_HEX.items():
+        if hex_code.upper() == upper_hex:
+            return name.title()
+
+    # Perceptual redmean distance to nearest canonical palette color
+    import math
+    best_name = "Color"
+    best_dist = float("inf")
+    for (pr, pg, pb), name in _COLOR_NAME_PALETTE:
+        rmean = (r + pr) / 2
+        dr = r - pr
+        dg = g - pg
+        db = b - pb
+        dist = math.sqrt((2 + rmean / 256) * dr**2 + 4 * dg**2 + (2 + (255 - rmean) / 256) * db**2)
+        if dist < best_dist:
+            best_dist = dist
+            best_name = name
+
+    return best_name
+
+
+def get_color_info(color_val: str | None) -> dict:
+    """Return dictionary with display name and swatch hex for any color string."""
+    if not color_val:
+        return {"name": "", "hex": "#808080", "raw": ""}
+    raw = color_val.strip()
+    name = resolve_color_name(raw)
+    hex_code = raw if raw.startswith("#") else resolve_color_hex(raw)
+    return {
+        "name": name,
+        "hex": hex_code,
+        "raw": raw,
+    }
+

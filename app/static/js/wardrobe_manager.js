@@ -433,4 +433,47 @@
     }
   });
 
+  // ── 8. Grid / List View Toggle ──────────────────────────────
+  const gridContainer = document.getElementById('wardrobe-grid');
+  const btnGrid = document.getElementById('btn-view-grid');
+  const btnList = document.getElementById('btn-view-list');
+
+  const setViewMode = (mode) => {
+    if (!gridContainer) return;
+    if (mode === 'list') {
+      gridContainer.classList.add('is-list-view');
+      if (btnList) btnList.classList.add('active');
+      if (btnGrid) btnGrid.classList.remove('active');
+      try { localStorage.setItem('wearlytics_wardrobe_view', 'list'); } catch (e) {}
+    } else {
+      gridContainer.classList.remove('is-list-view');
+      if (btnGrid) btnGrid.classList.add('active');
+      if (btnList) btnList.classList.remove('active');
+      try { localStorage.setItem('wearlytics_wardrobe_view', 'grid'); } catch (e) {}
+    }
+  };
+
+  // Restore saved view mode preference
+  try {
+    const savedMode = localStorage.getItem('wearlytics_wardrobe_view');
+    if (savedMode === 'list') {
+      setViewMode('list');
+    }
+  } catch (e) {}
+
+  if (btnGrid) {
+    btnGrid.addEventListener('click', (e) => {
+      e.preventDefault();
+      setViewMode('grid');
+    });
+  }
+
+  if (btnList) {
+    btnList.addEventListener('click', (e) => {
+      e.preventDefault();
+      setViewMode('list');
+    });
+  }
+
 })();
+

@@ -33,18 +33,12 @@ def register(client, name, email, password, is_demo=False):
         "email": email,
         "password": password,
         "confirm_password": password,
+        "is_demo": "1" if is_demo else "0",
     }
     resp = client.post("/auth/register", data=data, follow_redirects=False)
     assert resp.status_code in (200, 302)
     if resp.status_code == 302:
         resp = client.get(resp.headers.get('Location'), follow_redirects=True)
-    # No explicit login; registration endpoint already logs in the user.
-    if is_demo:
-        with client.application.app_context():
-            user = User.query.filter_by(email=email).first()
-            assert user is not None
-            user.is_demo = True
-            db.session.commit()
     return User.query.filter_by(email=email).first()
 
 

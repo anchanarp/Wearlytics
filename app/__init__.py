@@ -56,8 +56,10 @@ def create_app(config_class=Config, test_config=None):
     app.register_blueprint(stylist_bp)
 
     # Register custom Jinja filters
-    from app.utils.colors import resolve_color_hex
+    from app.utils.colors import resolve_color_hex, resolve_color_name, get_color_info
     app.jinja_env.filters["color_hex"] = resolve_color_hex
+    app.jinja_env.filters["color_name"] = resolve_color_name
+    app.jinja_env.filters["color_info"] = get_color_info
 
     # --- Global Error Handlers ---
     @app.errorhandler(404)

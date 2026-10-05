@@ -17,7 +17,9 @@
       <div class="planner-week-nav">
         <a href="{{ url_for('planner.index', week=week_offset - 1, day=active_day) }}" class="btn-week-arrow" title="Previous Week" aria-label="Previous Week">‹</a>
         <span class="badge-week-pill">
-          <span class="calendar-icon">📅</span>
+          <span class="calendar-icon" style="display:inline-flex;align-items:center;justify-content:center;color:#b87b32;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </span>
           <span class="week-label-main">
             {% if week_offset == 0 %}This Week{% elif week_offset == 1 %}Next Week{% elif week_offset == -1 %}Last Week{% else %}Week{% endif %}
           </span>
@@ -101,14 +103,20 @@
         {% if entry.has_outfit %}
           {% if entry.plan and entry.plan.id %}
             <form action="{{ url_for('planner.clear_day', plan_id=entry.plan.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Clear outfit from {{ entry.day }}?');">
-              <button type="submit" class="btn-clear-day">
-                <span class="trash-icon">🗑</span> Clear Day
+              <button type="submit" class="btn-clear-day" style="display:inline-flex;align-items:center;gap:5px;">
+                <span class="trash-icon" style="display:inline-flex;align-items:center;justify-content:center;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </span>
+                <span>Clear Day</span>
               </button>
             </form>
           {% else %}
             <form action="{{ url_for('planner.clear_day_by_name', day=entry.day) }}" method="post" style="display:inline;" onsubmit="return confirm('Clear outfit from {{ entry.day }}?');">
-              <button type="submit" class="btn-clear-day">
-                <span class="trash-icon">🗑</span> Clear Day
+              <button type="submit" class="btn-clear-day" style="display:inline-flex;align-items:center;gap:5px;">
+                <span class="trash-icon" style="display:inline-flex;align-items:center;justify-content:center;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </span>
+                <span>Clear Day</span>
               </button>
             </form>
           {% endif %}
@@ -124,8 +132,9 @@
         <div class="subcard-header">
           <h3 class="subcard-title">Current Outfit</h3>
           {% if entry.has_custom and entry.edit_url %}
-            <a href="{{ entry.edit_url }}" class="btn-edit-badge" title="Edit Custom Outfit">
-              ✏️ Edit
+            <a href="{{ entry.edit_url }}" class="btn-edit-badge" title="Edit Custom Outfit" style="display:inline-flex;align-items:center;gap:4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              <span>Edit</span>
             </a>
           {% endif %}
         </div>
@@ -143,9 +152,15 @@
             <div class="current-outfit-meta">
               <h4 class="current-outfit-name">{{ entry.outfit_title }}</h4>
               {% if entry.has_custom %}
-                <span class="outfit-source-tag custom">🏷️ Custom Outfit</span>
+                <span class="outfit-source-tag custom" style="display:inline-flex;align-items:center;gap:4px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                  <span>Custom Outfit</span>
+                </span>
               {% else %}
-                <span class="outfit-source-tag ai">✨ AI Outfit</span>
+                <span class="outfit-source-tag ai" style="display:inline-flex;align-items:center;gap:4px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="#d4af37" stroke="#b87b32" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"></path></svg>
+                  <span>AI Outfit</span>
+                </span>
               {% endif %}
             </div>
 
@@ -156,7 +171,9 @@
 
           {% else %}
             <div class="current-outfit-empty">
-              <div class="empty-icon-wrap">👔</div>
+              <div class="empty-icon-wrap" style="display:flex;align-items:center;justify-content:center;color:#8c6a4a;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.5a2 2 0 0 0 1.25 1.55L6 11.5V20a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8.5l1.89-.76a2 2 0 0 0 1.25-1.55l.58-3.5a2 2 0 0 0-1.34-2.23z"></path></svg>
+              </div>
               <p class="empty-title">No outfit planned for this day yet.</p>
               <p class="empty-sub">Choose an AI recommendation or build your custom look.</p>
             </div>
@@ -167,7 +184,10 @@
       {# ── COLUMN 2: Choose AI Outfit ── #}
       <div class="planner-subcard ai-outfits-subcard">
         <div class="subcard-header">
-          <h3 class="subcard-title">✨ Choose AI Outfit</h3>
+          <h3 class="subcard-title" style="display:flex;align-items:center;gap:6px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#d4af37" stroke="#b87b32" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"></path></svg>
+            <span>Choose AI Outfit</span>
+          </h3>
           <a href="{{ url_for('stylist.index') }}" class="subcard-view-more">View More →</a>
         </div>
 
@@ -205,7 +225,10 @@
       {# ── COLUMN 3: Create My Own Outfit ── #}
       <div class="planner-subcard custom-outfit-subcard">
         <div class="subcard-header">
-          <h3 class="subcard-title">✏️ Create My Own Outfit</h3>
+          <h3 class="subcard-title" style="display:flex;align-items:center;gap:6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8c6a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <span>Create My Own Outfit</span>
+          </h3>
         </div>
 
         <div class="subcard-body">
@@ -220,7 +243,10 @@
           {# Saved Dress / Outfit Dropdown (preserving existing feature) #}
           <details class="saved-dress-dropdown mt-3" id="saved-dress-dropdown-{{ entry.day }}">
             <summary>
-              <span class="summary-left">👗 Saved Dress / Outfit</span>
+              <span class="summary-left" style="display:inline-flex;align-items:center;gap:6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.5a2 2 0 0 0 1.25 1.55L6 11.5V20a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8.5l1.89-.76a2 2 0 0 0 1.25-1.55l.58-3.5a2 2 0 0 0-1.34-2.23z"></path></svg>
+                <span>Saved Dress / Outfit</span>
+              </span>
               <span class="summary-right">
                 <span class="badge-saved-count">{{ outfits|length }} saved</span>
                 <span class="dropdown-chevron">▼</span>
@@ -246,7 +272,9 @@
                       <button type="submit" class="btn-quick-add" title="Add to {{ entry.day }}">+</button>
                     </form>
                     <form action="{{ url_for('planner.delete_saved_outfit', outfit_id=outfit.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Delete this saved outfit completely?');">
-                      <button type="submit" class="btn-quick-del" title="Delete outfit">🗑</button>
+                      <button type="submit" class="btn-quick-del" title="Delete outfit" style="display:inline-flex;align-items:center;justify-content:center;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                      </button>
                     </form>
                   </div>
                 </div>
@@ -254,7 +282,10 @@
               {% else %}
                 <div class="empty-saved-msg">
                   <p style="margin:0 0 4px 0;">No saved outfits yet.</p>
-                  <a href="{{ url_for('stylist.index') }}" class="link-ai-stylist">Go to AI Stylist ✨</a>
+                  <a href="{{ url_for('stylist.index') }}" class="link-ai-stylist" style="display:inline-flex;align-items:center;gap:4px;">
+                    <span>Go to AI Stylist</span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="#d4af37" stroke="#b87b32" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"></path></svg>
+                  </a>
                 </div>
               {% endif %}
             </div>

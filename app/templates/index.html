@@ -211,7 +211,7 @@
 <section class="ref-tri-layout mb-5">
   <div class="row g-3 g-xl-4 align-items-stretch">
     <!-- 1. Today's Look Card -->
-    <div class="col-12 col-lg-5 col-xl-4">
+    <div class="col-12 col-lg-6 col-xl-4">
       <div class="ref-card ref-todays-look-card">
         <div class="ref-card-header">
           <h3 class="ref-card-title">Today's Look</h3>
@@ -219,19 +219,19 @@
         </div>
         <div class="ref-todays-split">
           <div class="ref-look-thumbnail">
-            <img src="{{ url_for('static', filename='img/todays_look_editorial.jpg') }}" alt="Today's Look" loading="lazy">
+            <img src="{{ todays_look_image or url_for('static', filename='img/todays_look_editorial.jpg') }}" alt="{{ todays_title or 'Today\'s Look' }}" loading="lazy">
           </div>
           <div class="ref-look-details">
-            <h4 class="ref-look-headline">Everyday Comfort</h4>
-            <p class="ref-look-body">A simple look for a beautiful day.</p>
-            <a href="{{ url_for('stylist.index') }}" class="ref-dark-pill-btn">View Details →</a>
+            <h4 class="ref-look-headline">{{ todays_title or 'Everyday Comfort' }}</h4>
+            <p class="ref-look-body">{{ todays_desc or 'A simple look for a beautiful day.' }}</p>
+            <a href="{{ url_for('main.todays_look') }}" class="ref-dark-pill-btn">View Details →</a>
           </div>
         </div>
       </div>
     </div>
 
     <!-- 2. Style Categories Card -->
-    <div class="col-12 col-lg-7 col-xl-5">
+    <div class="col-12 col-lg-6 col-xl-4">
       <div class="ref-card ref-categories-card">
         <div class="ref-card-header d-flex justify-content-between align-items-center">
           <h3 class="ref-card-title mb-0">Style Categories</h3>
@@ -240,35 +240,35 @@
         <div class="ref-categories-grid">
           <a href="{{ url_for('wardrobe.index', category='Tops') }}" class="ref-category-card-item">
             <div class="ref-cat-thumb-box">
-              <img src="{{ url_for('static', filename='img/cat_tops.jpg') }}" alt="Tops" class="ref-cat-img" loading="lazy">
+              <img src="{{ url_for('static', filename='img/cat_tops.png') }}" alt="Tops" class="ref-cat-img" loading="lazy">
             </div>
             <span class="ref-cat-name">Tops</span>
             <span class="ref-cat-count">({{ current_user.clothing_items.filter_by(category='Tops').count() if current_user.clothing_items is defined else 0 }})</span>
           </a>
           <a href="{{ url_for('wardrobe.index', category='Bottoms') }}" class="ref-category-card-item">
             <div class="ref-cat-thumb-box">
-              <img src="{{ url_for('static', filename='img/cat_bottoms.jpg') }}" alt="Bottoms" class="ref-cat-img" loading="lazy">
+              <img src="{{ url_for('static', filename='img/cat_bottoms.png') }}" alt="Bottoms" class="ref-cat-img" loading="lazy">
             </div>
             <span class="ref-cat-name">Bottoms</span>
             <span class="ref-cat-count">({{ current_user.clothing_items.filter_by(category='Bottoms').count() if current_user.clothing_items is defined else 0 }})</span>
           </a>
           <a href="{{ url_for('wardrobe.index', category='Dresses') }}" class="ref-category-card-item">
             <div class="ref-cat-thumb-box">
-              <img src="{{ url_for('static', filename='img/cat_dresses.jpg') }}" alt="Dresses" class="ref-cat-img" loading="lazy">
+              <img src="{{ url_for('static', filename='img/cat_dresses.png') }}" alt="Dresses" class="ref-cat-img" loading="lazy">
             </div>
             <span class="ref-cat-name">Dresses</span>
             <span class="ref-cat-count">({{ current_user.clothing_items.filter_by(category='Dresses').count() if current_user.clothing_items is defined else 0 }})</span>
           </a>
           <a href="{{ url_for('wardrobe.index', category='Shoes') }}" class="ref-category-card-item">
             <div class="ref-cat-thumb-box">
-              <img src="{{ url_for('static', filename='img/cat_shoes.jpg') }}" alt="Shoes" class="ref-cat-img" loading="lazy">
+              <img src="{{ url_for('static', filename='img/cat_shoes.png') }}" alt="Shoes" class="ref-cat-img" loading="lazy">
             </div>
             <span class="ref-cat-name">Shoes</span>
             <span class="ref-cat-count">({{ current_user.clothing_items.filter_by(category='Shoes').count() if current_user.clothing_items is defined else 0 }})</span>
           </a>
           <a href="{{ url_for('wardrobe.index', category='Accessories') }}" class="ref-category-card-item">
             <div class="ref-cat-thumb-box">
-              <img src="{{ url_for('static', filename='img/cat_accessories.jpg') }}" alt="Accessories" class="ref-cat-img" loading="lazy">
+              <img src="{{ url_for('static', filename='img/cat_accessories.png') }}" alt="Accessories" class="ref-cat-img" loading="lazy">
             </div>
             <span class="ref-cat-name">Accessories</span>
             <span class="ref-cat-count">({{ current_user.clothing_items.filter_by(category='Accessories').count() if current_user.clothing_items is defined else 0 }})</span>
@@ -277,14 +277,59 @@
       </div>
     </div>
 
-    <!-- 3. Inspirational Card -->
-    <div class="col-12 col-xl-3">
-      <div class="ref-card ref-inspirational-card" style="background-image: url('{{ url_for('static', filename='img/hero_slide4.jpg') }}'); background-position: center right;">
-        <div class="ref-inspirational-overlay">
-          <h3 class="ref-inspirational-title">A more stylish you, every day.</h3>
-          <a href="{{ url_for('stylist.index') }}" class="ref-inspirational-arrow" aria-label="Explore Outfits">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
-          </a>
+    <!-- 3. Inspirational / AI Stylist Spotlight Card -->
+    <div class="col-12 col-lg-12 col-xl-4">
+      <div class="ref-card ref-inspirational-card" style="background-image: url('{{ url_for('static', filename='img/stylish_card_bg.jpg') }}?v=3.1');">
+        <div class="stylish-card-overlay"></div>
+        <div class="stylish-card-content">
+          <div class="stylish-header-block">
+            <h3 class="stylish-card-title" style="color: #ffffff !important; text-shadow: 0 2px 8px rgba(10, 6, 2, 0.85) !important;">
+              A more stylish you,<br>
+              <span class="stylish-gold-text" style="color: #f7be76 !important; text-shadow: 0 2px 8px rgba(15, 8, 2, 0.85) !important;">every day.</span>
+            </h3>
+            <p class="stylish-card-subtitle" style="color: rgba(255, 255, 255, 0.95) !important; text-shadow: 0 1px 4px rgba(10, 6, 2, 0.8) !important;">
+              Get AI-powered outfit ideas from your wardrobe.
+            </p>
+          </div>
+
+          <div class="stylish-features-row" aria-label="Stylist Features">
+            <div class="stylish-feature-badge">
+              <div class="stylish-icon-circle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a3 3 0 0 0-3 3c0 .8.3 1.5.8 2.1L2.5 14.5A2 2 0 0 0 4 18h16a2 2 0 0 0 1.5-3.5L14.2 7.1c.5-.6.8-1.3.8-2.1a3 3 0 0 0-3-3z"/>
+                </svg>
+              </div>
+              <span class="stylish-feature-text" style="color: #ffffff !important; text-shadow: 0 1px 4px rgba(10, 6, 2, 0.85) !important;">Personalized<br>Outfits</span>
+            </div>
+
+            <div class="stylish-feature-badge">
+              <div class="stylish-icon-circle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+              </div>
+              <span class="stylish-feature-text" style="color: #ffffff !important; text-shadow: 0 1px 4px rgba(10, 6, 2, 0.85) !important;">Occasion<br>Based</span>
+            </div>
+
+            <div class="stylish-feature-badge">
+              <div class="stylish-icon-circle" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                  <path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4L12 2z"/>
+                </svg>
+              </div>
+              <span class="stylish-feature-text" style="color: #ffffff !important; text-shadow: 0 1px 4px rgba(10, 6, 2, 0.85) !important;">Style<br>Suggestions</span>
+            </div>
+          </div>
+
+          <div class="stylish-btn-wrap">
+            <a href="{{ url_for('stylist.index') }}" class="stylish-cta-pill">
+              <span>Explore AI Stylist</span>
+              <span class="stylish-arrow-icon" aria-hidden="true">→</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>

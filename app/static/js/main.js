@@ -259,6 +259,59 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // Top nav notifications dropdown
+  var notifTrigger = document.getElementById('navNotifTrigger');
+  var notifDropdown = document.getElementById('navNotifDropdown');
+  var notifDot = document.getElementById('navNotifDot');
+  var btnClearNotifs = document.getElementById('btnClearNotifs');
+
+  if (notifTrigger && notifDropdown) {
+    // Check if user has previously marked all notifications as read
+    try {
+      if (localStorage.getItem('wearlytics_notifs_read') === 'true') {
+        if (notifDot) notifDot.style.display = 'none';
+        notifTrigger.classList.remove('has-dot');
+      }
+    } catch (e) {}
+
+    notifTrigger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var isOpen = notifDropdown.classList.contains('show');
+      
+      // Close search bar if open
+      if (searchBar) searchBar.classList.remove('active');
+
+      if (!isOpen) {
+        notifDropdown.classList.add('show');
+        notifTrigger.setAttribute('aria-expanded', 'true');
+      } else {
+        notifDropdown.classList.remove('show');
+        notifTrigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    if (btnClearNotifs) {
+      btnClearNotifs.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (notifDot) notifDot.style.display = 'none';
+        notifTrigger.classList.remove('has-dot');
+        try {
+          localStorage.setItem('wearlytics_notifs_read', 'true');
+        } catch (err) {}
+        btnClearNotifs.textContent = 'All caught up ✓';
+        btnClearNotifs.style.opacity = '0.7';
+        btnClearNotifs.style.pointerEvents = 'none';
+      });
+    }
+
+    document.addEventListener('click', function(e) {
+      if (!notifDropdown.contains(e.target) && e.target !== notifTrigger && !notifTrigger.contains(e.target)) {
+        notifDropdown.classList.remove('show');
+        notifTrigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
   // Mobile drawer toggle
   var mobileToggle = document.getElementById('mobileMenuToggle');
   var mobileDrawer = document.getElementById('mobileDrawer');
@@ -268,4 +321,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
 

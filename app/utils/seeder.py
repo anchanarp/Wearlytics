@@ -113,8 +113,8 @@ SAMPLE_ITEMS = [
 def seed_user_wardrobe(user):
     """Seed initial clothing items, outfits, and weekly plans for a new user if empty.
     Only runs for demo users (is_demo flag)."""
-    # Only seed demo accounts
-    if not getattr(user, "is_demo", False):
+    # Seed demo or admin accounts if empty
+    if not (getattr(user, "is_demo", False) or getattr(user, "is_admin", False)):
         return
     if user.clothing_items.count() > 0:
         return

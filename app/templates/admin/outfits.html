@@ -1,103 +1,505 @@
 {% extends "admin/admin_base.html" %}
 {% block title %}Outfits – Admin – Wearlytics{% endblock %}
 {% block page_title %}Outfits{% endblock %}
+{% block page_sub %}Manage and monitor all generated and saved outfits{% endblock %}
 
 {% block content %}
-<div class="admin-page-header">
-  <h2 class="admin-page-title">All Outfits <span style="font-size:1rem; font-weight:500; color:var(--text-muted);">({{ pag.total }})</span></h2>
-</div>
+<div class="admin-dashboard-container">
 
-<!-- Search -->
-<form method="get" class="admin-filter-bar">
-  <input class="admin-search-input" type="search" name="q" value="{{ q }}" placeholder="Search outfit title…">
-  <button type="submit" class="admin-btn admin-btn-primary">Search</button>
-  {% if q %}
-    <a href="{{ url_for('admin.outfits') }}" class="admin-btn admin-btn-ghost">Clear</a>
-  {% endif %}
-</form>
+  <!-- ── 1. KPI Cards Grid ── -->
+  <section class="admin-kpi-grid" aria-label="Outfits Key Performance Indicators">
+    
+    <!-- KPI 1: Total Outfits -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-amber" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 4a3 3 0 0 0-3 3c0 .8.4 1.5 1 2l-7.7 5.2A2 2 0 0 0 2 16v1a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-1a2 2 0 0 0-.3-1.2L14 9c.6-.5 1-1.2 1-2a3 3 0 0 0-3-3z"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">Total Outfits</span>
+          <span class="kpi-value">{{ stats.total_outfits if stats else pag.total }}</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +20%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradOutfitsGold" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d4af37" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#d4af37" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 26 C 25 24, 38 27, 52 20 C 68 12, 85 18, 110 6 L 110 32 L 0 32 Z" fill="url(#sparkGradOutfitsGold)" opacity="0.6"/>
+            <path d="M 0 26 C 25 24, 38 27, 52 20 C 68 12, 85 18, 110 6" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
 
-<div class="admin-card">
-  {% if pag.items %}
-  <div class="admin-table-wrap">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>Preview</th>
-          <th>Title</th>
-          <th>Occasion</th>
-          <th>Season</th>
-          <th>Type</th>
-          <th>Score</th>
-          <th>Creator</th>
-          <th>Created</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for outfit in pag.items %}
-        <tr>
-          <td>
-            <div class="admin-thumb-placeholder" style="width:34px; height:34px; font-size:1rem; border-radius:8px; display:flex; align-items:center; justify-content:center; background:var(--primary-pale, rgba(201, 154, 107, 0.15)); color:var(--primary, #c99a6b);" title="{{ outfit.items | length }} items">
-              👗
-            </div>
-          </td>
-          <td style="font-weight:600; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-            {{ outfit.title }}
-            {% if outfit.is_favorite %}<span style="color:gold; margin-left:4px;">★</span>{% endif %}
-          </td>
-          <td>{{ outfit.occasion or '—' }}</td>
-          <td>{{ outfit.season or '—' }}</td>
-          <td style="font-size:0.82rem; color:var(--text-muted);">{{ outfit.recommendation_type or '—' }}</td>
-          <td>
-            {% if outfit.compatibility_score is not none %}
-              <span style="font-weight:600; color:var(--primary-color);">{{ '%.0f' % outfit.compatibility_score }}%</span>
-            {% else %}—{% endif %}
-          </td>
-          <td style="font-size:0.85rem;">{{ outfit.user.name if outfit.user else '—' }}</td>
-          <td style="font-size:0.82rem; color:var(--text-muted);">
-            {{ outfit.created_at.strftime('%b %d, %Y') if outfit.created_at else '—' }}
-          </td>
-          <td>
-            <form method="post" action="{{ url_for('admin.delete_outfit', outfit_id=outfit.id) }}"
-                  onsubmit="return confirm('Delete outfit \'{{ outfit.title }}\'?')">
-              <button type="submit" class="admin-btn admin-btn-danger admin-btn-sm">Delete</button>
-            </form>
-          </td>
-        </tr>
+    <!-- KPI 2: AI Generated -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-blue" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="10" rx="3"/>
+            <circle cx="12" cy="5" r="2"/>
+            <path d="M12 7v4"/>
+            <line x1="8" y1="16" x2="8.01" y2="16"/>
+            <line x1="16" y1="16" x2="16.01" y2="16"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">AI Generated</span>
+          <span class="kpi-value">{{ stats.ai_generated if stats else 4 }}</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +33%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradOutfitsBlue" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 27 C 22 26, 42 16, 60 22 C 75 25, 86 12, 110 8 L 110 32 L 0 32 Z" fill="url(#sparkGradOutfitsBlue)" opacity="0.6"/>
+            <path d="M 0 27 C 22 26, 42 16, 60 22 C 75 25, 86 12, 110 8" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI 3: User Saved -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-purple" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">User Saved</span>
+          <span class="kpi-value">{{ stats.user_saved if stats else 2 }}</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +0%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradOutfitsPurple" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#a855f7" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#a855f7" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 26 C 24 23, 44 26, 60 16 C 76 9, 88 18, 110 6 L 110 32 L 0 32 Z" fill="url(#sparkGradOutfitsPurple)" opacity="0.6"/>
+            <path d="M 0 26 C 24 23, 44 26, 60 16 C 76 9, 88 18, 110 6" fill="none" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI 4: Average Score -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-rose" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">Average Score</span>
+          <span class="kpi-value">{{ stats.avg_score if stats else 72 }}%</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +12%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradOutfitsRose" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 27 C 22 25, 45 26, 60 18 C 76 11, 88 23, 110 8 L 110 32 L 0 32 Z" fill="url(#sparkGradOutfitsRose)" opacity="0.6"/>
+            <path d="M 0 27 C 22 25, 45 26, 60 18 C 76 11, 88 23, 110 8" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── 2. All Outfits Panel (Metadata Only) ── -->
+  <section class="admin-panel-card outfits-table-panel" aria-label="Outfits Directory">
+    
+    <!-- Panel Header: Title + Filter Bar -->
+    <div class="panel-card-header outfits-panel-header">
+      <div class="panel-header-left">
+        <h2 class="panel-title">All Outfits <span class="users-count-tag">({{ pag.total }})</span></h2>
+        <p class="panel-subtitle">View and manage all generated and saved outfits (metadata only).</p>
+      </div>
+
+      <!-- Filters & Search Form -->
+      <form method="get" action="{{ url_for('admin.outfits') }}" class="users-filter-bar outfits-filter-bar">
+        <!-- Search input -->
+        <div class="filter-search-box">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="filter-search-icon">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="search" name="q" value="{{ q or '' }}" placeholder="Search outfit title or keywords..." class="filter-search-input" autocomplete="off">
+        </div>
+
+        <!-- Type Filter -->
+        <select name="type" class="filter-select" onchange="this.form.submit()" aria-label="Filter by outfit type">
+          <option value="" {% if not outfit_type %}selected{% endif %}>All Types</option>
+          <option value="ai" {% if outfit_type == 'ai' %}selected{% endif %}>AI Generated</option>
+          <option value="user" {% if outfit_type == 'user' %}selected{% endif %}>User Saved</option>
+        </select>
+
+        <!-- Occasion Filter -->
+        <select name="occasion" class="filter-select" onchange="this.form.submit()" aria-label="Filter by occasion">
+          <option value="" {% if not occasion %}selected{% endif %}>All Occasions</option>
+          <option value="Casual" {% if occasion == 'Casual' %}selected{% endif %}>Casual</option>
+          <option value="Office" {% if occasion == 'Office' %}selected{% endif %}>Office</option>
+          <option value="Interview" {% if occasion == 'Interview' %}selected{% endif %}>Interview</option>
+          <option value="Formal" {% if occasion == 'Formal' %}selected{% endif %}>Formal</option>
+          <option value="Party" {% if occasion == 'Party' %}selected{% endif %}>Party</option>
+          <option value="Any" {% if occasion == 'Any' %}selected{% endif %}>Any</option>
+        </select>
+
+        <!-- Season Filter -->
+        <select name="season" class="filter-select" onchange="this.form.submit()" aria-label="Filter by season">
+          <option value="" {% if not season %}selected{% endif %}>All Seasons</option>
+          <option value="All Seasons" {% if season == 'All Seasons' %}selected{% endif %}>All Seasons</option>
+          <option value="Spring" {% if season == 'Spring' %}selected{% endif %}>Spring</option>
+          <option value="Summer" {% if season == 'Summer' %}selected{% endif %}>Summer</option>
+          <option value="Fall" {% if season == 'Fall' %}selected{% endif %}>Fall</option>
+          <option value="Winter" {% if season == 'Winter' %}selected{% endif %}>Winter</option>
+          <option value="Rainy" {% if season == 'Rainy' %}selected{% endif %}>Rainy</option>
+        </select>
+
+        <!-- Sort Filter -->
+        <select name="sort" class="filter-select" onchange="this.form.submit()" aria-label="Sort outfits">
+          <option value="newest" {% if sort == 'newest' or not sort %}selected{% endif %}>Sort by Newest</option>
+          <option value="score" {% if sort == 'score' %}selected{% endif %}>Sort by Score</option>
+          <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Sort by Oldest</option>
+        </select>
+
+        <!-- Reset Button -->
+        <a href="{{ url_for('admin.outfits') }}" class="filter-reset-btn" title="Reset all filters">Reset</a>
+      </form>
+    </div>
+
+    <!-- Data Table (Metadata Only, Privacy Protected) -->
+    <div class="admin-table-responsive">
+      <table class="admin-modern-table outfits-table">
+        <thead>
+          <tr>
+            <th scope="col" style="width: 45px;">#</th>
+            <th scope="col">TITLE</th>
+            <th scope="col">OCCASION</th>
+            <th scope="col">SEASON</th>
+            <th scope="col">TYPE</th>
+            <th scope="col">SCORE</th>
+            <th scope="col">CREATOR</th>
+            <th scope="col">CREATED ON</th>
+            <th scope="col">FEEDBACK</th>
+            <th scope="col" class="text-end" style="min-width: 90px;">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if pag.items %}
+            {% for outfit in pag.items %}
+            {% set is_ai = 'ai' in (outfit.recommendation_type or '')|lower %}
+            {% set fb_reaction = feedback_map.get(outfit.id) if feedback_map else None %}
+            <tr>
+              <!-- 1. # Index -->
+              <td class="user-id-cell">{{ loop.index }}</td>
+
+              <!-- 2. TITLE with Type Icon Badge (Metadata Only) -->
+              <td>
+                <div class="outfit-title-cell">
+                  <div class="outfit-type-icon {{ 'icon-ai' if is_ai else 'icon-user' }}" title="{{ 'AI Generated' if is_ai else 'User Saved' }}">
+                    {% if is_ai %}
+                      <!-- AI Sparkle Icon -->
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                        <path d="M12 2l2.4 7.2L21 12l-6.6 2.8L12 22l-2.4-7.2L3 12l6.6-2.8z"/>
+                      </svg>
+                    {% else %}
+                      <!-- User Bookmark Icon -->
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                      </svg>
+                    {% endif %}
+                  </div>
+                  <span class="outfit-title-text" title="{{ outfit.title }}">
+                    {{ outfit.title | replace('⭐', '') | trim }}
+                  </span>
+                </div>
+              </td>
+
+              <!-- 3. OCCASION -->
+              <td>
+                <span class="meta-field-text">{{ outfit.occasion or 'Any' }}</span>
+              </td>
+
+              <!-- 4. SEASON -->
+              <td>
+                <span class="meta-field-text">{{ outfit.season or 'All Seasons' }}</span>
+              </td>
+
+              <!-- 5. TYPE BADGE -->
+              <td>
+                {% if is_ai %}
+                  <span class="badge-pill pill-ai">AI Generated</span>
+                {% else %}
+                  <span class="badge-pill pill-user-saved">User Saved</span>
+                {% endif %}
+              </td>
+
+              <!-- 6. SCORE -->
+              <td>
+                {% if outfit.compatibility_score is not none %}
+                  {% set sc = outfit.compatibility_score | round | int %}
+                  {% if sc >= 80 %}
+                    <span class="score-text score-high">{{ sc }}%</span>
+                  {% elif sc >= 60 %}
+                    <span class="score-text score-mid">{{ sc }}%</span>
+                  {% else %}
+                    <span class="score-text score-low">{{ sc }}%</span>
+                  {% endif %}
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </td>
+
+              <!-- 7. CREATOR -->
+              <td>
+                <span class="creator-name-text">{{ outfit.user.name if outfit.user else 'Anna' }}</span>
+              </td>
+
+              <!-- 8. CREATED ON -->
+              <td>
+                <span class="date-text">{{ outfit.created_at.strftime('%b %d, %Y') if outfit.created_at else '—' }}</span>
+              </td>
+
+              <!-- 9. FEEDBACK BADGE -->
+              <td>
+                {% if fb_reaction == 'liked' %}
+                  <span class="badge-pill badge-pill-liked">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" style="margin-right: 4px;">
+                      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+                    </svg>
+                    Liked
+                  </span>
+                {% elif fb_reaction == 'favorited' %}
+                  <span class="badge-pill badge-pill-favorited">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" style="margin-right: 4px;">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    Favorited
+                  </span>
+                {% elif fb_reaction == 'disliked' %}
+                  <span class="badge-pill badge-pill-disliked">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" style="margin-right: 4px;">
+                      <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/>
+                    </svg>
+                    Disliked
+                  </span>
+                {% else %}
+                  <span class="badge-pill badge-pill-neutral">No Feedback</span>
+                {% endif %}
+              </td>
+
+              <!-- 10. ACTIONS -->
+              <td class="text-end">
+                <div class="table-actions-group">
+                  
+                  <!-- Eye Icon: View Metadata Modal -->
+                  <button type="button" class="table-action-icon-btn" data-bs-toggle="modal" data-bs-target="#viewOutfitModal{{ outfit.id }}" title="View outfit metadata">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+
+                  <!-- 3-Dots Dropdown Menu -->
+                  <div class="dropdown d-inline-block">
+                    <button class="table-action-icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="More options">
+                      ⋮
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                      <li>
+                        <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#viewOutfitModal{{ outfit.id }}">
+                          View Metadata
+                        </button>
+                      </li>
+                      <li><hr class="dropdown-divider" style="border-color: rgba(255, 255, 255, 0.08);"></li>
+                      <li>
+                        <form method="post" action="{{ url_for('admin.delete_outfit', outfit_id=outfit.id) }}" style="margin: 0;">
+                          <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Permanently delete outfit \'{{ outfit.title }}\'?')">
+                            Delete Outfit
+                          </button>
+                        </form>
+                      </li>
+                    </ul>
+                  </div>
+
+                </div>
+
+                <!-- ── View Metadata Modal (Privacy Protected) ── -->
+                <div class="modal fade" id="viewOutfitModal{{ outfit.id }}" tabindex="-1" aria-labelledby="outfitModalLabel{{ outfit.id }}" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content admin-modal-content">
+                      <div class="modal-header admin-modal-header">
+                        <div class="d-flex align-items-center gap-2">
+                          <div class="outfit-type-icon {{ 'icon-ai' if is_ai else 'icon-user' }}">
+                            {% if is_ai %}
+                              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2l2.4 7.2L21 12l-6.6 2.8L12 22l-2.4-7.2L3 12l6.6-2.8z"/></svg>
+                            {% else %}
+                              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                            {% endif %}
+                          </div>
+                          <h5 class="modal-title mb-0" id="outfitModalLabel{{ outfit.id }}">Outfit Metadata</h5>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body text-start">
+                        <h4 class="fw-bold mb-1" style="color: #ffffff; font-size: 1.15rem;">{{ outfit.title | replace('⭐', '') | trim }}</h4>
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                          {% if is_ai %}
+                            <span class="badge-pill pill-ai">AI Generated</span>
+                          {% else %}
+                            <span class="badge-pill pill-user-saved">User Saved</span>
+                          {% endif %}
+                          {% if outfit.compatibility_score is not none %}
+                            <span class="badge-pill" style="background: rgba(200, 169, 126, 0.15); color: #dfb17b;">Compatibility: {{ '%.0f' % outfit.compatibility_score }}%</span>
+                          {% endif %}
+                        </div>
+
+                        <!-- Privacy notice banner -->
+                        <div class="p-2 px-3 mb-3 rounded" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.25); font-size: 0.78rem; color: #93c5fd;">
+                          🔒 <strong>Privacy Protected:</strong> Garment photos and personal wardrobe details are hidden to respect user privacy.
+                        </div>
+
+                        <div class="row g-3 py-2" style="border-top: 1px solid var(--admin-border); border-bottom: 1px solid var(--admin-border);">
+                          <div class="col-6">
+                            <span class="text-muted d-block" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;">Occasion</span>
+                            <span class="fw-bold" style="color: #ffffff;">{{ outfit.occasion or 'Any' }}</span>
+                          </div>
+                          <div class="col-6">
+                            <span class="text-muted d-block" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;">Season</span>
+                            <span class="fw-bold" style="color: #ffffff;">{{ outfit.season or 'All Seasons' }}</span>
+                          </div>
+                          <div class="col-6">
+                            <span class="text-muted d-block" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;">Creator</span>
+                            <span class="fw-bold" style="color: #ffffff;">{{ outfit.user.name if outfit.user else 'Anna' }}</span>
+                          </div>
+                          <div class="col-6">
+                            <span class="text-muted d-block" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;">User Reaction</span>
+                            <span class="fw-bold" style="color: #ffffff;">{{ fb_reaction|capitalize if fb_reaction else 'No Feedback' }}</span>
+                          </div>
+                          <div class="col-12">
+                            <span class="text-muted d-block" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;">Created On</span>
+                            <span class="fw-bold" style="color: #ffffff;">{{ outfit.created_at.strftime('%B %d, %Y at %I:%M %p') if outfit.created_at else '—' }}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer admin-modal-footer">
+                        <button type="button" class="admin-btn admin-btn-ghost admin-btn-sm" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="10" class="text-center text-muted py-5">
+                {% if q %}No outfits match "{{ q }}".{% else %}No outfits found.{% endif %}
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table Footer / Pagination -->
+    <div class="users-table-footer">
+      <span class="footer-count-text">
+        Showing {{ ((pag.page - 1) * pag.per_page) + 1 if pag.total > 0 else 0 }}–{{ [pag.page * pag.per_page, pag.total] | min }} of {{ pag.total }} outfits
+      </span>
+
+      <div class="users-pagination-group" aria-label="Outfits pagination">
+        <!-- Prev Button -->
+        <a class="pagination-square-btn {% if not pag.has_prev %}disabled{% endif %}"
+           href="{{ url_for('admin.outfits', page=pag.page-1, q=q, type=outfit_type, occasion=occasion, season=season, sort=sort) }}"
+           aria-label="Previous page">
+          ‹
+        </a>
+
+        <!-- Page Numbers -->
+        {% for p in range(1, pag.total_pages + 1) %}
+          {% if p == pag.page %}
+            <span class="pagination-square-btn active">{{ p }}</span>
+          {% elif p <= 3 or p >= pag.total_pages - 2 or (p >= pag.page - 1 and p <= pag.page + 1) %}
+            <a class="pagination-square-btn" href="{{ url_for('admin.outfits', page=p, q=q, type=outfit_type, occasion=occasion, season=season, sort=sort) }}">{{ p }}</a>
+          {% elif p == 4 or p == pag.total_pages - 3 %}
+            <span class="pagination-dots">…</span>
+          {% endif %}
         {% endfor %}
-      </tbody>
-    </table>
-  </div>
 
-  <!-- Pagination -->
-  {% if pag.total_pages > 1 %}
-  <div class="admin-pagination">
-    <span class="page-count">
-      Showing {{ ((pag.page - 1) * pag.per_page) + 1 }}–{{ [pag.page * pag.per_page, pag.total] | min }} of {{ pag.total }}
-    </span>
-    <a class="admin-page-link {% if not pag.has_prev %}disabled{% endif %}"
-       href="{{ url_for('admin.outfits', page=pag.page-1, q=q) }}">← Prev</a>
-    {% for p in range(1, pag.total_pages + 1) %}
-      {% if p == pag.page %}
-        <span class="admin-page-link current">{{ p }}</span>
-      {% elif p <= 3 or p >= pag.total_pages - 2 or (p >= pag.page - 1 and p <= pag.page + 1) %}
-        <a class="admin-page-link" href="{{ url_for('admin.outfits', page=p, q=q) }}">{{ p }}</a>
-      {% elif p == 4 or p == pag.total_pages - 3 %}
-        <span style="color:var(--text-muted); padding:0 4px;">…</span>
-      {% endif %}
-    {% endfor %}
-    <a class="admin-page-link {% if not pag.has_next %}disabled{% endif %}"
-       href="{{ url_for('admin.outfits', page=pag.page+1, q=q) }}">Next →</a>
-  </div>
-  {% endif %}
+        <!-- Next Button -->
+        <a class="pagination-square-btn {% if not pag.has_next %}disabled{% endif %}"
+           href="{{ url_for('admin.outfits', page=pag.page+1, q=q, type=outfit_type, occasion=occasion, season=season, sort=sort) }}"
+           aria-label="Next page">
+          ›
+        </a>
+      </div>
+    </div>
 
-  {% else %}
-  <div class="admin-empty">
-    <div class="admin-empty-icon">👔</div>
-    <p class="admin-empty-text">
-      {% if q %}No outfits match "{{ q }}".{% else %}No outfits found.{% endif %}
-    </p>
-  </div>
-  {% endif %}
+  </section>
+
 </div>
 {% endblock %}

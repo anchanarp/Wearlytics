@@ -192,17 +192,21 @@ def submit_feedback():
     prefs = UserPreferences.get_or_create(current_user.id)
 
     if reaction in ("liked", "favorited"):
-        # Boost preferred colors and styles, and add liked clothes to favorites
-        colors = prefs.preferred_colors_list
-        styles = prefs.preferred_styles_list
+        # Add liked clothes to favorites
         for item in items:
             item.is_favorite = True  # Automatically available in "Favorites Only" tab
-            if item.color and item.color not in colors:
-                colors.append(item.color)
-            if item.style and item.style not in styles:
-                styles.append(item.style)
-        prefs.preferred_colors_list = colors[-10:]   # keep last 10
-        prefs.preferred_styles_list = styles[-6:]
+
+        # Boost preferred colors and styles only if feedback learning is enabled
+        if getattr(prefs, "use_feedback_learning", True):
+            colors = prefs.preferred_colors_list
+            styles = prefs.preferred_styles_list
+            for item in items:
+                if item.color and item.color not in colors:
+                    colors.append(item.color)
+                if item.style and item.style not in styles:
+                    styles.append(item.style)
+            prefs.preferred_colors_list = colors[-10:]   # keep last 10
+            prefs.preferred_styles_list = styles[-6:]
 
         # Update stylist session results if present so UI updates seamlessly
         raw_sess = session.get("stylist_results")
@@ -219,13 +223,17 @@ def submit_feedback():
                 pass
 
     elif reaction == "disliked":
-        # Track disliked colors and remove disliked clothes from favorites
-        disliked = prefs.disliked_colors_list
+        # Remove disliked clothes from favorites
         for item in items:
             item.is_favorite = False  # Remove from "Favorites Only" tab
-            if item.color and item.color not in disliked:
-                disliked.append(item.color)
-        prefs.disliked_colors_list = disliked[-10:]
+
+        # Track disliked colors only if feedback learning is enabled
+        if getattr(prefs, "use_feedback_learning", True):
+            disliked = prefs.disliked_colors_list
+            for item in items:
+                if item.color and item.color not in disliked:
+                    disliked.append(item.color)
+            prefs.disliked_colors_list = disliked[-10:]
 
         # Update stylist session results if present so UI updates seamlessly
         raw_sess = session.get("stylist_results")
@@ -278,13 +286,59 @@ def preferences():
 @recommendations_bp.post("/preferences/update")
 @login_required
 def update_preferences():
-    """Save manually edited user preferences."""
+    """Save manually edited user preferences, toggles, and style profile."""
     prefs = UserPreferences.get_or_create(current_user.id)
 
-    prefs.preferred_styles_list = request.form.getlist("styles")
+    # 1. Toggles (checkboxes send "1" if checked, missing if unchecked)
+    prefs.use_style             = request.form.get("use_style") == "1"
+    prefs.use_color             = request.form.get("use_color") == "1"
+    prefs.use_occasion          = request.form.get("use_occasion") == "1"
+    prefs.use_season            = request.form.get("use_season") == "1"
+    prefs.use_body_shape        = request.form.get("use_body_shape") == "1"
+    prefs.use_clothing_size     = request.form.get("use_clothing_size") == "1"
+    prefs.use_fit_preference    = request.form.get("use_fit_preference") == "1"
+    prefs.use_feedback_learning = request.form.get("use_feedback_learning") == "1"
+    prefs.use_preferences       = True
+
+    # 2. Preference lists
+    prefs.preferred_styles_list    = request.form.getlist("styles")
+    prefs.preferred_colors_list    = request.form.getlist("colors")
     prefs.preferred_occasions_list = request.form.getlist("occasions")
-    prefs.preferred_seasons_list = request.form.getlist("seasons")
+    prefs.preferred_seasons_list   = request.form.getlist("seasons")
+
+    # 3. Style profile attributes
+    if "gender" in request.form:
+        prefs.gender = request.form.get("gender", "").strip()
+    if "height_cm" in request.form:
+        prefs.height_cm = request.form.get("height_cm", "").strip()
+    if "weight_kg" in request.form:
+        prefs.weight_kg = request.form.get("weight_kg", "").strip()
+
+    body_shape = request.form.get("body_shape_pref") or request.form.get("body_shape")
+    if body_shape:
+        prefs.body_shape = body_shape.strip()
+
+    clothing_size = request.form.get("clothing_size_pref") or request.form.get("clothing_size")
+    if clothing_size:
+        prefs.clothing_size = clothing_size.strip()
+
+    fit_pref = request.form.get("fit_preference_pref") or request.form.get("fit_preference")
+    if fit_pref:
+        prefs.fit_preference = fit_pref.strip()
 
     db.session.commit()
     flash("Your style preferences have been updated!", "success")
     return redirect(url_for("recommendations.preferences"))
+
+
+@recommendations_bp.post("/preferences/clear-learned")
+@login_required
+def clear_learned_preferences():
+    """Clear auto-learned preferences and recorded feedback history."""
+    prefs = UserPreferences.get_or_create(current_user.id)
+    prefs.disliked_colors_list = []
+    OutfitFeedback.query.filter_by(user_id=current_user.id).delete()
+    db.session.commit()
+    flash("Learned preferences and feedback history cleared successfully!", "success")
+    return redirect(url_for("recommendations.preferences"))
+

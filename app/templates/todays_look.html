@@ -1,0 +1,812 @@
+{% extends "base.html" %}
+
+{% block title %}Today's Look | Wearlytics{% endblock %}
+
+{% block content %}
+<div class="todays-look-container">
+
+  {# ── Top Navigation & Meta Header ── #}
+  <div class="todays-look-header">
+    <div class="header-left">
+      <a href="{{ url_for('main.home') }}" class="btn-back-link">
+        <span class="back-arrow">←</span> Back to Dashboard
+      </a>
+      <h1 class="todays-look-page-title">Today's Look</h1>
+      <p class="todays-look-page-sub">Your curated daily styling spotlight &amp; wardrobe breakdown</p>
+    </div>
+
+    <div class="header-right">
+      <div class="date-badge-pill">
+        <span class="icon-calendar" style="display:inline-flex;align-items:center;color:#b87b32;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        </span>
+        <span class="date-text">{{ today_str }}</span>
+      </div>
+      {% if is_planned_today %}
+        <span class="planned-status-pill assigned">✓ Planned for Today</span>
+      {% else %}
+        <span class="planned-status-pill recommendation">✦ Daily AI Recommendation</span>
+      {% endif %}
+    </div>
+  </div>
+
+  {# ── Main 2-Column Editorial Layout ── #}
+  <div class="todays-look-grid">
+
+    {# ── Left Column: Editorial Photo & Clothing Pieces ── #}
+    <div class="todays-look-left-col">
+      <div class="editorial-hero-card">
+        <div class="editorial-image-wrapper">
+          <img src="{{ todays_look_image or url_for('static', filename='img/todays_look_editorial.jpg') }}" alt="{{ outfit_title }}" class="editorial-main-img">
+          <div class="editorial-gradient-overlay"></div>
+          <div class="editorial-badge-tag">✦ TODAY'S SPOTLIGHT</div>
+          <div class="compatibility-score-pill">
+            <span class="score-sparkle">★</span>
+            <span class="score-val">{{ outfit_score }}/100</span>
+            <span class="score-lbl">Score</span>
+          </div>
+        </div>
+      </div>
+
+      {# Pieces Making Up The Look #}
+      <div class="look-pieces-card mt-4">
+        <div class="pieces-card-header">
+          <h3 class="pieces-card-title">Pieces in this Outfit</h3>
+          <span class="pieces-count-badge">{{ outfit_items|length }} items</span>
+        </div>
+
+        {% if outfit_items %}
+          <div class="pieces-list-grid">
+            {% for item in outfit_items %}
+            <div class="piece-item-card">
+              <div class="piece-thumb-box">
+                <img src="{{ item.image_url }}" alt="{{ item.name }}" class="piece-img">
+              </div>
+              <div class="piece-details">
+                <h4 class="piece-name">{{ item.name }}</h4>
+                <div class="piece-meta">
+                  <span class="piece-category">{{ item.category }}</span>
+                  <span class="meta-dot">&bull;</span>
+                  <span class="piece-color-wrap">
+                    <span class="color-dot" style="background-color: {{ item.detected_color_hex or '#888' }};"></span>
+                    <span class="piece-color-name">{{ item.color }}</span>
+                  </span>
+                </div>
+                <div class="piece-wear-info">
+                  <span>Worn <strong>{{ item.wear_count }}</strong> times</span>
+                  {% if item.last_worn_at %}
+                    <span class="meta-dot">&bull;</span>
+                    <span>Last: {{ item.last_worn_at.strftime('%b %d') }}</span>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="piece-actions">
+                <form action="{{ url_for('wardrobe.wear_item', item_id=item.id) }}" method="post">
+                  <button type="submit" class="btn-wear-single" title="Log wear for this piece">
+                    + Worn
+                  </button>
+                </form>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-pieces-box">
+            <p>No individual garments linked. Add items to your wardrobe to complete outfit tracking.</p>
+            <a href="{{ url_for('wardrobe.index') }}" class="btn-goto-wardrobe">Open Wardrobe →</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {# ── Right Column: Narrative, Color Harmony & Actions ── #}
+    <div class="todays-look-right-col">
+
+      {# Narrative Card #}
+      <div class="look-narrative-card">
+        <div class="narrative-top-badges">
+          <span class="occasion-pill">{{ outfit_occasion }}</span>
+          <span class="season-pill">All Seasons</span>
+        </div>
+
+        <h2 class="outfit-headline-title">{{ outfit_title }}</h2>
+        <p class="outfit-narrative-text">{{ outfit_desc }}</p>
+
+        {# Styling Harmony Breakdown #}
+        <div class="styling-metrics-section">
+          <h4 class="section-micro-heading">Styling &amp; Harmony Breakdown</h4>
+          <div class="metrics-grid">
+            <div class="metric-item">
+              <span class="metric-icon" style="display:inline-flex;align-items:center;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#db2777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="#db2777"></circle><circle cx="17.5" cy="10.5" r=".5" fill="#db2777"></circle><circle cx="8.5" cy="7.5" r=".5" fill="#db2777"></circle><circle cx="6.5" cy="12.5" r=".5" fill="#db2777"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C22 6.5 17.5 2 12 2z"></path></svg>
+              </span>
+              <div class="metric-copy">
+                <strong class="metric-name">Color Palette</strong>
+                <span class="metric-desc">Cohesive warm neutrals &amp; earthy accents</span>
+              </div>
+            </div>
+            <div class="metric-item">
+              <span class="metric-icon" style="display:inline-flex;align-items:center;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"></path><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+              </span>
+              <div class="metric-copy">
+                <strong class="metric-name">Proportion Balance</strong>
+                <span class="metric-desc">Relaxed tailoring with tailored structure</span>
+              </div>
+            </div>
+            <div class="metric-item">
+              <span class="metric-icon" style="display:inline-flex;align-items:center;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.93 4.93l1.41 1.41"></path><path d="M17.66 17.66l1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M4.93 19.07l1.41-1.41"></path><path d="M17.66 6.34l1.41-1.41"></path></svg>
+              </span>
+              <div class="metric-copy">
+                <strong class="metric-name">Weather Suitability</strong>
+                <span class="metric-desc">Comfortable breathable layers for mild daytime</span>
+              </div>
+            </div>
+            <div class="metric-item">
+              <span class="metric-icon" style="display:inline-flex;align-items:center;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="#d4af37" stroke="#b87b32" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"></path></svg>
+              </span>
+              <div class="metric-copy">
+                <strong class="metric-name">Style Aesthetic</strong>
+                <span class="metric-desc">Everyday Elegance &bull; Minimal Classic</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {# Weekly Planner Integration #}
+        <div class="planner-sync-box">
+          <div class="planner-sync-left">
+            <span class="sync-icon" style="display:inline-flex;align-items:center;color:#b87b32;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </span>
+            <div>
+              <strong class="sync-title">Weekly Schedule Status</strong>
+              {% if is_planned_today %}
+                <p class="sync-status text-success">This look is assigned to your Weekly Planner for {{ today_day_name }}.</p>
+              {% else %}
+                <p class="sync-status">Not scheduled yet for today ({{ today_day_name }}).</p>
+              {% endif %}
+            </div>
+          </div>
+          {% if not is_planned_today %}
+            <form action="{{ url_for('planner.assign_preset') }}" method="post">
+              <input type="hidden" name="day_of_week" value="{{ today_day_name }}">
+              <input type="hidden" name="title" value="{{ outfit_title }}">
+              <input type="hidden" name="item_ids" value="{% for i in outfit_items %}{{ i.id }}{% if not loop.last %},{% endif %}{% endfor %}">
+              <button type="submit" class="btn-schedule-today">Add to {{ today_day_name }}</button>
+            </form>
+          {% endif %}
+        </div>
+
+        {# Action Buttons #}
+        <div class="todays-look-actions-block">
+          {% if outfit_items %}
+            <form action="{{ url_for('main.wear_todays_look') }}" method="post">
+              <input type="hidden" name="item_ids" value="{% for i in outfit_items %}{{ i.id }}{% if not loop.last %},{% endif %}{% endfor %}">
+              <button type="submit" class="btn-wear-all-today">
+                <span>✓ Log as Worn Today</span>
+              </button>
+            </form>
+          {% endif %}
+
+          <div class="actions-secondary-row">
+            <a href="{{ url_for('planner.index', day=today_day_name) }}" class="btn-outline-action" style="display:inline-flex;align-items:center;gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <span>Open Weekly Planner</span>
+            </a>
+            <a href="{{ url_for('stylist.index') }}" class="btn-outline-action" style="display:inline-flex;align-items:center;gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#d4af37" stroke="#b87b32" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"></path></svg>
+              <span>Explore AI Stylist</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<style>
+/* ==========================================================================
+   Today's Look Standalone Editorial Page
+   ========================================================================== */
+
+.todays-look-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 6px 60px 6px;
+}
+
+/* Header */
+.todays-look-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line, #ede6df);
+}
+
+.btn-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted, #7c7267);
+  text-decoration: none;
+  margin-bottom: 8px;
+  transition: color 0.15s ease;
+}
+
+.btn-back-link:hover {
+  color: var(--primary, #c99a6b);
+}
+
+.todays-look-page-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--ink, #2b1d14);
+  margin: 0 0 4px 0;
+  letter-spacing: -0.3px;
+}
+
+.todays-look-page-sub {
+  font-size: 14px;
+  color: var(--muted, #7c7267);
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.date-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--line, #ede6df);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink, #2b1d14);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.planned-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.planned-status-pill.assigned {
+  background: #eef7f2;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.planned-status-pill.recommendation {
+  background: rgba(201, 154, 107, 0.12);
+  color: #8c603b;
+  border: 1px solid rgba(201, 154, 107, 0.3);
+}
+
+/* 2-Column Grid */
+.todays-look-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* Editorial Hero Card */
+.editorial-hero-card {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--line, #ede6df);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.editorial-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3.2;
+  overflow: hidden;
+  background: #f4eee9;
+}
+
+.editorial-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.editorial-hero-card:hover .editorial-main-img {
+  transform: scale(1.03);
+}
+
+.editorial-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, transparent 40%, rgba(0, 0, 0, 0.4) 100%);
+  pointer-events: none;
+}
+
+.editorial-badge-tag {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(20, 16, 13, 0.75);
+  backdrop-filter: blur(8px);
+  color: #f7ede2;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.compatibility-score-pill {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  color: #2b1d14;
+  padding: 6px 14px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.score-sparkle {
+  color: #c99a6b;
+  font-size: 14px;
+}
+
+.score-val {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.score-lbl {
+  font-size: 11px;
+  color: #7c7267;
+  font-weight: 600;
+}
+
+/* Pieces Card */
+.look-pieces-card {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--line, #ede6df);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.pieces-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line, #ede6df);
+}
+
+.pieces-card-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink, #2b1d14);
+  margin: 0;
+}
+
+.pieces-count-badge {
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(201, 154, 107, 0.14);
+  color: #8c603b;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.pieces-list-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.piece-item-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--line, #ede6df);
+  border-radius: 12px;
+  background: var(--canvas, #faf7f4);
+  transition: all 0.2s ease;
+}
+
+.piece-item-card:hover {
+  border-color: var(--primary, #c99a6b);
+  box-shadow: 0 2px 8px rgba(201, 154, 107, 0.1);
+}
+
+.piece-thumb-box {
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line, #ede6df);
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.piece-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.piece-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.piece-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink, #2b1d14);
+  margin: 0 0 3px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.piece-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--muted, #7c7267);
+  margin-bottom: 2px;
+}
+
+.color-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.piece-wear-info {
+  font-size: 10.5px;
+  color: var(--muted, #7c7267);
+}
+
+.meta-dot {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.btn-wear-single {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--line, #ede6df);
+  color: var(--ink, #2b1d14);
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-wear-single:hover {
+  background: var(--primary, #c99a6b);
+  border-color: var(--primary, #c99a6b);
+  color: #ffffff;
+}
+
+/* Right Column: Narrative Card */
+.look-narrative-card {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--line, #ede6df);
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.narrative-top-badges {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.occasion-pill, .season-pill {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.occasion-pill {
+  background: rgba(201, 154, 107, 0.15);
+  color: #8c603b;
+}
+
+.season-pill {
+  background: #f4eee9;
+  color: #7c7267;
+}
+
+.outfit-headline-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink, #2b1d14);
+  margin: 0 0 12px 0;
+  letter-spacing: -0.3px;
+}
+
+.outfit-narrative-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink, #3a2c20);
+  margin-bottom: 24px;
+}
+
+/* Styling Metrics */
+.styling-metrics-section {
+  background: var(--canvas, #faf7f4);
+  border: 1px solid var(--line, #ede6df);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 22px;
+}
+
+.section-micro-heading {
+  font-size: 11.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--muted, #7c7267);
+  margin: 0 0 14px 0;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.metric-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.metric-icon {
+  font-size: 16px;
+  line-height: 1;
+  padding-top: 2px;
+}
+
+.metric-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-name {
+  font-size: 12px;
+  color: var(--ink, #2b1d14);
+  font-weight: 700;
+}
+
+.metric-desc {
+  font-size: 11px;
+  color: var(--muted, #7c7267);
+  line-height: 1.35;
+}
+
+/* Planner Sync Box */
+.planner-sync-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #fbf9f6;
+  border: 1px solid var(--line, #ede6df);
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.planner-sync-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sync-icon {
+  font-size: 20px;
+}
+
+.sync-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink, #2b1d14);
+}
+
+.sync-status {
+  font-size: 11px;
+  color: var(--muted, #7c7267);
+  margin: 0;
+}
+
+.btn-schedule-today {
+  background: var(--surface, #ffffff);
+  border: 1.5px solid var(--primary, #c99a6b);
+  color: #543d2b;
+  font-size: 11.5px;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.btn-schedule-today:hover {
+  background: var(--primary, #c99a6b);
+  color: #ffffff;
+}
+
+/* Action Buttons */
+.todays-look-actions-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-wear-all-today {
+  width: 100%;
+  padding: 13px 20px;
+  background: #543d2b;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s ease, transform 0.1s;
+}
+
+.btn-wear-all-today:hover {
+  background: #3e2c1e;
+}
+
+.btn-wear-all-today:active {
+  transform: scale(0.99);
+}
+
+.actions-secondary-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-outline-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--line, #ede6df);
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink, #2b1d14);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.btn-outline-action:hover {
+  border-color: var(--primary, #c99a6b);
+  color: var(--primary, #c99a6b);
+  background: rgba(201, 154, 107, 0.05);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .todays-look-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 576px) {
+  .todays-look-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions-secondary-row {
+    grid-template-columns: 1fr;
+  }
+
+  .planner-sync-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Dark Mode */
+[data-theme="dark"] .todays-look-header {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .editorial-hero-card,
+[data-theme="dark"] .look-pieces-card,
+[data-theme="dark"] .look-narrative-card {
+  background: #141210;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .piece-item-card,
+[data-theme="dark"] .styling-metrics-section,
+[data-theme="dark"] .planner-sync-box {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .btn-wear-all-today {
+  background: #c99a6b;
+  color: #12100d;
+}
+
+[data-theme="dark"] .btn-wear-all-today:hover {
+  background: #deb589;
+}
+
+[data-theme="dark"] .btn-outline-action {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #ede6df;
+}
+</style>
+{% endblock %}

@@ -95,6 +95,10 @@ def analyze_image():
 @login_required
 def index():
     """Display user's wardrobe with search and filtering options."""
+    from app.utils.seeder import seed_user_wardrobe
+    if (getattr(current_user, "is_demo", False) or getattr(current_user, "is_admin", False)) and current_user.clothing_items.count() == 0:
+        seed_user_wardrobe(current_user)
+
     query = request.args.get("q", "").strip()
     category = request.args.get("category", "").strip()
     season = request.args.get("season", "").strip()

@@ -3,108 +3,113 @@
 
 {% block content %}
 
-{# ── Page Header ──────────────────────────────────────────────────────────── #}
-<div class="stylist-page-header mb-3">
-  <div>
-    <h1 class="stylist-page-title">AI Stylist</h1>
-    <p class="stylist-page-sub">Get personalized outfit ideas from your wardrobe</p>
+{% macro metric_svg(metric_key) -%}
+  {%- if metric_key == 'color' -%}
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#db2777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="#db2777"></circle><circle cx="17.5" cy="10.5" r=".5" fill="#db2777"></circle><circle cx="8.5" cy="7.5" r=".5" fill="#db2777"></circle><circle cx="6.5" cy="12.5" r=".5" fill="#db2777"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C22 6.5 17.5 2 12 2z"></path></svg>
+  {%- elif metric_key == 'category' -%}
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.5a2 2 0 0 0 1.25 1.55L6 11.5V20a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8.5l1.89-.76a2 2 0 0 0 1.25-1.55l.58-3.5a2 2 0 0 0-1.34-2.23z"></path></svg>
+  {%- elif metric_key == 'occasion' -%}
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8c6a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+  {%- elif metric_key == 'season' -%}
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="M4.93 4.93l1.41 1.41"></path><path d="M17.66 17.66l1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M4.93 19.07l1.41-1.41"></path><path d="M17.66 6.34l1.41-1.41"></path></svg>
+  {%- elif metric_key == 'preference' -%}
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" stroke="#d97706" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+  {%- elif metric_key == 'novelty' -%}
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"></path></svg>
+  {%- endif -%}
+{%- endmacro %}
+
+<div class="ref-stylist-wrapper">
+
+  {# ── Page Header ──────────────────────────────────────────────────────────── #}
+  <div class="ref-stylist-header">
+    <h1 class="ref-stylist-title">AI Stylist</h1>
+    <p class="ref-stylist-sub">Get personalized outfit ideas from your wardrobe</p>
   </div>
-  <a href="{{ url_for('recommendations.preferences') }}" class="btn light-button stylist-prefs-btn">⚙ My Preferences</a>
-</div>
 
-<!-- Quick Occasion Filter Tabs (Reference Aesthetic) -->
-<div class="stylist-quick-occasions mb-4">
-  {% for occ in ['Casual', 'Formal', 'Work / Business', 'Party', 'Travel / Vacation', 'Date Night'] %}
-    {% set occ_label = 'Office' if occ == 'Work / Business' else ('Travel' if occ == 'Travel / Vacation' else occ) %}
-    <button type="button" 
-            class="stylist-occ-pill {% if selected_occasion == occ or (not selected_occasion and occ == 'Casual') %}active{% endif %}"
-            onclick="quickPickOccasion('{{ occ }}')">
-      {{ occ_label }}
-    </button>
-  {% endfor %}
-</div>
-
-{# ── Feedback Learning Banner ─────────────────────────────────────────────── #}
-{% if liked_count > 0 or disliked_count > 0 %}
-<div class="ai-learning-banner mb-4">
-  🧠 Learning from your feedback —
-  <strong>{{ liked_count }} liked</strong>, <strong>{{ disliked_count }} disliked</strong>.
-  Recommendations improve with every reaction.
-</div>
-{% endif %}
-
-{# ── Unified Control Bar ────────────────────────────────────────────────────
-   Order: Occasion | Season | Select from My Wardrobe | ✨ Style Me
-   ─────────────────────────────────────────────────────────────────────────── #}
-<div class="stylist-controls-card mb-4">
+  {# ── Unified Control Bar (Row of 4: Occasion | Season | Wardrobe | Style Me) ── #}
   <form method="post" action="{{ url_for('stylist.generate') }}" id="stylist-form">
-
-    <div class="stylist-controls-row stylist-bar">
+    <div class="ref-stylist-bar">
 
       {# ── 1. Occasion ── #}
-      <div class="stylist-ctrl-field stylist-bar-occasion">
-        <label class="form-label-custom" for="occasion-input">Occasion</label>
-        <div class="occasion-selector" style="position:relative;">
-          <input type="text" id="occasion-input" class="form-select-custom stylist-ctrl-input"
+      <div class="ref-filter-card" id="occasion-filter-card">
+        <div class="ref-filter-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <div class="ref-filter-text occasion-selector">
+          <span class="ref-filter-label">Occasion</span>
+          <input type="text" id="occasion-input" class="ref-filter-input"
                  placeholder="Any Occasion" autocomplete="off"
                  value="{{ selected_occasion or '' }}" />
           <input type="hidden" name="occasion" id="occasion-hidden"
                  value="{{ selected_occasion or '' }}" />
-          <div id="occasion-dropdown" class="dropdown-menu"
-               style="position:absolute;top:100%;left:0;right:0;z-index:1000;
-                      display:none;max-height:240px;overflow-y:auto;
-                      background:var(--surface);border:1px solid var(--line);
-                      border-radius:var(--card-radius);box-shadow:var(--shadow-md);">
-          </div>
           <script type="application/json" id="occasions-data">{{ occasions|tojson }}</script>
         </div>
-        {# occasion modal #}
-        <div id="more-options-modal" class="stylist-modal-backdrop" style="display:none;">
-          <div class="stylist-modal-box">
-            <div class="stylist-modal-header">
-              <h3>Select Occasion</h3>
-              <button id="modal-close" type="button" class="stylist-modal-close" aria-label="Close">✕</button>
-            </div>
-            <input type="text" id="more-options-search" placeholder="Search occasions…"
-                   class="form-select-custom mb-2" autocomplete="off" />
-            <div id="more-options-list" class="stylist-modal-list"></div>
-          </div>
+        <div class="ref-filter-arrow" id="occasion-arrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </div>
-        <script src="{{ url_for('static', filename='js/occasion_selector.js') }}"></script>
+        <div id="occasion-dropdown" class="ref-custom-dropdown"></div>
       </div>
 
       {# ── 2. Season ── #}
-      <div class="stylist-ctrl-field stylist-bar-season">
-        <label class="form-label-custom" for="stylist-season">Season</label>
-        <select id="stylist-season" name="season" class="form-select-custom stylist-ctrl-input">
+      <div class="ref-filter-card" id="season-filter-card">
+        <div class="ref-filter-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </div>
+        <div class="ref-filter-text">
+          <span class="ref-filter-label">Season</span>
+          <span class="ref-filter-title" id="season-display-label">{{ selected_season or 'All Seasons' }}</span>
+          <input type="hidden" id="stylist-season" name="season" value="{{ selected_season or 'All Seasons' }}" />
+        </div>
+        <div class="ref-filter-arrow" id="season-arrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div id="season-dropdown" class="ref-custom-dropdown">
           {% for s in seasons %}
-            <option value="{{ s }}" {% if selected_season == s %}selected{% endif %}>{{ s }}</option>
+            <div class="ref-dropdown-item {% if (selected_season or 'All Seasons') == s %}is-selected{% endif %}" data-season="{{ s }}">{{ s }}</div>
           {% endfor %}
-        </select>
+        </div>
       </div>
 
       {# ── 3. Select from My Wardrobe (toggle) ── #}
-      <div class="stylist-ctrl-field stylist-bar-wardrobe">
-        <label class="form-label-custom">Wardrobe</label>
-        <button type="button" id="wardrobe-toggle-btn"
-                class="stylist-wardrobe-toggle"
-                aria-expanded="false" aria-controls="wardrobe-section">
-          <span id="wardrobe-toggle-icon">👗</span>
-          <span id="wardrobe-toggle-label">Select from My Wardrobe</span>
-          <span id="wardrobe-sel-count" class="wardrobe-sel-badge" style="display:none;">0</span>
-          <span class="wardrobe-toggle-chevron">›</span>
-        </button>
-      </div>
+      <button type="button" id="wardrobe-toggle-btn" class="ref-filter-card"
+              aria-expanded="false" aria-controls="wardrobe-section">
+        <div class="ref-filter-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"></path>
+          </svg>
+        </div>
+        <span class="ref-filter-title" id="wardrobe-toggle-label">Select from My Wardrobe</span>
+        <span id="wardrobe-sel-count" class="ref-wardrobe-badge" style="display:none;">0</span>
+        <div class="ref-filter-arrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </button>
 
       {# ── 4. Style Me ── #}
-      <div class="stylist-bar-cta">
-        <label class="form-label-custom" style="opacity:0;pointer-events:none;">Go</label>
-        <button type="submit" class="btn primary-button style-me-btn" id="style-me-btn">
-          ✨ Style Me
-        </button>
-      </div>
+      <button type="submit" class="ref-style-me-btn" id="style-me-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l2.4 7.4 7.6.8-5.8 5 1.8 7.6L12 19.2 6 22.8l1.8-7.6-5.8-5 7.6-.8z"></path>
+        </svg>
+        <span>Style Me</span>
+      </button>
 
-    </div>{# /stylist-bar #}
+    </div>
 
     <!-- Hidden container for pinned item IDs INSIDE the form -->
     <div id="pinned-hidden-inputs">
@@ -112,383 +117,634 @@
       <input type="hidden" name="item_ids" value="{{ iid }}" form="stylist-form">
       {% endfor %}
     </div>
-
   </form>
-</div>
 
-{# ── Wardrobe Selection Area (hidden by default, toggled by button / #pinned-section) ─────── #}
-<div id="pinned-section" style="scroll-margin-top: 80px;"></div>
-<div id="wardrobe-section" class="wardrobe-container" data-anchor="pinned-section" style="display:none;">
-
-  <!-- LEFT: Accordion -->
-  <div class="accordion-section">
-    <div class="wardrobe-section-header">
-      <h3 class="wardrobe-section-title">Select from My Wardrobe</h3>
-      <div class="wardrobe-search-row">
-        <input type="text" id="wardrobe-search" placeholder="Search clothing…"
-               class="wardrobe-search-input" autocomplete="off" />
-        <div class="filter-wrap">
-          <button type="button" id="filter-btn" class="btn light-button filter-trigger-btn">⚙ Filter</button>
-          <div id="filter-popover" class="filter-popover"></div>
-        </div>
+  {# occasion modal #}
+  <div id="more-options-modal" class="stylist-modal-backdrop" style="display:none;">
+    <div class="stylist-modal-box">
+      <div class="stylist-modal-header">
+        <h3>Select Occasion</h3>
+        <button id="modal-close" type="button" class="stylist-modal-close" aria-label="Close">✕</button>
       </div>
-    </div>
-    <div id="wardrobe-accordion"></div>
-  </div>
-
-  <!-- RIGHT: Selection Panel -->
-  <div id="selection-panel" class="selection-panel">
-    <div class="selection-panel-header">
-      <h3 class="selection-panel-title">YOUR SELECTION</h3>
-      <span class="selection-count" id="selection-count">0 items</span>
-    </div>
-    <div id="pinned-items-preview" class="pinned-items-preview">
-      <div class="selection-empty-state" id="selection-empty">
-        <span class="selection-empty-icon">👗</span>
-        <p>No items selected yet</p>
-        <small>Select clothing from your wardrobe.</small>
-      </div>
-    </div>
-    <div class="selection-panel-footer" id="selection-footer" style="display:none;">
-      <button type="button" class="btn primary-button btn-sm" id="selection-style-me-btn" style="width:100%;">
-        ✨ Style With Selected
-      </button>
-      <button type="button" class="btn light-button btn-sm" id="clear-all-btn" style="width:100%;">
-        ✕ Clear All
-      </button>
+      <input type="text" id="more-options-search" placeholder="Search occasions…"
+             class="form-select-custom mb-2" autocomplete="off" />
+      <div id="more-options-list" class="stylist-modal-list"></div>
     </div>
   </div>
+  <script src="{{ url_for('static', filename='js/occasion_selector.js') }}?v=3.5"></script>
 
-</div>
-
-<!-- Hidden wardrobe data for JS -->
-<script type="application/json" id="wardrobe-data">{{ wardrobe_json|tojson }}</script>
-
-<!-- Include accordion CSS and JS -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/wardrobe_accordion.css') }}">
-<script src="{{ url_for('static', filename='js/wardrobe_accordion.js') }}"></script>
-
-{# ── Pinned Item Error ─────────────────────────────────────────────────────── #}
-{% if pinned_error %}
-<div class="empty-state-box mb-5">
-  <div style="font-size:40px;margin-bottom:12px;">👔</div>
-  <h3>Couldn't Build a Complete Outfit</h3>
-  <p>We couldn't create a complete outfit using all selected items. Try selecting fewer items, or clear the selection to let AI pick from your full wardrobe.</p>
-  <a href="{{ url_for('stylist.index') }}" class="btn primary-button mt-3">← Try Again</a>
-</div>
-{% endif %}
-
-{# ── Wardrobe Gap Hints ────────────────────────────────────────────────────── #}
-{% if wardrobe_gaps and not result_data %}
-<div class="custom-card-box mb-4" style="border-left:3px solid var(--primary);">
-  <p class="eyebrow" style="margin-bottom:6px;">💡 Wardrobe Suggestions</p>
-  <ul style="margin:0;padding-left:18px;">
-    {% for hint in wardrobe_gaps %}
-    <li style="margin-bottom:4px;font-size:0.92rem;">{{ hint }}</li>
-    {% endfor %}
-  </ul>
-</div>
-{% endif %}
-
-{# ════════════════════════════════════════════════════════════════════════════
-   RESULTS — shown after Style Me
-   ════════════════════════════════════════════════════════════════════════════ #}
-{% if result_data %}
-
-{% set best = result_data[0] %}
-
-{# ── 🏆 Best Outfit ───────────────────────────────────────────────────────── #}
-<div class="rec-result-layout mb-5">
-
-  {# Left — items + occasion/season pills #}
-  <div class="rec-result-left">
-    <div class="rec-result-header">
-      <h2 class="rec-result-title">🏆 Your Recommended Look</h2>
-      {% if selected_item_ids %}
-      <div class="rec-pinned-badge">📌 Built around your selected wardrobe items</div>
-      {% endif %}
-      <div class="rec-result-pills">
-        <span class="result-occasion-pill">{{ best.occasion }}</span>
-        <span class="result-season-pill">✕ {{ best.season }}</span>
+  {# ── Wardrobe Selection Area (hidden by default, toggled by button / #pinned-section) ─────── #}
+  <div id="pinned-section" style="scroll-margin-top: 80px;"></div>
+  <div id="wardrobe-section" class="wardrobe-container mb-4" data-anchor="pinned-section" style="display:none;">
+    <!-- LEFT: Accordion -->
+    <div class="accordion-section">
+      <div class="wardrobe-section-header">
+        <h3 class="wardrobe-section-title">Select from My Wardrobe</h3>
+        <div class="wardrobe-search-row">
+          <input type="text" id="wardrobe-search" placeholder="Search clothing…"
+                 class="wardrobe-search-input" autocomplete="off" />
+          <div class="filter-wrap">
+            <button type="button" id="filter-btn" class="btn light-button filter-trigger-btn">⚙ Filter</button>
+            <div id="filter-popover" class="filter-popover"></div>
+          </div>
+        </div>
       </div>
+      <div id="wardrobe-accordion"></div>
     </div>
 
-    <div class="rec-product-grid">
-      {% for item in best["items"] %}
-      <div class="rec-product-card">
-        <div class="rec-product-img-wrap">
-          <img src="{{ item.image_url }}" alt="{{ item.name }}" class="rec-product-img"
-               onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_cloth.svg') }}';">
-          {% if item.is_favorite %}<span class="rec-fav-badge">★</span>{% endif %}
-        </div>
-        <div class="rec-product-info">
-          <strong class="rec-product-name">{{ item.name }}</strong>
-          <span class="rec-product-cat">{{ item.category }}</span>
-          <span class="rec-product-color">
-            <span class="rec-color-dot" style="background:{{ item.detected_color_hex or '#ccc' }};"></span>
-            {{ item.color }}
+    <!-- RIGHT: Selection Panel -->
+    <div id="selection-panel" class="selection-panel">
+      <div class="selection-panel-header">
+        <h3 class="selection-panel-title">YOUR SELECTION</h3>
+        <span class="selection-count" id="selection-count">0 items</span>
+      </div>
+      <div id="pinned-items-preview" class="pinned-items-preview">
+        <div class="selection-empty-state" id="selection-empty">
+          <span class="selection-empty-icon" style="display:inline-flex;align-items:center;justify-content:center;color:#b87b32;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.5a2 2 0 0 0 1.25 1.55L6 11.5V20a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8.5l1.89-.76a2 2 0 0 0 1.25-1.55l.58-3.5a2 2 0 0 0-1.34-2.23z"></path></svg>
           </span>
-          {% if selected_item_ids and item.id in selected_item_ids %}
-            <span class="rec-product-badge badge-pinned">📌 Pinned</span>
-          {% elif item.wear_count == 0 %}
-            <span class="rec-product-badge badge-new">New</span>
-          {% elif item.wear_count <= 2 %}
-            <span class="rec-product-badge badge-rare">Rarely worn</span>
+          <p>No items selected yet</p>
+          <small>Select clothing from your wardrobe.</small>
+        </div>
+      </div>
+      <div class="selection-panel-footer" id="selection-footer" style="display:none;">
+        <button type="button" class="btn primary-button btn-sm" id="selection-style-me-btn" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#d4af37" stroke="#b87b32" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"></path></svg>
+          <span>Style With Selected</span>
+        </button>
+        <button type="button" class="btn light-button btn-sm" id="clear-all-btn" style="width:100%;">
+          ✕ Clear All
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden wardrobe data for JS -->
+  <script type="application/json" id="wardrobe-data">{{ wardrobe_json|tojson }}</script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/wardrobe_accordion.css') }}">
+  <script src="{{ url_for('static', filename='js/wardrobe_accordion.js') }}"></script>
+
+  {# ── Pinned Item Error ─────────────────────────────────────────────────────── #}
+  {% if pinned_error %}
+  <div class="empty-state-box mb-5">
+    <div style="margin-bottom:14px;display:flex;justify-content:center;color:#8c6a4a;">
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.5a2 2 0 0 0 1.25 1.55L6 11.5V20a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8.5l1.89-.76a2 2 0 0 0 1.25-1.55l.58-3.5a2 2 0 0 0-1.34-2.23z"></path></svg>
+    </div>
+    <h3>Couldn't Build a Complete Outfit</h3>
+    <p>We couldn't create a complete outfit using all selected items. Try selecting fewer items, or clear the selection to let AI pick from your full wardrobe.</p>
+    <a href="{{ url_for('stylist.index') }}" class="btn primary-button mt-3">← Try Again</a>
+  </div>
+  {% endif %}
+
+  {# ── Wardrobe Gap Hints ────────────────────────────────────────────────────── #}
+  {% if wardrobe_gaps and not result_data %}
+  <div class="custom-card-box mb-4" style="border-left:3px solid var(--primary);">
+    <p class="eyebrow" style="margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-7 7c0 2.6 1.4 4.8 3.5 6h7c2.1-1.2 3.5-3.4 3.5-6a7 7 0 0 0-7-7z"></path></svg>
+      <span>Wardrobe Suggestions</span>
+    </p>
+    <ul style="margin:0;padding-left:18px;">
+      {% for hint in wardrobe_gaps %}
+      <li style="margin-bottom:4px;font-size:0.92rem;">{{ hint }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {# ════════════════════════════════════════════════════════════════════════════
+     RESULTS — shown after Style Me
+     ════════════════════════════════════════════════════════════════════════════ #}
+  {% if result_data %}
+  {% set best = result_data[0] %}
+
+  {# ── Best Outfit Large Card ──────────────────────────────────────────────── #}
+  <div class="ref-look-card">
+    <div class="ref-look-card-header">
+      <h2 class="ref-look-card-title">
+        <span class="look-sparkle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#d4af37" stroke="#b87b32" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"></path></svg>
+        </span>
+        <span>Your Recommended Look</span>
+        <span class="ref-best-match-badge">Best Match</span>
+      </h2>
+    </div>
+
+    <div class="ref-look-content-split">
+      {# Left column: Outfit items side-by-side with '+' connector #}
+      <div class="ref-look-items-col">
+        <div class="ref-look-items-flex">
+          {% for item in best["items"] %}
+          {% if not loop.first %}
+          <div class="ref-item-plus-connector">+</div>
           {% endif %}
+          <div class="ref-look-item-card">
+            <div class="ref-look-item-img-wrap">
+              <img src="{{ item.image_url }}" alt="{{ item.name }}" class="ref-look-item-img"
+                   onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_cloth.svg') }}';">
+              <span class="ref-look-item-star" title="AI Pick">★</span>
+            </div>
+            <div class="ref-look-item-meta">
+              <h4 class="ref-look-item-name" title="{{ item.name }}">{{ item.name }}</h4>
+              <span class="ref-look-item-cat">{{ item.category }} • {{ item.color }}</span>
+              <div class="ref-look-item-color" style="margin-top:2px;">
+                <span class="ref-color-circle" style="background:{{ item.detected_color_hex or '#2b2016' }};"></span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      {# Right column: Gauge + Checklist + Save Outfit + Reactions #}
+      <div class="ref-look-score-col">
+        <div class="ref-score-and-checks">
+          <div class="ref-gauge-block">
+            <div class="ref-gauge-svg-wrap">
+              <svg class="ref-gauge-svg" viewBox="0 0 36 36">
+                <circle class="ref-gauge-bg" cx="18" cy="18" r="15.9155" />
+                <circle class="ref-gauge-fill" cx="18" cy="18" r="15.9155" stroke-dasharray="{{ best.score }}, 100" />
+              </svg>
+              <span class="ref-gauge-number">{{ "%.0f"|format(best.score) }}%</span>
+            </div>
+            <span class="ref-gauge-title">Style Compatibility</span>
+          </div>
+
+          <div class="ref-checklist">
+            <div class="ref-check-row">
+              <svg class="ref-check-icon" width="18" height="18" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="9" fill="#10b981"/>
+                <path d="M6 10l3 3 5-5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Color Match</span>
+            </div>
+            <div class="ref-check-row">
+              <svg class="ref-check-icon" width="18" height="18" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="9" fill="#10b981"/>
+                <path d="M6 10l3 3 5-5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Style Match</span>
+            </div>
+            <div class="ref-check-row">
+              <svg class="ref-check-icon" width="18" height="18" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="9" fill="#10b981"/>
+                <path d="M6 10l3 3 5-5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Occasion Fit</span>
+            </div>
+            <div class="ref-check-row">
+              <svg class="ref-check-icon" width="18" height="18" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="9" fill="#10b981"/>
+                <path d="M6 10l3 3 5-5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Season Fit</span>
+            </div>
+          </div>
+        </div>
+
+        {# Action Buttons: Save Outfit + row of 3 reaction buttons #}
+        <div class="ref-score-actions">
+          <form method="post" action="{{ url_for('recommendations.save_outfit') }}" style="width:100%;">
+            <input type="hidden" name="occasion" value="{{ best.occasion }}">
+            <input type="hidden" name="season" value="{{ best.season }}">
+            <input type="hidden" name="score" value="{{ best.score }}">
+            <input type="hidden" name="title" value="{% for item in best['items'] %}{{ item.name }}{% if not loop.last %} & {% endif %}{% endfor %}{% if best.occasion and best.occasion != 'Any' %} ({{ best.occasion }}){% endif %}">
+            {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
+            <button type="submit" class="ref-save-outfit-btn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>Save Outfit</span>
+            </button>
+          </form>
+
+          <div class="ref-reactions-row">
+            <form method="post" action="{{ url_for('recommendations.submit_feedback') }}" style="display:inline;">
+              <input type="hidden" name="reaction" value="favorited">
+              <input type="hidden" name="occasion" value="{{ best.occasion }}">
+              <input type="hidden" name="season" value="{{ best.season }}">
+              <input type="hidden" name="score" value="{{ best.score }}">
+              <input type="hidden" name="title" value="⭐ AI Stylist Outfit ({{ '%.1f'|format(best.score) }}/100)">
+              {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
+              <button type="submit" class="ref-reaction-btn" title="Favorite this look" aria-label="Favorite">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              </button>
+            </form>
+
+            <form method="post" action="{{ url_for('recommendations.submit_feedback') }}" style="display:inline;">
+              <input type="hidden" name="reaction" value="liked">
+              <input type="hidden" name="occasion" value="{{ best.occasion }}">
+              <input type="hidden" name="season" value="{{ best.season }}">
+              <input type="hidden" name="score" value="{{ best.score }}">
+              <input type="hidden" name="title" value="AI Stylist Liked Outfit ({{ '%.1f'|format(best.score) }}/100)">
+              {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
+              <button type="submit" class="ref-reaction-btn" title="Thumbs Up" aria-label="Like">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                </svg>
+              </button>
+            </form>
+
+            <form method="post" action="{{ url_for('recommendations.submit_feedback') }}" style="display:inline;">
+              <input type="hidden" name="reaction" value="disliked">
+              <input type="hidden" name="occasion" value="{{ best.occasion }}">
+              <input type="hidden" name="season" value="{{ best.season }}">
+              <input type="hidden" name="score" value="{{ best.score }}">
+              <input type="hidden" name="title" value="AI Stylist Disliked Outfit">
+              {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
+              <button type="submit" class="ref-reaction-btn" title="Thumbs Down" aria-label="Dislike">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path>
+                </svg>
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  {# ── Compact Collapsible Insights (Side-by-side) ─────────────────────────── #}
+  {% if best.breakdown %}
+  {% set bd = best.breakdown %}
+  <div class="ref-insights-row">
+
+    {# ── Accordion 1: Why this outfit? ── #}
+    <div class="ref-collapse-card" id="acc-why">
+      <button type="button" class="ref-collapse-trigger rec-acc-trigger" aria-expanded="false" aria-controls="acc-why-body">
+        <div class="ref-collapse-title">
+          <span class="ref-collapse-icon" style="color:#d97706;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-7 7c0 2.6 1.4 4.8 3.5 6h7c2.1-1.2 3.5-3.4 3.5-6a7 7 0 0 0-7-7z"></path></svg>
+          </span>
+          <span>Why this outfit?</span>
+        </div>
+        <span class="ref-collapse-chevron rec-acc-chevron">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </span>
+      </button>
+      <div class="ref-collapse-body rec-acc-body" id="acc-why-body" style="display:none;">
+        <div class="ref-why-list">
+          {% if bd.color >= 70 %}
+            <div class="ref-why-item ref-why-good"><span class="ref-why-tag">✓</span><span>Excellent color combination</span></div>
+          {% elif bd.color >= 50 %}
+            <div class="ref-why-item ref-why-ok"><span class="ref-why-tag">~</span><span>Good color pairing</span></div>
+          {% else %}
+            <div class="ref-why-item ref-why-weak"><span class="ref-why-tag">✗</span><span>Color contrast could be improved</span></div>
+          {% endif %}
+
+          {% if bd.category >= 70 %}
+            <div class="ref-why-item ref-why-good"><span class="ref-why-tag">✓</span><span>Well-balanced clothing categories</span></div>
+          {% elif bd.category >= 40 %}
+            <div class="ref-why-item ref-why-ok"><span class="ref-why-tag">~</span><span>Category balance is acceptable</span></div>
+          {% endif %}
+
+          {% if best.occasion != 'Any' and bd.occasion >= 60 %}
+            <div class="ref-why-item ref-why-good"><span class="ref-why-tag">✓</span><span>Suitable for {{ best.occasion }}</span></div>
+          {% elif best.occasion != 'Any' and bd.occasion < 40 %}
+            <div class="ref-why-item ref-why-weak"><span class="ref-why-tag">✗</span><span>Not ideal for {{ best.occasion }}</span></div>
+          {% endif %}
+
+          {% if best.season != 'All Seasons' and bd.season >= 70 %}
+            <div class="ref-why-item ref-why-good"><span class="ref-why-tag">✓</span><span>Suitable for {{ best.season }}</span></div>
+          {% elif best.season != 'All Seasons' and bd.season < 40 %}
+            <div class="ref-why-item ref-why-weak"><span class="ref-why-tag">✗</span><span>May not suit {{ best.season }}</span></div>
+          {% endif %}
+
+          {% if bd.preference >= 60 %}
+            <div class="ref-why-item ref-why-good"><span class="ref-why-tag">✓</span><span>Matches your style preferences</span></div>
+          {% elif bd.preference >= 40 %}
+            <div class="ref-why-item ref-why-ok"><span class="ref-why-tag">~</span><span>Partially matches your preferences</span></div>
+          {% endif %}
+
+          {% if bd.novelty >= 60 %}
+            <div class="ref-why-item ref-why-good"><span class="ref-why-tag">✓</span><span>Good variety — rarely worn items</span></div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {# ── Accordion 2: View Score Details ── #}
+    <div class="ref-collapse-card" id="acc-score">
+      <button type="button" class="ref-collapse-trigger rec-acc-trigger" aria-expanded="false" aria-controls="acc-score-body">
+        <div class="ref-collapse-title">
+          <span class="ref-collapse-icon" style="color:#2563eb;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          </span>
+          <span>View Score Details</span>
+        </div>
+        <span class="ref-collapse-chevron rec-acc-chevron">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </span>
+      </button>
+      <div class="ref-collapse-body rec-acc-body" id="acc-score-body" style="display:none;">
+        <div class="ref-score-details-grid">
+          {% for label, val, mkey in [
+              ('Color Harmony',   bd.color,      'color'),
+              ('Category',        bd.category,   'category'),
+              ('Occasion',        bd.occasion,   'occasion'),
+              ('Season',          bd.season,     'season'),
+              ('Preferences',     bd.preference, 'preference'),
+              ('Novelty',         bd.novelty,    'novelty')
+          ] %}
+          <div class="ref-mini-score-item">
+            <div class="ref-mini-score-header">
+              <span class="ref-mini-score-label">{{ metric_svg(mkey) }} {{ label }}</span>
+              <span class="ref-mini-score-val">{{ val }}%</span>
+            </div>
+            <div class="ref-mini-score-track">
+              <div class="ref-mini-score-fill"
+                   style="width:{{ val }}%;background:{% if val >= 75 %}#22c55e{% elif val >= 50 %}#b87b32{% else %}#ef4444{% endif %};"></div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>{# /ref-insights-row #}
+  {% endif %}
+
+  {# ── More Outfit Options (3) ─────────────────────────────────────────────── #}
+  {% if result_data %}
+  <div class="ref-more-section">
+    <div class="ref-more-header">
+      <div>
+        <h2 class="ref-more-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8c6a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:inline-block;vertical-align:middle;"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.5a2 2 0 0 0 1.25 1.55L6 11.5V20a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8.5l1.89-.76a2 2 0 0 0 1.25-1.55l.58-3.5a2 2 0 0 0-1.34-2.23z"></path></svg>
+          <span>More Outfit Options ({{ result_data[:3]|length }})</span>
+        </h2>
+        <p class="ref-more-sub">Explore more AI-generated looks for you</p>
+      </div>
+    </div>
+
+    <div class="ref-more-grid-3">
+      {% for rec in result_data[:3] %}
+      {% set rank = loop.index %}
+      {% set out_title = rec.title if rec.title else ('Casual Chic' if rank == 1 else ('Minimal Look' if rank == 2 else 'Everyday Fit')) %}
+      <div class="ref-more-card-vert">
+        <div class="ref-more-card-top-bar">
+          <div class="ref-more-badges-group">
+            <span class="ref-rank-badge">#{{ rank }}</span>
+            {% if rank == 1 %}
+            <span class="ref-rec-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#b87b32" stroke="#8c581e" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14v2H5v-2z"></path></svg>
+              Recommended
+            </span>
+            {% endif %}
+          </div>
+          <span class="ref-score-badge-pill">{{ "%.1f"|format(rec.score) }} / 100</span>
+        </div>
+
+        <div class="ref-more-images-box">
+          {% for item in rec["items"] %}
+          <img src="{{ item.image_url }}" alt="{{ item.name }}" class="ref-more-col-img"
+               onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_cloth.svg') }}';">
+          {% endfor %}
+        </div>
+
+        <div class="ref-more-card-meta">
+          <h4 class="ref-more-title-text">{{ out_title }}</h4>
+          <p class="ref-more-subtitle-text">
+            {% for item in rec['items'] %}{{ item.category }}{% if not loop.last %} + {% endif %}{% endfor %}
+          </p>
+        </div>
+
+        <div class="ref-more-card-bottom-bar">
+          <form method="post" action="{{ url_for('recommendations.submit_feedback') }}" style="margin:0;">
+            <input type="hidden" name="reaction" value="favorited">
+            <input type="hidden" name="occasion" value="{{ rec.occasion }}">
+            <input type="hidden" name="season" value="{{ rec.season }}">
+            <input type="hidden" name="score" value="{{ rec.score }}">
+            <input type="hidden" name="title" value="⭐ AI Stylist Alt #{{ rank }} ({{ '%.1f'|format(rec.score) }}/100)">
+            {% for item in rec["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
+            <button type="submit" class="ref-more-fav-icon-btn" title="Favorite this option" aria-label="Favorite">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+            </button>
+          </form>
+
+          <button type="button" class="ref-view-details-btn" onclick="openOutfitDrawer({{ loop.index0 }})">
+            <span>View Details</span>
+            <span>→</span>
+          </button>
         </div>
       </div>
       {% endfor %}
     </div>
   </div>
 
-  {# Right — score + accordions + actions #}
-  <div class="rec-result-right">
+  {# ── Offcanvas Detail Drawers ───────────────────────────────────────────── #}
+  <div id="drawer-backdrop" class="ref-drawer-backdrop" onclick="closeOutfitDrawer()"></div>
 
-    <div class="rec-editorial-header mb-3">
-      <h3 class="rec-editorial-title">{{ best.title or 'Effortless Chic' }}</h3>
-      <p class="rec-editorial-desc">A clean, refined look tailored for your comfort and style harmony.</p>
+  {% for rec in result_data[:3] %}
+  {% set rank = loop.index %}
+  {% set out_title = rec.title if rec.title else ('Casual Chic' if rank == 1 else ('Minimal Look' if rank == 2 else 'Everyday Fit')) %}
+  <div id="outfit-drawer-{{ loop.index0 }}" class="ref-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawer-title-{{ loop.index0 }}">
+    <div class="ref-drawer-header">
+      <h3 class="ref-drawer-title" id="drawer-title-{{ loop.index0 }}">Option #{{ rank }} Details</h3>
+      <button type="button" class="ref-drawer-close-btn" onclick="closeOutfitDrawer()" aria-label="Close details">✕</button>
     </div>
 
-    {# Style Compatibility Circular Score & Checklist #}
-    <div class="rec-score-card">
-      <div class="d-flex align-items-center justify-content-between mb-3">
-        <div class="circular-score-wrap">
-          <svg class="circular-chart" viewBox="0 0 36 36">
-            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-            <path class="circle-progress" stroke-dasharray="{{ best.score }}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-          </svg>
-          <div class="circular-score-text">
-            <strong>{{ "%.0f"|format(best.score) }}%</strong>
-          </div>
-        </div>
-
-        <div class="rec-checklist ms-3">
-          <div class="rec-check-item">
-            <span class="check-icon">✓</span> Color Match
-          </div>
-          <div class="rec-check-item">
-            <span class="check-icon">✓</span> Style Match
-          </div>
-          <div class="rec-check-item">
-            <span class="check-icon">✓</span> Occasion Fit
-          </div>
-          <div class="rec-check-item">
-            <span class="check-icon">✓</span> Season Fit
-          </div>
-        </div>
-      </div>
-      
-      <div class="rec-score-header">
-        <span class="rec-score-label">Style Compatibility</span>
-        <strong class="rec-score-value {% if best.score >= 75 %}score-high{% elif best.score >= 50 %}score-mid{% else %}score-low{% endif %}">
-          {{ "%.1f"|format(best.score) }} / 100
-        </strong>
-      </div>
-    </div>
-
-    {# Accordion — Why this outfit? #}
-    {% if best.breakdown %}
-    {% set bd = best.breakdown %}
-    <div class="rec-accordion" id="acc-why">
-      <button type="button" class="rec-acc-trigger" aria-expanded="false" aria-controls="acc-why-body">
-        <span>💡 Why this outfit?</span>
-        <span class="rec-acc-chevron">›</span>
-      </button>
-      <div class="rec-acc-body" id="acc-why-body" style="display:none;">
-        {% if bd.color >= 70 %}
-          <div class="why-item why-good">✓ Excellent color combination</div>
-        {% elif bd.color >= 50 %}
-          <div class="why-item why-ok">~ Good color pairing</div>
-        {% else %}
-          <div class="why-item why-weak">✗ Color contrast could be improved</div>
-        {% endif %}
-        {% if bd.category >= 70 %}
-          <div class="why-item why-good">✓ Well-balanced clothing categories</div>
-        {% elif bd.category >= 40 %}
-          <div class="why-item why-ok">~ Category balance is acceptable</div>
-        {% endif %}
-        {% if best.occasion != 'Any' and bd.occasion >= 60 %}
-          <div class="why-item why-good">✓ Suitable for {{ best.occasion }} occasion</div>
-        {% elif best.occasion != 'Any' and bd.occasion < 40 %}
-          <div class="why-item why-weak">✗ Not ideal for {{ best.occasion }}</div>
-        {% endif %}
-        {% if best.season != 'All Seasons' and bd.season >= 70 %}
-          <div class="why-item why-good">✓ Suitable for {{ best.season }}</div>
-        {% elif best.season != 'All Seasons' and bd.season < 40 %}
-          <div class="why-item why-weak">✗ May not suit {{ best.season }}</div>
-        {% endif %}
-        {% if bd.preference >= 60 %}
-          <div class="why-item why-good">✓ Matches your style preferences</div>
-        {% elif bd.preference >= 40 %}
-          <div class="why-item why-ok">~ Partially matches your preferences</div>
-        {% else %}
-          <div class="why-item why-ok">~ Like more outfits to improve recommendations</div>
-        {% endif %}
-        {% if bd.novelty >= 60 %}
-          <div class="why-item why-good">✓ Good wardrobe variety — rarely worn items</div>
-        {% elif bd.novelty < 30 %}
-          <div class="why-item why-ok">~ These items are frequently worn</div>
-        {% endif %}
-      </div>
-    </div>
-
-    {# Accordion — View Score Details #}
-    <div class="rec-accordion" id="acc-score">
-      <button type="button" class="rec-acc-trigger" aria-expanded="false" aria-controls="acc-score-body">
-        <span>📊 View Score Details</span>
-        <span class="rec-acc-chevron">›</span>
-      </button>
-      <div class="rec-acc-body" id="acc-score-body" style="display:none;">
-        {% for label, val, icon in [
-            ('Color Harmony',   bd.color,      '🎨'),
-            ('Category',        bd.category,   '👔'),
-            ('Occasion',        bd.occasion,   '📅'),
-            ('Season',          bd.season,     '🌤'),
-            ('Preferences',     bd.preference, '⭐'),
-            ('Novelty',         bd.novelty,    '✨')
-        ] %}
-        <div class="acc-score-row">
-          <span class="acc-score-label">{{ label }}</span>
-          <div class="acc-score-track">
-            <div class="acc-score-fill"
-                 style="width:{{ val }}%;background:{% if val >= 75 %}#22c55e{% elif val >= 50 %}#f59e0b{% else %}#ef4444{% endif %};"></div>
-          </div>
-          <span class="acc-score-pct">{{ val }}%</span>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-    {% endif %}
-
-    {# Feedback actions #}
-    <div class="rec-action-row d-flex align-items-center gap-2 mt-4">
-      <form method="post" action="{{ url_for('recommendations.save_outfit') }}" class="flex-grow-1">
-        <input type="hidden" name="occasion" value="{{ best.occasion }}">
-        <input type="hidden" name="season" value="{{ best.season }}">
-        <input type="hidden" name="score" value="{{ best.score }}">
-        <input type="hidden" name="title" value="{% for item in best['items'] %}{{ item.name }}{% if not loop.last %} & {% endif %}{% endfor %}{% if best.occasion and best.occasion != 'Any' %} ({{ best.occasion }}){% endif %}">
-        {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
-        <button type="submit" class="btn btn-mocha-gradient w-100 py-2 d-flex align-items-center justify-content-center gap-2">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
-          Save Outfit
-        </button>
-      </form>
-      <form method="post" action="{{ url_for('recommendations.submit_feedback') }}">
-        <input type="hidden" name="reaction" value="favorited">
-        <input type="hidden" name="occasion" value="{{ best.occasion }}">
-        <input type="hidden" name="season" value="{{ best.season }}">
-        <input type="hidden" name="score" value="{{ best.score }}">
-        <input type="hidden" name="title" value="⭐ AI Stylist Outfit ({{ '%.1f'|format(best.score) }}/100)">
-        {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
-        <button type="submit" class="icon-button heart-fav-btn" title="Favorite this look" aria-label="Favorite">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-        </button>
-      </form>
-      <div class="d-flex gap-1 ms-1">
-        <form method="post" action="{{ url_for('recommendations.submit_feedback') }}">
-          <input type="hidden" name="reaction" value="liked">
-          <input type="hidden" name="occasion" value="{{ best.occasion }}">
-          <input type="hidden" name="season" value="{{ best.season }}">
-          <input type="hidden" name="score" value="{{ best.score }}">
-          <input type="hidden" name="title" value="AI Stylist Liked Outfit ({{ '%.1f'|format(best.score) }}/100)">
-          {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
-          <button type="submit" class="rec-action-btn btn-like" title="Thumbs Up">👍</button>
-        </form>
-        <form method="post" action="{{ url_for('recommendations.submit_feedback') }}">
-          <input type="hidden" name="reaction" value="disliked">
-          <input type="hidden" name="occasion" value="{{ best.occasion }}">
-          <input type="hidden" name="season" value="{{ best.season }}">
-          <input type="hidden" name="score" value="{{ best.score }}">
-          <input type="hidden" name="title" value="AI Stylist Disliked Outfit">
-          {% for item in best["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
-          <button type="submit" class="rec-action-btn btn-dislike" title="Thumbs Down">👎</button>
-        </form>
-      </div>
-    </div>
-
-  </div>{# /rec-result-right #}
-</div>{# /rec-result-layout #}
-
-
-{# ── More Outfit Options ───────────────────────────────────────────────────── #}
-{% if result_data|length > 1 %}
-<div class="more-outfits-section">
-  <div class="more-outfits-header">
-    <h2 class="more-outfits-title">🔄 More Outfit Options</h2>
-    <a href="#" class="more-outfits-view-all" onclick="return false;">View All Options →</a>
-  </div>
-
-  <div class="more-outfits-grid">
-    {% for rec in result_data[1:] %}
-    {% set rank = loop.index + 1 %}
-    <div class="more-outfit-card">
-
-      <div class="more-outfit-top">
-        <span class="more-outfit-rank">#{{ rank }}</span>
-        <span class="more-outfit-score {% if rec.score >= 75 %}score-high{% elif rec.score >= 50 %}score-mid{% else %}score-low{% endif %}">
-          {{ "%.1f"|format(rec.score) }} / 100
-        </span>
-      </div>
-
-      <div class="more-outfit-thumbs">
+    <div class="ref-drawer-preview-row">
+      <div class="ref-drawer-thumbs-box">
         {% for item in rec["items"] %}
-        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="more-outfit-thumb"
+        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="ref-drawer-thumb-img"
              onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_cloth.svg') }}';">
         {% endfor %}
       </div>
+      <div class="ref-drawer-score-box">
+        <span class="ref-drawer-score-num">{{ "%.1f"|format(rec.score) }} / 100</span>
+        <span class="ref-drawer-score-label">Style Compatibility</span>
+      </div>
+    </div>
 
-      <div class="more-outfit-meta">
-        <div class="more-outfit-name">{{ rec.title if rec.title else 'Option #' ~ rank }}</div>
-        <div class="more-outfit-tags">
-          <span class="meta-pill">{{ rec.occasion }}</span>
-          <span class="meta-pill">{{ rec.season }}</span>
+    <h4 class="ref-drawer-outfit-heading">{{ out_title }}</h4>
+    <p class="ref-drawer-outfit-sub">
+      {% for item in rec['items'] %}{{ item.category }}{% if not loop.last %} + {% endif %}{% endfor %} • {{ rec['items']|length }} Items
+    </p>
+
+    {# Items in this outfit #}
+    <div class="ref-drawer-items-section">
+      <h5 class="ref-drawer-section-label">Items in this outfit</h5>
+      <div class="ref-drawer-items-list">
+        {% for item in rec["items"] %}
+        <div class="ref-drawer-item-row">
+          <img src="{{ item.image_url }}" alt="{{ item.name }}" class="ref-drawer-item-thumb"
+               onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder_cloth.svg') }}';">
+          <div class="ref-drawer-item-info">
+            <strong class="ref-drawer-item-name">{{ item.name }}</strong>
+            <span class="ref-drawer-item-sub">
+              <span>{{ item.category }} • {{ item.color }}</span>
+              <span class="ref-color-circle" style="background:{{ item.detected_color_hex or '#2b2016' }}; width:9px; height:9px;"></span>
+            </span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {# Collapsible sections inside drawer #}
+    <div class="ref-drawer-accordions">
+      {% if rec.breakdown %}
+      {% set rbd = rec.breakdown %}
+      {# 1. Score Details #}
+      <div class="ref-collapse-card" id="drawer-acc-score-{{ loop.index0 }}">
+        <button type="button" class="ref-collapse-trigger rec-acc-trigger" aria-expanded="true" aria-controls="drawer-score-body-{{ loop.index0 }}">
+          <div class="ref-collapse-title">
+            <span class="ref-collapse-icon" style="color:#2563eb;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            </span>
+            <span>Score Details</span>
+          </div>
+          <span class="ref-collapse-chevron rec-acc-chevron" style="transform: rotate(180deg);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </span>
+        </button>
+        <div class="ref-collapse-body rec-acc-body" id="drawer-score-body-{{ loop.index0 }}" style="display:block;">
+          <div class="ref-score-details-grid">
+            {% for label, val, mkey in [
+                ('Color Harmony',     rbd.color,      'color'),
+                ('Category Match',    rbd.category,   'category'),
+                ('Occasion Fit',      rbd.occasion,   'occasion'),
+                ('Season Fit',        rbd.season,     'season'),
+                ('Preferences Match', rbd.preference, 'preference'),
+                ('Novelty',           rbd.novelty,    'novelty')
+            ] %}
+            <div class="ref-mini-score-item">
+              <div class="ref-mini-score-header">
+                <span class="ref-mini-score-label">{{ metric_svg(mkey) }} {{ label }}</span>
+                <span class="ref-mini-score-val">{{ val }}%</span>
+              </div>
+              <div class="ref-mini-score-track">
+                <div class="ref-mini-score-fill"
+                     style="width:{{ val }}%;background:{% if val >= 75 %}#22c55e{% elif val >= 50 %}#b87b32{% else %}#ef4444{% endif %};"></div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
         </div>
       </div>
 
-      <div class="more-outfit-actions">
+      {# 2. Why this outfit? #}
+      <div class="ref-collapse-card" id="drawer-acc-why-{{ loop.index0 }}">
+        <button type="button" class="ref-collapse-trigger rec-acc-trigger" aria-expanded="false" aria-controls="drawer-why-body-{{ loop.index0 }}">
+          <div class="ref-collapse-title">
+            <span class="ref-collapse-icon" style="color:#d97706;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-7 7c0 2.6 1.4 4.8 3.5 6h7c2.1-1.2 3.5-3.4 3.5-6a7 7 0 0 0-7-7z"></path></svg>
+            </span>
+            <span>Why this outfit?</span>
+          </div>
+          <span class="ref-collapse-chevron rec-acc-chevron">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </span>
+        </button>
+        <div class="ref-collapse-body rec-acc-body" id="drawer-why-body-{{ loop.index0 }}" style="display:none;">
+          <div class="ref-why-list">
+            {% if rbd.color >= 70 %}
+              <div class="ref-why-item ref-why-good"><span class="ref-why-tag">✓</span><span>Excellent color combination</span></div>
+            {% elif rbd.color >= 50 %}
+              <div class="ref-why-item ref-why-ok"><span class="ref-why-tag">~</span><span>Good color pairing</span></div>
+            {% endif %}
+            {% if rbd.category >= 70 %}
+              <div class="ref-why-item ref-why-good"><span class="ref-why-tag">✓</span><span>Well-balanced categories</span></div>
+            {% endif %}
+            {% if rec.occasion != 'Any' and rbd.occasion >= 60 %}
+              <div class="ref-why-item ref-why-good"><span class="ref-why-tag">✓</span><span>Suitable for {{ rec.occasion }}</span></div>
+            {% endif %}
+            {% if rec.season != 'All Seasons' and rbd.season >= 70 %}
+              <div class="ref-why-item ref-why-good"><span class="ref-why-tag">✓</span><span>Suitable for {{ rec.season }}</span></div>
+            {% endif %}
+            {% if rbd.preference >= 60 %}
+              <div class="ref-why-item ref-why-good"><span class="ref-why-tag">✓</span><span>Matches your style preferences</span></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    {# Drawer action buttons #}
+    <div class="ref-drawer-actions">
+      <form method="post" action="{{ url_for('recommendations.save_outfit') }}" style="width:100%;">
+        <input type="hidden" name="occasion" value="{{ rec.occasion }}">
+        <input type="hidden" name="season" value="{{ rec.season }}">
+        <input type="hidden" name="score" value="{{ rec.score }}">
+        <input type="hidden" name="title" value="{% for item in rec['items'] %}{{ item.name }}{% if not loop.last %} & {% endif %}{% endfor %}{% if rec.occasion and rec.occasion != 'Any' %} ({{ rec.occasion }}){% endif %}">
+        {% for item in rec["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
+        <button type="submit" class="ref-save-outfit-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span>Save Outfit</span>
+        </button>
+      </form>
+
+      <div class="ref-reactions-row">
+        <form method="post" action="{{ url_for('recommendations.submit_feedback') }}" style="display:inline;">
+          <input type="hidden" name="reaction" value="favorited">
+          <input type="hidden" name="occasion" value="{{ rec.occasion }}">
+          <input type="hidden" name="season" value="{{ rec.season }}">
+          <input type="hidden" name="score" value="{{ rec.score }}">
+          <input type="hidden" name="title" value="⭐ AI Stylist Alt #{{ rank }} ({{ '%.1f'|format(rec.score) }}/100)">
+          {% for item in rec["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
+          <button type="submit" class="ref-reaction-btn" title="Favorite this look" aria-label="Favorite">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
+        </form>
+
         <form method="post" action="{{ url_for('recommendations.submit_feedback') }}" style="display:inline;">
           <input type="hidden" name="reaction" value="liked">
           <input type="hidden" name="occasion" value="{{ rec.occasion }}">
           <input type="hidden" name="season" value="{{ rec.season }}">
           <input type="hidden" name="score" value="{{ rec.score }}">
-          <input type="hidden" name="title" value="AI Stylist Alt #{{ rank }} ({{ '%.1f'|format(rec.score) }}/100)">
+          <input type="hidden" name="title" value="AI Stylist Liked Outfit #{{ rank }} ({{ '%.1f'|format(rec.score) }}/100)">
           {% for item in rec["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
-          <button type="submit" class="rec-action-btn btn-like" style="font-size:12px;padding:5px 10px;">👍</button>
+          <button type="submit" class="ref-reaction-btn" title="Thumbs Up" aria-label="Like">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+            </svg>
+          </button>
         </form>
+
         <form method="post" action="{{ url_for('recommendations.submit_feedback') }}" style="display:inline;">
           <input type="hidden" name="reaction" value="disliked">
           <input type="hidden" name="occasion" value="{{ rec.occasion }}">
           <input type="hidden" name="season" value="{{ rec.season }}">
           <input type="hidden" name="score" value="{{ rec.score }}">
-          <input type="hidden" name="title" value="AI Stylist Alt #{{ rank }} Disliked">
+          <input type="hidden" name="title" value="AI Stylist Disliked Outfit #{{ rank }}">
           {% for item in rec["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
-          <button type="submit" class="rec-action-btn btn-dislike" style="font-size:12px;padding:5px 10px;">👎</button>
-        </form>
-        <form method="post" action="{{ url_for('recommendations.save_outfit') }}" style="display:inline;">
-          <input type="hidden" name="occasion" value="{{ rec.occasion }}">
-          <input type="hidden" name="season" value="{{ rec.season }}">
-          <input type="hidden" name="score" value="{{ rec.score }}">
-          <input type="hidden" name="title" value="{% for item in rec['items'] %}{{ item.name }}{% if not loop.last %} & {% endif %}{% endfor %}{% if rec.occasion and rec.occasion != 'Any' %} ({{ rec.occasion }}){% endif %}">
-          {% for item in rec["items"] %}<input type="hidden" name="item_ids" value="{{ item.id }}">{% endfor %}
-          <button type="submit" class="rec-action-btn btn-save" style="font-size:12px;padding:5px 10px;">💾</button>
+          <button type="submit" class="ref-reaction-btn" title="Thumbs Down" aria-label="Dislike">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path>
+            </svg>
+          </button>
         </form>
       </div>
-
     </div>
-    {% endfor %}
   </div>
-</div>
-{% endif %}
+  {% endfor %}
 
-{% elif not pinned_error %}
-{# ── Landing / empty state ────────────────────────────────────────────────── #}
-<div class="empty-state">
-  <div class="empty-icon">✨</div>
-  <h3>Ready to Style You</h3>
-  <p>Choose your occasion and season above, then click <strong>✨ Style Me</strong> to get your personalised outfit recommendation.</p>
-</div>
-{% endif %}
+  {% endif %}
 
+  {% elif not pinned_error %}
+  {# ── Landing / empty state ────────────────────────────────────────────────── #}
+  <div class="empty-state">
+    <div class="empty-icon" style="display:flex;justify-content:center;align-items:center;margin-bottom:14px;color:#b87b32;">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="#d4af37" stroke="#b87b32" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"></path></svg>
+    </div>
+    <h3>Ready to Style You</h3>
+    <p>Choose your occasion and season above, then click <strong>Style Me</strong> to get your personalised outfit recommendation.</p>
+  </div>
+  {% endif %}
+
+</div>{# /ref-stylist-wrapper #}
 
 {# ══════════════════════════════════════════════════════════════════════════
    JAVASCRIPT
@@ -524,34 +780,53 @@
           body.style.opacity   = '1';
         });
         setTimeout(function () { body.style.maxHeight = ''; body.style.overflow = ''; body.style.transition = ''; }, 300);
-        if (chevron) chevron.style.transform = 'rotate(90deg)';
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
       }
     });
   });
 
-  /* ── Escape key: close occasion modal only ──────────────────────────── */
+  /* ── Offcanvas Detail Drawer ────────────────────────────────────────── */
+  window.openOutfitDrawer = function(index) {
+    var backdrop = document.getElementById('drawer-backdrop');
+    var drawer   = document.getElementById('outfit-drawer-' + index);
+    if (backdrop && drawer) {
+      document.querySelectorAll('.ref-drawer-panel.is-open').forEach(function(d) {
+        d.classList.remove('is-open');
+      });
+      backdrop.classList.add('is-open');
+      drawer.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+  };
+
+  window.closeOutfitDrawer = function() {
+    var backdrop = document.getElementById('drawer-backdrop');
+    if (backdrop) backdrop.classList.remove('is-open');
+    document.querySelectorAll('.ref-drawer-panel.is-open').forEach(function(d) {
+      d.classList.remove('is-open');
+    });
+    document.body.style.overflow = '';
+  };
+
+  /* ── Escape key: close occasion modal and drawer ─────────────────────── */
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       var om = document.getElementById('more-options-modal');
-      if (om) om.style.display = 'none';
+      if (om && om.style.display !== 'none') {
+        om.style.display = 'none';
+      } else {
+        closeOutfitDrawer();
+      }
     }
   });
 
-
-  /* ── Sync pinned item_ids into form before submit ────────────────────
-     #pinned-hidden-inputs lives outside #stylist-form (it is inside
-     #selection-panel for layout reasons). This listener copies every
-     hidden input from that container into the form just before POST,
-     so all selected item IDs are submitted as `item_ids` fields.
-  ─────────────────────────────────────────────────────────────────── */
+  /* ── Sync pinned item_ids into form before submit ──────────────────── */
   var stylistForm = document.getElementById('stylist-form');
   if (stylistForm) {
     stylistForm.addEventListener('submit', function () {
-      // Remove any previously-synced copies to avoid duplicates on retry
       stylistForm.querySelectorAll('input[name="item_ids"][data-synced]')
         .forEach(function(el) { el.remove(); });
 
-      // Clone inputs from the out-of-form container into the form
       var pinnedContainer = document.getElementById('pinned-hidden-inputs');
       if (pinnedContainer) {
         pinnedContainer.querySelectorAll('input[name="item_ids"]')
@@ -565,28 +840,10 @@
           });
       }
 
-      // Loading state
       var smBtn = document.getElementById('style-me-btn');
-      if (smBtn) { smBtn.disabled = true; smBtn.textContent = '⏳ Styling…'; }
+      if (smBtn) { smBtn.disabled = true; smBtn.innerHTML = '<span>⏳ Styling…</span>'; }
     });
   }
-
-  // Global helper for quick occasion pills
-  window.quickPickOccasion = function(occ) {
-    var occInput  = document.getElementById('occasion-input');
-    var occHidden = document.getElementById('occasion-hidden');
-    if (occInput)  occInput.value  = occ;
-    if (occHidden) occHidden.value = occ;
-    document.querySelectorAll('.stylist-occ-pill').forEach(function(pill) {
-      pill.classList.remove('active');
-    });
-    if (window.event && window.event.target) {
-      window.event.target.classList.add('active');
-    }
-    if (stylistForm) {
-      stylistForm.submit();
-    }
-  };
 })();
 </script>
 

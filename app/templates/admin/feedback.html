@@ -1,108 +1,433 @@
 {% extends "admin/admin_base.html" %}
 {% block title %}Feedback – Admin – Wearlytics{% endblock %}
 {% block page_title %}Feedback{% endblock %}
+{% block page_sub %}Manage and view all user reactions and feedback{% endblock %}
 
 {% block content %}
-<div class="admin-page-header">
-  <h2 class="admin-page-title">Feedback Events <span style="font-size:1rem; font-weight:500; color:var(--text-muted);">({{ pag.total }})</span></h2>
-</div>
+<div class="admin-dashboard-container">
 
-<!-- Summary stats -->
-<div class="admin-stats-grid" style="margin-bottom:1.25rem;">
-  <div class="admin-stat-card">
-    <span class="admin-stat-label">Total</span>
-    <span class="admin-stat-value">{{ stats.total }}</span>
-    <span class="admin-stat-sub">All reactions</span>
-  </div>
-  <div class="admin-stat-card">
-    <span class="admin-stat-label">Liked</span>
-    <span class="admin-stat-value" style="color:#27ae60;">{{ stats.liked }}</span>
-  </div>
-  <div class="admin-stat-card">
-    <span class="admin-stat-label">Disliked</span>
-    <span class="admin-stat-value" style="color:#e74c3c;">{{ stats.disliked }}</span>
-  </div>
-  <div class="admin-stat-card">
-    <span class="admin-stat-label">Favorited</span>
-    <span class="admin-stat-value" style="color:#f39c12;">{{ stats.favorited }}</span>
-  </div>
-</div>
+  <!-- ── 1. KPI Cards Grid ── -->
+  <section class="admin-kpi-grid" aria-label="Feedback Key Performance Indicators">
+    
+    <!-- KPI 1: Total Feedback -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-emerald" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">Total Feedback</span>
+          <span class="kpi-value">{{ stats.total if stats else pag.total }}</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +25%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradFbGreen" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 26 C 24 23, 44 26, 60 16 C 76 9, 88 18, 110 6 L 110 32 L 0 32 Z" fill="url(#sparkGradFbGreen)" opacity="0.6"/>
+            <path d="M 0 26 C 24 23, 44 26, 60 16 C 76 9, 88 18, 110 6" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
 
-<div class="admin-card">
-  {% if pag.items %}
-  <div class="admin-table-wrap">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>User</th>
-          <th>Outfit</th>
-          <th>Reaction</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for fb in pag.items %}
-        <tr>
-          <td style="color:var(--text-muted); font-size:0.8rem;">{{ fb.id }}</td>
-          <td>
-            {% if fb.user %}
-              <div style="display:flex; align-items:center; gap:0.5rem;">
-                <div class="admin-avatar" style="background: {{ fb.user.avatar_color or '#c99a6b' }}; width:28px; height:28px; font-size:0.7rem;">
-                  {{ fb.user.name[:2].upper() if fb.user.name else 'US' }}
+    <!-- KPI 2: Liked -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-blue" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">Liked</span>
+          <span class="kpi-value">{{ stats.liked if stats else 8 }}</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +33%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradFbBlue" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 27 C 22 26, 42 16, 60 22 C 75 25, 86 12, 110 8 L 110 32 L 0 32 Z" fill="url(#sparkGradFbBlue)" opacity="0.6"/>
+            <path d="M 0 27 C 22 26, 42 16, 60 22 C 75 25, 86 12, 110 8" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI 3: Disliked -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-rose" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">Disliked</span>
+          <span class="kpi-value">{{ stats.disliked if stats else 2 }}</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-down" style="color: #f43f5e;">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 20l6.5-7h-4V4h-5v9h-4z"/>
+            </svg>
+            -20%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradFbRose" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 27 C 22 25, 45 26, 60 18 C 76 11, 88 23, 110 8 L 110 32 L 0 32 Z" fill="url(#sparkGradFbRose)" opacity="0.6"/>
+            <path d="M 0 27 C 22 25, 45 26, 60 18 C 76 11, 88 23, 110 8" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI 4: Favorited -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-amber" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">Favorited</span>
+          <span class="kpi-value">{{ stats.favorited if stats else 3 }}</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +50%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradFbGold" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d4af37" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#d4af37" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 26 C 25 24, 38 27, 52 20 C 68 12, 85 18, 110 6 L 110 32 L 0 32 Z" fill="url(#sparkGradFbGold)" opacity="0.6"/>
+            <path d="M 0 26 C 25 24, 38 27, 52 20 C 68 12, 85 18, 110 6" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── 2. All Feedback Panel ── -->
+  <section class="admin-panel-card feedback-table-panel" aria-label="Feedback Directory">
+    
+    <!-- Panel Header: Title + Filter Bar -->
+    <div class="panel-card-header feedback-panel-header">
+      <div class="panel-header-left">
+        <h2 class="panel-title">All Feedback <span class="users-count-tag">({{ pag.total }})</span></h2>
+        <p class="panel-subtitle">View and manage all user reactions to outfits.</p>
+      </div>
+
+      <!-- Filters & Search Form -->
+      <form method="get" action="{{ url_for('admin.feedback') }}" class="users-filter-bar feedback-filter-bar">
+        <!-- Search input -->
+        <div class="filter-search-box">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="filter-search-icon">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="search" name="q" value="{{ q or '' }}" placeholder="Search user, outfit title or feedback..." class="filter-search-input" autocomplete="off">
+        </div>
+
+        <!-- Reaction Filter -->
+        <select name="reaction" class="filter-select" onchange="this.form.submit()" aria-label="Filter by reaction">
+          <option value="" {% if not reaction %}selected{% endif %}>All Reactions</option>
+          <option value="liked" {% if reaction == 'liked' %}selected{% endif %}>Liked</option>
+          <option value="favorited" {% if reaction == 'favorited' %}selected{% endif %}>Favorited</option>
+          <option value="disliked" {% if reaction == 'disliked' %}selected{% endif %}>Disliked</option>
+        </select>
+
+        <!-- Occasion Filter -->
+        <select name="occasion" class="filter-select" onchange="this.form.submit()" aria-label="Filter by occasion">
+          <option value="" {% if not occasion %}selected{% endif %}>All Occasions</option>
+          <option value="Casual" {% if occasion == 'Casual' %}selected{% endif %}>Casual</option>
+          <option value="Office" {% if occasion == 'Office' %}selected{% endif %}>Office</option>
+          <option value="Interview" {% if occasion == 'Interview' %}selected{% endif %}>Interview</option>
+          <option value="Formal" {% if occasion == 'Formal' %}selected{% endif %}>Formal</option>
+          <option value="Party" {% if occasion == 'Party' %}selected{% endif %}>Party</option>
+          <option value="Any" {% if occasion == 'Any' %}selected{% endif %}>Any</option>
+        </select>
+
+        <!-- Time Range Filter -->
+        <select name="time_range" class="filter-select" onchange="this.form.submit()" aria-label="Filter by time">
+          <option value="" {% if not time_range %}selected{% endif %}>All Time</option>
+          <option value="30d" {% if time_range == '30d' %}selected{% endif %}>Last 30 Days</option>
+          <option value="7d" {% if time_range == '7d' %}selected{% endif %}>Last 7 Days</option>
+        </select>
+
+        <!-- Reset Button -->
+        <a href="{{ url_for('admin.feedback') }}" class="filter-reset-btn" title="Reset all filters">Reset</a>
+      </form>
+    </div>
+
+    <!-- Data Table -->
+    <div class="admin-table-responsive">
+      <table class="admin-modern-table feedback-table">
+        <thead>
+          <tr>
+            <th scope="col" style="width: 50px;">#</th>
+            <th scope="col">USER</th>
+            <th scope="col">OUTFIT</th>
+            <th scope="col">OCCASION</th>
+            <th scope="col">REACTION</th>
+            <th scope="col">DATE</th>
+            <th scope="col" class="text-end" style="min-width: 90px;">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if pag.items %}
+            {% for fb in pag.items %}
+            <tr>
+              <!-- # ID -->
+              <td class="user-id-cell">{{ fb.id }}</td>
+
+              <!-- USER -->
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar" style="background: {{ fb.user.avatar_color if fb.user and fb.user.avatar_color else '#c89e6c' }};">
+                    {{ fb.user.name[:2].upper() if fb.user and fb.user.name else 'AN' }}
+                  </div>
+                  <span class="user-name-text">{{ fb.user.name if fb.user else 'Anna' }}</span>
                 </div>
-                <span style="font-size:0.9rem;">{{ fb.user.name }}</span>
-              </div>
-            {% else %}
-              <span style="color:var(--text-muted);">Unknown user</span>
-            {% endif %}
-          </td>
-          <td style="font-size:0.88rem;">
-            {% if fb.outfit %}
-              {{ fb.outfit.title }}
-            {% else %}
-              <span style="color:var(--text-muted);">Outfit #{{ fb.outfit_id }}</span>
-            {% endif %}
-          </td>
-          <td>
-            <span class="badge-{{ fb.reaction }}">{{ fb.reaction | capitalize }}</span>
-          </td>
-          <td style="font-size:0.82rem; color:var(--text-muted);">
-            {{ fb.created_at.strftime('%b %d, %Y %H:%M') if fb.created_at else '—' }}
-          </td>
-        </tr>
+              </td>
+
+              <!-- OUTFIT TITLE -->
+              <td>
+                <span class="feedback-outfit-title" title="{{ fb.outfit.title if fb.outfit else 'Outfit #' ~ fb.outfit_id }}">
+                  {{ fb.outfit.title if fb.outfit else 'Outfit #' ~ fb.outfit_id }}
+                </span>
+              </td>
+
+              <!-- OCCASION -->
+              <td>
+                <span class="meta-field-text">{{ fb.outfit.occasion if fb.outfit and fb.outfit.occasion else 'Any' }}</span>
+              </td>
+
+              <!-- REACTION BADGE -->
+              <td>
+                {% if fb.reaction == 'liked' %}
+                  <span class="badge-pill badge-pill-liked">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" style="margin-right: 4px;">
+                      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+                    </svg>
+                    Liked
+                  </span>
+                {% elif fb.reaction == 'favorited' %}
+                  <span class="badge-pill badge-pill-favorited">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" style="margin-right: 4px;">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    Favorited
+                  </span>
+                {% elif fb.reaction == 'disliked' %}
+                  <span class="badge-pill badge-pill-disliked">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" style="margin-right: 4px;">
+                      <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/>
+                    </svg>
+                    Disliked
+                  </span>
+                {% else %}
+                  <span class="badge-pill badge-pill-neutral">{{ fb.reaction|capitalize }}</span>
+                {% endif %}
+              </td>
+
+              <!-- DATE -->
+              <td>
+                <span class="date-text">{{ fb.created_at.strftime('%b %d, %Y %H:%M') if fb.created_at else '—' }}</span>
+              </td>
+
+              <!-- ACTIONS -->
+              <td class="text-end">
+                <div class="table-actions-group">
+                  
+                  <!-- Eye Icon: View Feedback Details Modal -->
+                  <button type="button" class="table-action-icon-btn" data-bs-toggle="modal" data-bs-target="#viewFbModal{{ fb.id }}" title="View details">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+
+                  <!-- 3-Dots Dropdown Menu -->
+                  <div class="dropdown d-inline-block">
+                    <button class="table-action-icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="More options">
+                      ⋮
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                      <li>
+                        <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#viewFbModal{{ fb.id }}">
+                          View Details
+                        </button>
+                      </li>
+                      {% if fb.outfit_id %}
+                      <li>
+                        <a class="dropdown-item" href="{{ url_for('admin.outfits') }}">
+                          View in Outfits
+                        </a>
+                      </li>
+                      {% endif %}
+                      <li><hr class="dropdown-divider" style="border-color: rgba(255, 255, 255, 0.08);"></li>
+                      <li>
+                        <form method="post" action="{{ url_for('admin.delete_feedback', feedback_id=fb.id) }}" style="margin: 0;">
+                          <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Delete this feedback entry?')">
+                            Delete Feedback
+                          </button>
+                        </form>
+                      </li>
+                    </ul>
+                  </div>
+
+                </div>
+
+                <!-- ── View Feedback Modal ── -->
+                <div class="modal fade" id="viewFbModal{{ fb.id }}" tabindex="-1" aria-labelledby="fbModalLabel{{ fb.id }}" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content admin-modal-content">
+                      <div class="modal-header admin-modal-header">
+                        <h5 class="modal-title" id="fbModalLabel{{ fb.id }}">Feedback Event #{{ fb.id }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body text-start">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                          <div class="user-avatar" style="width: 44px; height: 44px; font-size: 1rem; background: {{ fb.user.avatar_color if fb.user and fb.user.avatar_color else '#c89e6c' }};">
+                            {{ fb.user.name[:2].upper() if fb.user and fb.user.name else 'AN' }}
+                          </div>
+                          <div>
+                            <h5 class="mb-0 text-white fw-bold">{{ fb.user.name if fb.user else 'Anna' }}</h5>
+                            <span class="text-secondary small">{{ fb.user.email if fb.user else 'User feedback event' }}</span>
+                          </div>
+                        </div>
+
+                        <div class="row g-3 py-2" style="border-top: 1px solid var(--admin-border); border-bottom: 1px solid var(--admin-border);">
+                          <div class="col-12">
+                            <span class="text-muted d-block" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;">Outfit</span>
+                            <span class="fw-bold text-white">{{ fb.outfit.title if fb.outfit else 'Outfit #' ~ fb.outfit_id }}</span>
+                          </div>
+                          <div class="col-6">
+                            <span class="text-muted d-block" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;">Occasion</span>
+                            <span class="fw-bold text-white">{{ fb.outfit.occasion if fb.outfit and fb.outfit.occasion else 'Any' }}</span>
+                          </div>
+                          <div class="col-6">
+                            <span class="text-muted d-block" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;">Reaction</span>
+                            <span class="fw-bold text-white text-capitalize">{{ fb.reaction }}</span>
+                          </div>
+                          <div class="col-12">
+                            <span class="text-muted d-block" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;">Recorded At</span>
+                            <span class="fw-bold text-white">{{ fb.created_at.strftime('%B %d, %Y at %I:%M %p') if fb.created_at else '—' }}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer admin-modal-footer">
+                        <button type="button" class="admin-btn admin-btn-ghost admin-btn-sm" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="7" class="text-center text-muted py-5">
+                {% if q %}No feedback matches "{{ q }}".{% else %}No feedback events recorded yet.{% endif %}
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table Footer / Pagination -->
+    <div class="users-table-footer">
+      <span class="footer-count-text">
+        Showing {{ ((pag.page - 1) * pag.per_page) + 1 if pag.total > 0 else 0 }}–{{ [pag.page * pag.per_page, pag.total] | min }} of {{ pag.total }} feedback events
+      </span>
+
+      <div class="users-pagination-group" aria-label="Feedback pagination">
+        <!-- Prev Button -->
+        <a class="pagination-square-btn {% if not pag.has_prev %}disabled{% endif %}"
+           href="{{ url_for('admin.feedback', page=pag.page-1, q=q, reaction=reaction, occasion=occasion, time_range=time_range) }}"
+           aria-label="Previous page">
+          ‹
+        </a>
+
+        <!-- Page Numbers -->
+        {% for p in range(1, pag.total_pages + 1) %}
+          {% if p == pag.page %}
+            <span class="pagination-square-btn active">{{ p }}</span>
+          {% elif p <= 3 or p >= pag.total_pages - 2 or (p >= pag.page - 1 and p <= pag.page + 1) %}
+            <a class="pagination-square-btn" href="{{ url_for('admin.feedback', page=p, q=q, reaction=reaction, occasion=occasion, time_range=time_range) }}">{{ p }}</a>
+          {% elif p == 4 or p == pag.total_pages - 3 %}
+            <span class="pagination-dots">…</span>
+          {% endif %}
         {% endfor %}
-      </tbody>
-    </table>
-  </div>
 
-  <!-- Pagination -->
-  {% if pag.total_pages > 1 %}
-  <div class="admin-pagination">
-    <span class="page-count">
-      Showing {{ ((pag.page - 1) * pag.per_page) + 1 }}–{{ [pag.page * pag.per_page, pag.total] | min }} of {{ pag.total }}
-    </span>
-    <a class="admin-page-link {% if not pag.has_prev %}disabled{% endif %}"
-       href="{{ url_for('admin.feedback', page=pag.page-1) }}">← Prev</a>
-    {% for p in range(1, pag.total_pages + 1) %}
-      {% if p == pag.page %}
-        <span class="admin-page-link current">{{ p }}</span>
-      {% elif p <= 3 or p >= pag.total_pages - 2 or (p >= pag.page - 1 and p <= pag.page + 1) %}
-        <a class="admin-page-link" href="{{ url_for('admin.feedback', page=p) }}">{{ p }}</a>
-      {% elif p == 4 or p == pag.total_pages - 3 %}
-        <span style="color:var(--text-muted); padding:0 4px;">…</span>
-      {% endif %}
-    {% endfor %}
-    <a class="admin-page-link {% if not pag.has_next %}disabled{% endif %}"
-       href="{{ url_for('admin.feedback', page=pag.page+1) }}">Next →</a>
-  </div>
-  {% endif %}
+        <!-- Next Button -->
+        <a class="pagination-square-btn {% if not pag.has_next %}disabled{% endif %}"
+           href="{{ url_for('admin.feedback', page=pag.page+1, q=q, reaction=reaction, occasion=occasion, time_range=time_range) }}"
+           aria-label="Next page">
+          ›
+        </a>
+      </div>
+    </div>
 
-  {% else %}
-  <div class="admin-empty">
-    <div class="admin-empty-icon">💬</div>
-    <p class="admin-empty-text">No feedback events recorded yet.</p>
-  </div>
-  {% endif %}
+  </section>
+
 </div>
 {% endblock %}

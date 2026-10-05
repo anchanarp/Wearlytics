@@ -17,6 +17,8 @@ instance/
 
 # Database and migrations generated locally
 *.sqlite3
+*.sqlite
+*.db
 
 # IDE and OS files
 .vscode/
@@ -35,4 +37,12 @@ social-feed-platform/
 # Temporary evaluation chart outputs
 occasion_*.png
 season_*.png
+
+# Uploaded user media and generated collages
+app/static/uploads/*
+!app/static/uploads/.gitkeep
+!app/static/uploads/collages/
+app/static/uploads/collages/*
+!app/static/uploads/collages/.gitkeep
+
 

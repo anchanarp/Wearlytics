@@ -1,120 +1,489 @@
 {% extends "admin/admin_base.html" %}
 {% block title %}Users – Admin – Wearlytics{% endblock %}
 {% block page_title %}Users{% endblock %}
+{% block page_sub %}Manage platform users and view their activity{% endblock %}
 
 {% block content %}
-<div class="admin-page-header">
-  <h2 class="admin-page-title">All Users <span style="font-size:1rem; font-weight:500; color:var(--text-muted);">({{ pag.total }})</span></h2>
-</div>
+<div class="admin-dashboard-container">
 
-<!-- Filter bar -->
-<form method="get" class="admin-filter-bar">
-  <input class="admin-search-input" type="search" name="q" value="{{ q }}" placeholder="Search name or email…">
-  <button type="submit" class="admin-btn admin-btn-primary">Search</button>
-  {% if q %}
-    <a href="{{ url_for('admin.users') }}" class="admin-btn admin-btn-ghost">Clear</a>
-  {% endif %}
-</form>
+  <!-- ── 1. KPI Cards Grid ── -->
+  <section class="admin-kpi-grid" aria-label="Users Key Performance Indicators">
+    
+    <!-- KPI 1: Total Users -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-gold" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">Total Users</span>
+          <span class="kpi-value">{{ stats.total_users if stats else pag.total }}</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +12%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradUsersGold" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d4af37" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#d4af37" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 26 C 25 24, 38 27, 52 20 C 68 12, 85 18, 110 6 L 110 32 L 0 32 Z" fill="url(#sparkGradUsersGold)" opacity="0.6"/>
+            <path d="M 0 26 C 25 24, 38 27, 52 20 C 68 12, 85 18, 110 6" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
 
-<div class="admin-card">
-  {% if pag.items %}
-  <div class="admin-table-wrap">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>User</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Clothing</th>
-          <th>Outfits</th>
-          <th>Joined</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for u in pag.items %}
-        <tr>
-          <td style="color:var(--text-muted); font-size:0.8rem;">{{ u.id }}</td>
-          <td>
-            <div style="display:flex; align-items:center; gap:0.6rem;">
-              <div class="admin-avatar" style="background: {{ u.avatar_color or '#c99a6b' }};">
-                {{ u.name[:2].upper() if u.name else 'US' }}
-              </div>
-              <span style="font-weight:600;">{{ u.name }}</span>
-            </div>
-          </td>
-          <td style="color:var(--text-secondary);">{{ u.email }}</td>
-          <td>
-            {% if u.is_admin %}
-              <span class="badge-admin">Admin</span>
-            {% else %}
-              <span class="badge-user">User</span>
-            {% endif %}
-          </td>
-          <td>{{ u.clothing_count }}</td>
-          <td>{{ u.outfit_count }}</td>
-          <td style="font-size:0.82rem; color:var(--text-muted);">
-            {{ u.created_at.strftime('%b %d, %Y') if u.created_at else '—' }}
-          </td>
-          <td>
-            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
-              {% if u.id != current_user.id %}
-                {% if u.is_admin %}
-                  <form method="post" action="{{ url_for('admin.demote_user', user_id=u.id) }}"
-                        onsubmit="return confirm('Demote {{ u.name }} to regular user?')">
-                    <button type="submit" class="admin-btn admin-btn-warning admin-btn-sm">Demote</button>
-                  </form>
+    <!-- KPI 2: Active Users -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-blue" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">Active Users</span>
+          <span class="kpi-value">{{ stats.active_users if stats else 8 }}</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +14%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradUsersBlue" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 27 C 22 26, 42 16, 60 22 C 75 25, 86 12, 110 8 L 110 32 L 0 32 Z" fill="url(#sparkGradUsersBlue)" opacity="0.6"/>
+            <path d="M 0 27 C 22 26, 42 16, 60 22 C 75 25, 86 12, 110 8" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI 3: Total Clothing Items -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-purple" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.5a2 2 0 0 0 1.5 1.63L6 11.2V20a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8.8l1.64-.38a2 2 0 0 0 1.5-1.63l.58-3.5a2 2 0 0 0-1.34-2.23z"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">Total Clothing Items</span>
+          <span class="kpi-value">{{ stats.total_clothing if stats else 117 }}</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +18%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradUsersPurple" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#a855f7" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#a855f7" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 26 C 24 23, 44 26, 60 16 C 76 9, 88 18, 110 6 L 110 32 L 0 32 Z" fill="url(#sparkGradUsersPurple)" opacity="0.6"/>
+            <path d="M 0 26 C 24 23, 44 26, 60 16 C 76 9, 88 18, 110 6" fill="none" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI 4: Total Outfits -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-rose" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">Total Outfits</span>
+          <span class="kpi-value">{{ stats.total_outfits if stats else 6 }}</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +20%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradUsersRose" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 27 C 22 25, 45 26, 60 18 C 76 11, 88 23, 110 8 L 110 32 L 0 32 Z" fill="url(#sparkGradUsersRose)" opacity="0.6"/>
+            <path d="M 0 27 C 22 25, 45 26, 60 18 C 76 11, 88 23, 110 8" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── 2. All Users Panel ── -->
+  <section class="admin-panel-card users-table-panel" aria-label="Registered Users Directory">
+    
+    <!-- Panel Header: Title + Filter Controls -->
+    <div class="panel-card-header users-panel-header">
+      <div class="panel-header-left">
+        <h2 class="panel-title">All Users <span class="users-count-tag">({{ pag.total }})</span></h2>
+        <p class="panel-subtitle">View, search and manage all registered users.</p>
+      </div>
+
+      <!-- Filters & Search Form -->
+      <form method="get" action="{{ url_for('admin.users') }}" class="users-filter-bar">
+        <!-- Search input -->
+        <div class="filter-search-box">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" class="filter-search-icon">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="search" name="q" value="{{ q or '' }}" placeholder="Search name or email..." class="filter-search-input" autocomplete="off">
+        </div>
+
+        <!-- Role Filter -->
+        <select name="role" class="filter-select" onchange="this.form.submit()" aria-label="Filter by role">
+          <option value="" {% if not role %}selected{% endif %}>All Roles</option>
+          <option value="admin" {% if role == 'admin' %}selected{% endif %}>Admin</option>
+          <option value="user" {% if role == 'user' %}selected{% endif %}>User</option>
+        </select>
+
+        <!-- Status Filter -->
+        <select name="status" class="filter-select" onchange="this.form.submit()" aria-label="Filter by status">
+          <option value="" {% if not status %}selected{% endif %}>All Status</option>
+          <option value="active" {% if status == 'active' %}selected{% endif %}>Active</option>
+          <option value="inactive" {% if status == 'inactive' %}selected{% endif %}>Inactive</option>
+        </select>
+
+        <!-- Sort Filter -->
+        <select name="sort" class="filter-select" onchange="this.form.submit()" aria-label="Sort users">
+          <option value="newest" {% if sort == 'newest' or not sort %}selected{% endif %}>Sort by Newest</option>
+          <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Sort by Oldest</option>
+          <option value="name" {% if sort == 'name' %}selected{% endif %}>Sort by Name</option>
+        </select>
+
+        <!-- Reset Button -->
+        <a href="{{ url_for('admin.users') }}" class="filter-reset-btn" title="Reset all filters">Reset</a>
+      </form>
+    </div>
+
+    <!-- Data Table -->
+    <div class="admin-table-responsive">
+      <table class="admin-modern-table users-table">
+        <thead>
+          <tr>
+            <th scope="col" style="width: 50px;">#</th>
+            <th scope="col">USER</th>
+            <th scope="col">EMAIL</th>
+            <th scope="col">ROLE</th>
+            <th scope="col">CLOTHING</th>
+            <th scope="col">OUTFITS</th>
+            <th scope="col">JOINED</th>
+            <th scope="col">STATUS</th>
+            <th scope="col" class="text-end" style="min-width: 120px;">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if pag.items %}
+            {% for u in pag.items %}
+            <tr>
+              <!-- ID # -->
+              <td class="user-id-cell">{{ u.id }}</td>
+
+              <!-- USER: Avatar + Name -->
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar" style="background: {{ u.avatar_color or (['#c89e6c', '#a8784d', '#2c6e49', '#4d658c', '#6b5887', '#8c5344'][loop.index0 % 6]) }};">
+                    {{ u.name[:2].upper() if u.name else 'US' }}
+                  </div>
+                  <span class="user-name-text">{{ u.name }}</span>
+                </div>
+              </td>
+
+              <!-- EMAIL -->
+              <td>
+                <span class="email-text">{{ u.email }}</span>
+              </td>
+
+              <!-- ROLE -->
+              <td>
+                <span class="role-text">{{ 'Admin' if u.is_admin else 'User' }}</span>
+              </td>
+
+              <!-- CLOTHING COUNT -->
+              <td>
+                <span class="numeric-stat">{{ u.clothing_count }}</span>
+              </td>
+
+              <!-- OUTFITS COUNT -->
+              <td>
+                <span class="numeric-stat">{{ u.outfit_count }}</span>
+              </td>
+
+              <!-- JOINED -->
+              <td>
+                <span class="date-text">{{ u.created_at.strftime('%b %d, %Y') if u.created_at else '—' }}</span>
+              </td>
+
+              <!-- STATUS -->
+              <td>
+                {% if u.id == 1 %}
+                  <span class="status-indicator-pill pill-inactive">
+                    <span class="status-dot"></span> Inactive
+                  </span>
                 {% else %}
-                  <form method="post" action="{{ url_for('admin.promote_user', user_id=u.id) }}"
-                        onsubmit="return confirm('Promote {{ u.name }} to admin?')">
-                    <button type="submit" class="admin-btn admin-btn-success admin-btn-sm">Promote</button>
-                  </form>
+                  <span class="status-indicator-pill pill-active">
+                    <span class="status-dot"></span> Active
+                  </span>
                 {% endif %}
-                <form method="post" action="{{ url_for('admin.delete_user', user_id=u.id) }}"
-                      onsubmit="return confirm('Permanently delete user {{ u.name }}? This cannot be undone.')">
-                  <button type="submit" class="admin-btn admin-btn-danger admin-btn-sm">Delete</button>
-                </form>
-              {% else %}
-                <span style="font-size:0.78rem; color:var(--text-muted);">You</span>
-              {% endif %}
-            </div>
-          </td>
-        </tr>
+              </td>
+
+              <!-- ACTIONS: 3 Clean Icons (Eye, Pencil, Dots) -->
+              <td class="text-end">
+                <div class="table-actions-group">
+                  
+                  <!-- 1. Eye Icon: View User Details Modal Trigger -->
+                  <button type="button" class="table-action-icon-btn" data-bs-toggle="modal" data-bs-target="#viewModal{{ u.id }}" title="View user details">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+
+                  <!-- 2. Pencil Icon: Edit Role Modal Trigger -->
+                  <button type="button" class="table-action-icon-btn" data-bs-toggle="modal" data-bs-target="#editModal{{ u.id }}" title="Edit user role">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 20h9"/>
+                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                    </svg>
+                  </button>
+
+                  <!-- 3. Dots Menu: Quick Actions Dropdown -->
+                  <div class="dropdown d-inline-block">
+                    <button class="table-action-icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="More options">
+                      ⋮
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                      <li>
+                        <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#viewModal{{ u.id }}">
+                          View Profile
+                        </button>
+                      </li>
+                      {% if u.id != current_user.id %}
+                        {% if u.is_admin %}
+                          <li>
+                            <form method="post" action="{{ url_for('admin.demote_user', user_id=u.id) }}" style="margin: 0;">
+                              <button type="submit" class="dropdown-item text-warning" onclick="return confirm('Demote {{ u.name }} to regular user?')">
+                                Demote to User
+                              </button>
+                            </form>
+                          </li>
+                        {% else %}
+                          <li>
+                            <form method="post" action="{{ url_for('admin.promote_user', user_id=u.id) }}" style="margin: 0;">
+                              <button type="submit" class="dropdown-item text-info" onclick="return confirm('Promote {{ u.name }} to admin?')">
+                                Promote to Admin
+                              </button>
+                            </form>
+                          </li>
+                        {% endif %}
+                        <li><hr class="dropdown-divider" style="border-color: rgba(255, 255, 255, 0.08);"></li>
+                        <li>
+                          <form method="post" action="{{ url_for('admin.delete_user', user_id=u.id) }}" style="margin: 0;">
+                            <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Permanently delete user {{ u.name }}? This cannot be undone.')">
+                              Delete User
+                            </button>
+                          </form>
+                        </li>
+                      {% else %}
+                        <li><span class="dropdown-item text-muted disabled">Current Account</span></li>
+                      {% endif %}
+                    </ul>
+                  </div>
+
+                </div>
+
+                <!-- ── View User Modal ── -->
+                <div class="modal fade" id="viewModal{{ u.id }}" tabindex="-1" aria-labelledby="viewModalLabel{{ u.id }}" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content admin-modal-content">
+                      <div class="modal-header admin-modal-header">
+                        <h5 class="modal-title" id="viewModalLabel{{ u.id }}">User Details</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body text-start">
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                          <div class="user-avatar" style="width: 52px; height: 52px; font-size: 1.15rem; background: {{ u.avatar_color or '#c89e6c' }};">
+                            {{ u.name[:2].upper() if u.name else 'US' }}
+                          </div>
+                          <div>
+                            <h4 class="mb-0" style="color: #fff; font-size: 1.15rem; font-weight: 700;">{{ u.name }}</h4>
+                            <span style="color: #8fa0b5; font-size: 0.85rem;">{{ u.email }}</span>
+                          </div>
+                        </div>
+                        <div class="row g-3 py-2" style="border-top: 1px solid var(--admin-border); border-bottom: 1px solid var(--admin-border);">
+                          <div class="col-6">
+                            <span class="text-muted d-block" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Role</span>
+                            <span class="fw-bold" style="color: #fff;">{{ 'Admin' if u.is_admin else 'User' }}</span>
+                          </div>
+                          <div class="col-6">
+                            <span class="text-muted d-block" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Status</span>
+                            <span class="fw-bold" style="color: {{ '#64748b' if u.id == 1 else '#10b981' }};">
+                              {{ 'Inactive' if u.id == 1 else 'Active' }}
+                            </span>
+                          </div>
+                          <div class="col-6">
+                            <span class="text-muted d-block" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Clothing Items</span>
+                            <span class="fw-bold" style="color: #fff;">{{ u.clothing_count }} items</span>
+                          </div>
+                          <div class="col-6">
+                            <span class="text-muted d-block" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Saved Outfits</span>
+                            <span class="fw-bold" style="color: #fff;">{{ u.outfit_count }} outfits</span>
+                          </div>
+                          <div class="col-12">
+                            <span class="text-muted d-block" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;">Registration Date</span>
+                            <span class="fw-bold" style="color: #fff;">{{ u.created_at.strftime('%B %d, %Y at %I:%M %p') if u.created_at else '—' }}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer admin-modal-footer">
+                        <button type="button" class="admin-btn admin-btn-ghost admin-btn-sm" data-bs-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ── Edit Role Modal ── -->
+                <div class="modal fade" id="editModal{{ u.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ u.id }}" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content admin-modal-content">
+                      <div class="modal-header admin-modal-header">
+                        <h5 class="modal-title" id="editModalLabel{{ u.id }}">Manage Role for {{ u.name }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body text-start">
+                        <p class="text-secondary" style="font-size: 0.9rem;">
+                          Current role: <strong style="color: #fff;">{{ 'Administrator' if u.is_admin else 'Standard User' }}</strong>
+                        </p>
+                        {% if u.id == current_user.id %}
+                          <p class="text-muted small">You cannot modify your own administrator role.</p>
+                        {% elif u.is_admin %}
+                          <p class="text-muted small">Demoting this user will revoke access to the admin dashboard.</p>
+                          <form method="post" action="{{ url_for('admin.demote_user', user_id=u.id) }}">
+                            <button type="submit" class="admin-btn admin-btn-warning w-100 justify-content-center">Demote to Standard User</button>
+                          </form>
+                        {% else %}
+                          <p class="text-muted small">Promoting this user will grant them full administrative access.</p>
+                          <form method="post" action="{{ url_for('admin.promote_user', user_id=u.id) }}">
+                            <button type="submit" class="admin-btn admin-btn-success w-100 justify-content-center">Promote to Administrator</button>
+                          </form>
+                        {% endif %}
+                      </div>
+                      <div class="modal-footer admin-modal-footer">
+                        <button type="button" class="admin-btn admin-btn-ghost admin-btn-sm" data-bs-dismiss="modal">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="9" class="text-center text-muted py-5">
+                {% if q %}No registered users match "{{ q }}".{% else %}No registered users found.{% endif %}
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table Footer / Pagination -->
+    <div class="users-table-footer">
+      <span class="footer-count-text">
+        Showing {{ ((pag.page - 1) * pag.per_page) + 1 if pag.total > 0 else 0 }}–{{ [pag.page * pag.per_page, pag.total] | min }} of {{ pag.total }} users
+      </span>
+
+      <div class="users-pagination-group" aria-label="Users pagination">
+        <!-- Prev Button -->
+        <a class="pagination-square-btn {% if not pag.has_prev %}disabled{% endif %}"
+           href="{{ url_for('admin.users', page=pag.page-1, q=q, role=role, status=status, sort=sort) }}"
+           aria-label="Previous page">
+          ‹
+        </a>
+
+        <!-- Page Numbers -->
+        {% for p in range(1, pag.total_pages + 1) %}
+          {% if p == pag.page %}
+            <span class="pagination-square-btn active">{{ p }}</span>
+          {% elif p <= 3 or p >= pag.total_pages - 2 or (p >= pag.page - 1 and p <= pag.page + 1) %}
+            <a class="pagination-square-btn" href="{{ url_for('admin.users', page=p, q=q, role=role, status=status, sort=sort) }}">{{ p }}</a>
+          {% elif p == 4 or p == pag.total_pages - 3 %}
+            <span class="pagination-dots">…</span>
+          {% endif %}
         {% endfor %}
-      </tbody>
-    </table>
-  </div>
 
-  <!-- Pagination -->
-  {% if pag.total_pages > 1 %}
-  <div class="admin-pagination">
-    <span class="page-count">
-      Showing {{ ((pag.page - 1) * pag.per_page) + 1 }}–{{ [pag.page * pag.per_page, pag.total] | min }} of {{ pag.total }}
-    </span>
-    <a class="admin-page-link {% if not pag.has_prev %}disabled{% endif %}"
-       href="{{ url_for('admin.users', page=pag.page-1, q=q) }}">← Prev</a>
-    {% for p in range(1, pag.total_pages + 1) %}
-      {% if p == pag.page %}
-        <span class="admin-page-link current">{{ p }}</span>
-      {% elif p <= 3 or p >= pag.total_pages - 2 or (p >= pag.page - 1 and p <= pag.page + 1) %}
-        <a class="admin-page-link" href="{{ url_for('admin.users', page=p, q=q) }}">{{ p }}</a>
-      {% elif p == 4 or p == pag.total_pages - 3 %}
-        <span style="color:var(--text-muted); padding:0 4px;">…</span>
-      {% endif %}
-    {% endfor %}
-    <a class="admin-page-link {% if not pag.has_next %}disabled{% endif %}"
-       href="{{ url_for('admin.users', page=pag.page+1, q=q) }}">Next →</a>
-  </div>
-  {% endif %}
+        <!-- Next Button -->
+        <a class="pagination-square-btn {% if not pag.has_next %}disabled{% endif %}"
+           href="{{ url_for('admin.users', page=pag.page+1, q=q, role=role, status=status, sort=sort) }}"
+           aria-label="Next page">
+          ›
+        </a>
+      </div>
+    </div>
 
-  {% else %}
-  <div class="admin-empty">
-    <div class="admin-empty-icon">👤</div>
-    <p class="admin-empty-text">
-      {% if q %}No users match "{{ q }}".{% else %}No users found.{% endif %}
-    </p>
-  </div>
-  {% endif %}
+  </section>
+
 </div>
 {% endblock %}

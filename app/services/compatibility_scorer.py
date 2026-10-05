@@ -326,34 +326,85 @@ def _season_score(items: list, season: Optional[str]) -> float:
     return round(matches / len(item_seasons), 3) if item_seasons else 0.5
 
 
-def _preference_score(items: list, user_prefs) -> float:
+def _color_in_set(color_val: str, color_hex: str, target_set: set[str]) -> bool:
+    """Helper to check if an item's color or hex matches any target in target_set."""
+    if not color_val and not color_hex:
+        return False
+    from app.utils.colors import resolve_color_hex
+    norm_val = (color_val or "").strip().lower()
+    norm_hex = (color_hex or resolve_color_hex(color_val)).strip().lower()
+
+    for target in target_set:
+        t_clean = target.strip().lower()
+        if t_clean == norm_val or t_clean == norm_hex:
+            return True
+        t_hex = resolve_color_hex(t_clean).strip().lower()
+        if t_hex == norm_hex or t_hex == norm_val:
+            return True
+    return False
+
+
+def _preference_score(items: list, user_prefs, occasion: Optional[str] = None) -> float:
     """
     Boost score for items matching user's preferred colors, styles, occasions,
-    and seasons.  Penalise disliked colors.
+    and seasons. Penalise disliked colors.
+    Respects master switch use_preferences and individual category toggles:
+    use_color, use_style, use_occasion, use_season, use_fit_preference.
     """
-    if not user_prefs:
+    if not user_prefs or not getattr(user_prefs, "use_preferences", True):
         return 0.5
 
-    preferred_colors   = set(user_prefs.preferred_colors_list)
-    preferred_styles   = set(user_prefs.preferred_styles_list)
-    preferred_occasions = set(getattr(user_prefs, "preferred_occasions_list", []) or [])
-    preferred_seasons   = set(getattr(user_prefs, "preferred_seasons_list", []) or [])
-    disliked_colors    = set(user_prefs.disliked_colors_list)
+    # Category toggles
+    use_color     = getattr(user_prefs, "use_color", True)
+    use_style     = getattr(user_prefs, "use_style", True)
+    use_occasion  = getattr(user_prefs, "use_occasion", True)
+    use_season    = getattr(user_prefs, "use_season", True)
+    use_fit       = getattr(user_prefs, "use_fit_preference", False)
+
+    preferred_colors    = set(user_prefs.preferred_colors_list) if use_color else set()
+    disliked_colors     = set(user_prefs.disliked_colors_list) if use_color else set()
+    preferred_styles    = set(user_prefs.preferred_styles_list) if use_style else set()
+    preferred_occasions = set(getattr(user_prefs, "preferred_occasions_list", []) or []) if use_occasion else set()
+    preferred_seasons   = set(getattr(user_prefs, "preferred_seasons_list", []) or []) if use_season else set()
 
     score = 0.5
+
+    # Check occasion match
+    if use_occasion and occasion and preferred_occasions:
+        occ_clean = occasion.strip().lower()
+        if any(po.strip().lower() == occ_clean for po in preferred_occasions):
+            score += 0.08
+
+    # Check fit preference match
+    fit_pref = (getattr(user_prefs, "fit_preference", "") or "").strip().lower() if use_fit else ""
+
     for item in items:
         color  = getattr(item, "color", "") or ""
-        style  = getattr(item, "style", "") or ""
-        season = getattr(item, "season", "") or ""
+        color_hex = getattr(item, "detected_color_hex", "") or ""
+        style  = (getattr(item, "style", "") or "").strip().lower()
+        season = (getattr(item, "season", "") or "").strip().lower()
+        clothing_type = (getattr(item, "clothing_type", "") or "").strip().lower()
+        notes = (getattr(item, "notes", "") or "").strip().lower()
 
-        if color in preferred_colors:
+        # Preferred color bonus
+        if preferred_colors and _color_in_set(color, color_hex, preferred_colors):
             score += 0.12
-        if style in preferred_styles:
-            score += 0.10
-        if season and season in preferred_seasons:
-            score += 0.06
-        if color in disliked_colors:
+
+        # Disliked color penalty
+        if disliked_colors and _color_in_set(color, color_hex, disliked_colors):
             score -= 0.25
+
+        # Preferred style bonus
+        if preferred_styles and any(ps.strip().lower() in style or style in ps.strip().lower() for ps in preferred_styles):
+            score += 0.10
+
+        # Preferred season bonus
+        if preferred_seasons and any(ss.strip().lower() == season for ss in preferred_seasons):
+            score += 0.06
+
+        # Fit preference bonus
+        if fit_pref and (fit_pref in clothing_type or fit_pref in notes):
+            score += 0.05
 
     return round(max(0.0, min(1.0, score)), 3)
 
@@ -434,7 +485,7 @@ def calculate(
     cat    = _category_score(items)
     occ    = _occasion_score(items, occasion)
     seas   = _season_score(items, season)
-    pref   = _preference_score(items, user_prefs)
+    pref   = _preference_score(items, user_prefs, occasion)
     nov    = _novelty_score(items)
     fav    = _favourite_score(items)
 

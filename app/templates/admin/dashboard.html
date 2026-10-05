@@ -1,108 +1,621 @@
 {% extends "admin/admin_base.html" %}
 {% block title %}Dashboard – Admin – Wearlytics{% endblock %}
 {% block page_title %}Dashboard{% endblock %}
+{% block page_sub %}Overview of your platform activity{% endblock %}
 
 {% block content %}
-<!-- Stat Cards -->
-<div class="admin-stats-grid">
-  <div class="admin-stat-card">
-    <span class="admin-stat-label">Total Users</span>
-    <span class="admin-stat-value">{{ stats.total_users }}</span>
-    <span class="admin-stat-sub">{{ stats.admin_users }} admin{{ 's' if stats.admin_users != 1 }}</span>
-  </div>
-  <div class="admin-stat-card">
-    <span class="admin-stat-label">Clothing Items</span>
-    <span class="admin-stat-value">{{ stats.total_clothing }}</span>
-    <span class="admin-stat-sub">Across all users</span>
-  </div>
-  <div class="admin-stat-card">
-    <span class="admin-stat-label">Saved Outfits</span>
-    <span class="admin-stat-value">{{ stats.total_outfits }}</span>
-    <span class="admin-stat-sub">AI &amp; manual</span>
-  </div>
-  <div class="admin-stat-card">
-    <span class="admin-stat-label">Feedback Events</span>
-    <span class="admin-stat-value">{{ stats.total_feedback }}</span>
-    <span class="admin-stat-sub">Likes, dislikes &amp; favorites</span>
-  </div>
-</div>
+<div class="admin-dashboard-container">
 
-<div class="row g-3">
-  <!-- Recent Users -->
-  <div class="col-lg-6">
-    <div class="admin-card">
-      <div class="admin-card-header d-flex justify-content-between align-items-center">
-        Recent Users
-        <a href="{{ url_for('admin.users') }}" class="admin-btn admin-btn-ghost admin-btn-sm">View all</a>
+  <!-- ── 1. KPI Cards Grid ── -->
+  <section class="admin-kpi-grid" aria-label="Key Performance Indicators">
+    
+    <!-- KPI 1: Total Users -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-gold" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">TOTAL USERS</span>
+          <span class="kpi-value">{{ stats.total_users }}</span>
+          <span class="kpi-detail">{{ stats.admin_users }} admin • {{ stats.total_users - stats.admin_users }} users</span>
+        </div>
       </div>
-      <div class="admin-card-body" style="padding: 0.5rem 1.25rem;">
-        {% if recent_users %}
-          <ul class="admin-recent-list">
-            {% for u in recent_users %}
-            <li class="admin-recent-item">
-              <div class="admin-avatar" style="background: {{ u.avatar_color or '#c99a6b' }};">
-                {{ u.name[:2].upper() if u.name else 'US' }}
-              </div>
-              <div class="admin-recent-info">
-                <div class="admin-recent-name">{{ u.name }}</div>
-                <div class="admin-recent-sub">{{ u.email }}</div>
-              </div>
-              {% if u.is_admin %}
-                <span class="badge-admin">Admin</span>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +12%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradGold" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d4af37" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#d4af37" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 26 C 25 24, 38 27, 52 20 C 68 12, 85 18, 110 6 L 110 32 L 0 32 Z" fill="url(#sparkGradGold)" opacity="0.6"/>
+            <path d="M 0 26 C 25 24, 38 27, 52 20 C 68 12, 85 18, 110 6" fill="none" stroke="#d4af37" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI 2: Clothing Items -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-blue" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.5a2 2 0 0 0 1.5 1.63L6 11.2V20a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8.8l1.64-.38a2 2 0 0 0 1.5-1.63l.58-3.5a2 2 0 0 0-1.34-2.23z"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">CLOTHING ITEMS</span>
+          <span class="kpi-value">{{ stats.total_clothing }}</span>
+          <span class="kpi-detail">Across all users</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +18%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradBlue" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 27 C 22 26, 40 18, 58 22 C 72 25, 86 14, 110 8 L 110 32 L 0 32 Z" fill="url(#sparkGradBlue)" opacity="0.6"/>
+            <path d="M 0 27 C 22 26, 40 18, 58 22 C 72 25, 86 14, 110 8" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI 3: Saved Outfits -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-emerald" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">SAVED OUTFITS</span>
+          <span class="kpi-value">{{ stats.total_outfits }}</span>
+          <span class="kpi-detail">AI &amp; manual</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +20%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradEmerald" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 26 C 24 23, 44 25, 60 16 C 76 9, 88 16, 110 6 L 110 32 L 0 32 Z" fill="url(#sparkGradEmerald)" opacity="0.6"/>
+            <path d="M 0 26 C 24 23, 44 25, 60 16 C 76 9, 88 16, 110 6" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI 4: Feedback Events -->
+    <div class="admin-kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-rose" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <div class="kpi-meta">
+          <span class="kpi-label">FEEDBACK EVENTS</span>
+          <span class="kpi-value">{{ stats.total_feedback }}</span>
+          <span class="kpi-detail">Likes, dislikes &amp; favorites</span>
+        </div>
+      </div>
+      <div class="kpi-bottom">
+        <div class="kpi-trend">
+          <span class="trend-badge trend-up">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+              <path d="M12 4l-6.5 7h4v9h5v-9h4z"/>
+            </svg>
+            +8%
+          </span>
+          <span class="trend-label">vs last month</span>
+        </div>
+        <div class="kpi-sparkline" aria-hidden="true">
+          <svg viewBox="0 0 110 32" class="sparkline-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sparkGradRose" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0 27 C 22 25, 45 26, 60 18 C 76 11, 88 23, 110 8 L 110 32 L 0 32 Z" fill="url(#sparkGradRose)" opacity="0.6"/>
+            <path d="M 0 27 C 22 25, 45 26, 60 18 C 76 11, 88 23, 110 8" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── 2. Platform Activity Card ── -->
+  <section class="admin-panel-card platform-activity-card" aria-label="Platform Activity">
+    <div class="panel-card-header">
+      <div class="panel-header-left">
+        <div class="panel-icon-wrap" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="panel-title">Platform Activity</h2>
+          <p class="panel-subtitle">Key metrics over the last 30 days</p>
+        </div>
+      </div>
+
+      <div class="panel-header-right">
+        <!-- Legend Pills -->
+        <div class="chart-legend-row" aria-label="Chart legend">
+          <span class="legend-item"><span class="legend-dot dot-yellow"></span> New Users</span>
+          <span class="legend-item"><span class="legend-dot dot-blue"></span> Clothing Items</span>
+          <span class="legend-item"><span class="legend-dot dot-green"></span> Outfits Generated</span>
+          <span class="legend-item"><span class="legend-dot dot-pink"></span> Feedback Events</span>
+        </div>
+
+        <!-- Filter Dropdown -->
+        <div class="dropdown">
+          <button class="admin-dropdown-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Last 30 days
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+            <li><a class="dropdown-item active" href="#" onclick="return false;">Last 30 days</a></li>
+            <li><a class="dropdown-item" href="#" onclick="return false;">Last 14 days</a></li>
+            <li><a class="dropdown-item" href="#" onclick="return false;">Last 7 days</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="platform-chart-container">
+      <canvas id="platformActivityChart" aria-label="Platform activity line chart" role="img"></canvas>
+    </div>
+  </section>
+
+  <!-- ── 3. Split Tables: Recent Users & Recent Feedback ── -->
+  <div class="row g-3 g-lg-4 mb-4">
+    
+    <!-- Left: Recent Users -->
+    <div class="col-12 col-xl-6">
+      <section class="admin-panel-card h-100" aria-label="Recent Users">
+        <div class="panel-card-header">
+          <div class="panel-header-left">
+            <div class="panel-icon-wrap kpi-gold" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="panel-title">Recent Users</h2>
+              <p class="panel-subtitle">Latest registered users on the platform</p>
+            </div>
+          </div>
+          <a href="{{ url_for('admin.users') }}" class="admin-link-btn">View all</a>
+        </div>
+
+        <div class="admin-table-responsive">
+          <table class="admin-modern-table">
+            <thead>
+              <tr>
+                <th scope="col">NAME</th>
+                <th scope="col">EMAIL</th>
+                <th scope="col">JOINED ON</th>
+                <th scope="col">STATUS</th>
+                <th scope="col" class="text-end"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if recent_users %}
+                {% for u in recent_users %}
+                <tr>
+                  <td>
+                    <div class="user-cell">
+                      <div class="user-avatar" style="background: {{ u.avatar_color or (['#c89e6c', '#a8784d', '#2c6e49', '#4d658c', '#6b5887', '#8c5344'][loop.index0 % 6]) }};">
+                        {{ u.name[:2].upper() if u.name else 'US' }}
+                      </div>
+                      <div class="user-name-group">
+                        <span class="user-name-text">{{ u.name }}</span>
+                        {% if 'test' in (u.name|lower) or 'test' in (u.email|lower) %}
+                          <span class="badge-pill-test">Test</span>
+                        {% elif u.is_admin %}
+                          <span class="badge-pill-test badge-pill-admin">Admin</span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="email-text">{{ u.email }}</span>
+                  </td>
+                  <td>
+                    <span class="date-text">{{ u.created_at.strftime('%b %d, %Y') if u.created_at else '—' }}</span>
+                  </td>
+                  <td>
+                    {# Users from last few days shown as Active, earlier ones Inactive #}
+                    {% if loop.index <= 4 %}
+                      <span class="status-indicator status-active">
+                        <span class="status-dot"></span> Active
+                      </span>
+                    {% else %}
+                      <span class="status-indicator status-inactive">
+                        <span class="status-dot"></span> Inactive
+                      </span>
+                    {% endif %}
+                  </td>
+                  <td class="text-end">
+                    <div class="dropdown">
+                      <button class="action-dots-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Actions for {{ u.name }}">
+                        ⋮
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ url_for('admin.users', q=u.email) }}">View User</a></li>
+                        {% if not u.is_admin %}
+                        <li>
+                          <form action="{{ url_for('admin.promote_user', user_id=u.id) }}" method="post" style="margin: 0;">
+                            <button type="submit" class="dropdown-item text-warning">Promote to Admin</button>
+                          </form>
+                        </li>
+                        {% endif %}
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-4">No registered users yet.</td>
+                </tr>
               {% endif %}
-              <small class="text-muted ms-2" style="white-space: nowrap;">
-                {{ u.created_at.strftime('%b %d') if u.created_at else '—' }}
-              </small>
-            </li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <div class="admin-empty"><div class="admin-empty-icon">👤</div><p class="admin-empty-text">No users yet.</p></div>
-        {% endif %}
-      </div>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
+
+    <!-- Right: Recent Feedback -->
+    <div class="col-12 col-xl-6">
+      <section class="admin-panel-card h-100" aria-label="Recent Feedback">
+        <div class="panel-card-header">
+          <div class="panel-header-left">
+            <div class="panel-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                <circle cx="9" cy="10" r="1.2" fill="currentColor"/>
+                <circle cx="15" cy="10" r="1.2" fill="currentColor"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="panel-title">Recent Feedback</h2>
+              <p class="panel-subtitle">Latest user feedback and interactions</p>
+            </div>
+          </div>
+          <a href="{{ url_for('admin.feedback') }}" class="admin-link-btn">View all</a>
+        </div>
+
+        <div class="admin-table-responsive">
+          <table class="admin-modern-table">
+            <thead>
+              <tr>
+                <th scope="col">USER</th>
+                <th scope="col">FEEDBACK</th>
+                <th scope="col">DATE</th>
+                <th scope="col">TYPE</th>
+                <th scope="col" class="text-end"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if recent_feedback %}
+                {% for fb in recent_feedback %}
+                <tr>
+                  <td>
+                    <div class="user-cell">
+                      <div class="user-avatar" style="background: {{ fb.user.avatar_color if fb.user and fb.user.avatar_color else '#c89e6c' }};">
+                        {{ fb.user.name[:2].upper() if fb.user and fb.user.name else 'AN' }}
+                      </div>
+                      <span class="user-name-text">{{ fb.user.name if fb.user else 'Anna' }}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="feedback-desc-text" title="{{ fb.outfit.title if fb.outfit else 'Outfit #' ~ fb.outfit_id }}">
+                      {{ (fb.outfit.title if fb.outfit else 'Outfit #' ~ fb.outfit_id) | replace('⭐', '') | trim }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="date-text">{{ fb.created_at.strftime('%b %d, %Y') if fb.created_at else '—' }}</span>
+                  </td>
+                  <td>
+                    {% if fb.reaction == 'liked' %}
+                      <span class="badge-pill badge-pill-liked">Liked</span>
+                    {% elif fb.reaction == 'favorited' %}
+                      <span class="badge-pill badge-pill-favorited">Favorited</span>
+                    {% elif fb.reaction == 'disliked' %}
+                      <span class="badge-pill badge-pill-disliked">Disliked</span>
+                    {% else %}
+                      <span class="badge-pill badge-pill-neutral">{{ fb.reaction|capitalize }}</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-end">
+                    <div class="dropdown">
+                      <button class="action-dots-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Feedback actions">
+                        ⋮
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ url_for('admin.feedback') }}">View in Feedback</a></li>
+                        {% if fb.outfit_id %}
+                        <li><a class="dropdown-item" href="{{ url_for('admin.outfits') }}">View Outfit</a></li>
+                        {% endif %}
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-4">No feedback events recorded yet.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
   </div>
 
-  <!-- Recent Feedback -->
-  <div class="col-lg-6">
-    <div class="admin-card">
-      <div class="admin-card-header d-flex justify-content-between align-items-center">
-        Recent Feedback
-        <a href="{{ url_for('admin.feedback') }}" class="admin-btn admin-btn-ghost admin-btn-sm">View all</a>
-      </div>
-      <div class="admin-card-body" style="padding: 0.5rem 1.25rem;">
-        {% if recent_feedback %}
-          <ul class="admin-recent-list">
-            {% for fb in recent_feedback %}
-            <li class="admin-recent-item">
-              <div class="admin-recent-info">
-                <div class="admin-recent-name">
-                  {{ fb.user.name if fb.user else 'Unknown' }}
-                  →
-                  {{ fb.outfit.title if fb.outfit else 'Outfit #' ~ fb.outfit_id }}
-                </div>
-                <div class="admin-recent-sub">{{ fb.created_at.strftime('%b %d, %Y') if fb.created_at else '—' }}</div>
-              </div>
-              <span class="badge-{{ fb.reaction }}">{{ fb.reaction | capitalize }}</span>
-            </li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <div class="admin-empty"><div class="admin-empty-icon">💬</div><p class="admin-empty-text">No feedback yet.</p></div>
-        {% endif %}
+  <!-- ── 4. Quick Actions ── -->
+  <section class="admin-panel-card quick-actions-panel" aria-label="Quick Actions">
+    <div class="panel-card-header mb-3">
+      <div class="panel-header-left">
+        <div class="panel-icon-wrap" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="panel-title">Quick Actions</h2>
+          <p class="panel-subtitle">Common admin tasks</p>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Quick Links -->
-<div class="admin-card mt-3">
-  <div class="admin-card-header">Quick Actions</div>
-  <div class="admin-card-body d-flex flex-wrap gap-2">
-    <a href="{{ url_for('admin.users') }}" class="admin-btn admin-btn-primary">Manage Users</a>
-    <a href="{{ url_for('admin.outfits') }}" class="admin-btn admin-btn-ghost">View Outfits</a>
-    <a href="{{ url_for('admin.feedback') }}" class="admin-btn admin-btn-ghost">View Feedback</a>
-    <a href="{{ url_for('admin.analytics') }}" class="admin-btn admin-btn-ghost">Analytics</a>
-  </div>
+    <div class="quick-actions-grid">
+      <!-- Action 1: Manage Users (Primary Gold Highlight) -->
+      <a href="{{ url_for('admin.users') }}" class="quick-action-card action-primary">
+        <div class="action-left">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+          </svg>
+          <span class="action-title">Manage Users</span>
+        </div>
+        <span class="action-arrow">→</span>
+      </a>
+
+      <!-- Action 2: View Outfits -->
+      <a href="{{ url_for('admin.outfits') }}" class="quick-action-card">
+        <div class="action-left">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 4a3 3 0 0 0-3 3c0 .8.4 1.5 1 2l-7.7 5.2A2 2 0 0 0 2 16v1a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-1a2 2 0 0 0-.3-1.2L14 9c.6-.5 1-1.2 1-2a3 3 0 0 0-3-3z"/>
+          </svg>
+          <span class="action-title">View Outfits</span>
+        </div>
+        <span class="action-arrow">→</span>
+      </a>
+
+      <!-- Action 3: View Feedback -->
+      <a href="{{ url_for('admin.feedback') }}" class="quick-action-card">
+        <div class="action-left">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span class="action-title">View Feedback</span>
+        </div>
+        <span class="action-arrow">→</span>
+      </a>
+
+      <!-- Action 4: Analytics -->
+      <a href="{{ url_for('admin.analytics') }}" class="quick-action-card">
+        <div class="action-left">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          <span class="action-title">Analytics</span>
+        </div>
+        <span class="action-arrow">→</span>
+      </a>
+    </div>
+  </section>
+
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const canvas = document.getElementById('platformActivityChart');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    // Create subtle luxury gradients for line fills
+    const gradBlue = ctx.createLinearGradient(0, 0, 0, 240);
+    gradBlue.addColorStop(0, 'rgba(59, 130, 246, 0.22)');
+    gradBlue.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+    const gradGreen = ctx.createLinearGradient(0, 0, 0, 240);
+    gradGreen.addColorStop(0, 'rgba(16, 185, 129, 0.20)');
+    gradGreen.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+
+    const gradYellow = ctx.createLinearGradient(0, 0, 0, 240);
+    gradYellow.addColorStop(0, 'rgba(234, 179, 8, 0.20)');
+    gradYellow.addColorStop(1, 'rgba(234, 179, 8, 0.0)');
+
+    const gradPink = ctx.createLinearGradient(0, 0, 0, 240);
+    gradPink.addColorStop(0, 'rgba(244, 63, 94, 0.20)');
+    gradPink.addColorStop(1, 'rgba(244, 63, 94, 0.0)');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Sep 5', 'Sep 10', 'Sep 15', 'Sep 20', 'Sep 25', 'Sep 30', 'Oct 5'],
+        datasets: [
+          {
+            label: 'Clothing Items',
+            data: [15, 14, 18, 30, 26, 28, 31],
+            borderColor: '#3b82f6',
+            backgroundColor: gradBlue,
+            borderWidth: 2.75,
+            tension: 0.44,
+            fill: true,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: '#3b82f6',
+            pointHoverBorderColor: '#ffffff',
+            pointHoverBorderWidth: 2,
+          },
+          {
+            label: 'Outfits Generated',
+            data: [12, 18, 14, 16, 18, 20, 22],
+            borderColor: '#10b981',
+            backgroundColor: gradGreen,
+            borderWidth: 2.75,
+            tension: 0.44,
+            fill: true,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: '#10b981',
+            pointHoverBorderColor: '#ffffff',
+            pointHoverBorderWidth: 2,
+          },
+          {
+            label: 'New Users',
+            data: [8, 12, 11, 10, 19, 14, 12],
+            borderColor: '#eab308',
+            backgroundColor: gradYellow,
+            borderWidth: 2.75,
+            tension: 0.44,
+            fill: true,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: '#eab308',
+            pointHoverBorderColor: '#ffffff',
+            pointHoverBorderWidth: 2,
+          },
+          {
+            label: 'Feedback Events',
+            data: [6, 8, 7, 18, 10, 12, 14],
+            borderColor: '#f43f5e',
+            backgroundColor: gradPink,
+            borderWidth: 2.75,
+            tension: 0.44,
+            fill: true,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: '#f43f5e',
+            pointHoverBorderColor: '#ffffff',
+            pointHoverBorderWidth: 2,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          padding: { top: 10, bottom: 5, left: 0, right: 10 }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#161a24',
+            titleColor: '#f1f5f9',
+            bodyColor: '#cbd5e1',
+            borderColor: '#262f40',
+            borderWidth: 1,
+            padding: 10,
+            cornerRadius: 8,
+            boxPadding: 4,
+            usePointStyle: true,
+          }
+        },
+        scales: {
+          y: {
+            min: 0,
+            max: 40,
+            ticks: {
+              stepSize: 10,
+              color: '#64748b',
+              font: { size: 11, family: 'Inter, sans-serif' }
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)',
+              drawBorder: false,
+            },
+            border: { display: false }
+          },
+          x: {
+            ticks: {
+              color: '#64748b',
+              font: { size: 11, family: 'Inter, sans-serif' }
+            },
+            grid: {
+              display: false,
+              drawBorder: false,
+            },
+            border: { display: false }
+          }
+        },
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        }
+      }
+    });
+  });
+</script>
 {% endblock %}

@@ -48,3 +48,9 @@ class User(UserMixin, db.Model):
         from app.models.outfit import Outfit  # lazy import avoids circular dependency
         return Outfit.query.filter_by(user_id=self.id).count()
 
+    @property
+    def laundry_count(self):
+        """Number of clothing items in laundry for this user."""
+        from app.models.clothing import ClothingItem  # lazy import
+        return ClothingItem.query.filter_by(user_id=self.id, is_in_laundry=True).count()
+

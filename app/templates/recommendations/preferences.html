@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}⚙️ My Preferences | Wearlytics{% endblock %}
+{% block title %}My Preferences | Wearlytics{% endblock %}
 
 {% block content %}
 
@@ -7,7 +7,7 @@
 <div class="page-heading">
   <div>
     <p class="eyebrow">✦ Personalisation</p>
-    <h1>⚙️ My Preferences</h1>
+    <h1>My Preferences</h1>
     <p>Personalise your AI Stylist to match your style and preferences.</p>
   </div>
   <a href="{{ url_for('stylist.index') }}" class="btn light-button">← Back to AI Stylist</a>
@@ -18,11 +18,14 @@
   {# ═══ LEFT COLUMN ══════════════════════════════════════════════════════ #}
   <div class="prefs-main">
 
-    {# ── 👤 Style Profile Card ──────────────────────────────────────────── #}
+    {# ── Style Profile Card ──────────────────────────────────────────────── #}
     <div class="custom-card-box prefs-profile-card mb-4">
       <div class="prefs-profile-row">
         <div>
-          <p class="eyebrow mb-1">👤 Your Style Profile</p>
+          <p class="eyebrow mb-1" style="display:flex;align-items:center;gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Your Style Profile</span>
+          </p>
           <div class="prefs-profile-summary">
             <span class="profile-chip">{{ prefs.gender or '—' }}</span>
             {% if prefs.height_cm %}<span class="profile-chip">{{ prefs.height_cm }} cm</span>{% endif %}
@@ -31,7 +34,10 @@
             {% if prefs.fit_preference %}<span class="profile-chip">{{ prefs.fit_preference }}</span>{% endif %}
           </div>
         </div>
-        <button type="button" class="btn light-button" id="edit-profile-btn">✏️ Edit Profile</button>
+        <button type="button" class="btn light-button" id="edit-profile-btn" style="display:inline-flex;align-items:center;gap:5px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          <span id="edit-profile-label">Edit Profile</span>
+        </button>
       </div>
 
       <div id="edit-profile-section" class="prefs-edit-profile" style="display:none;">
@@ -142,9 +148,9 @@
           <div class="checkbox-pill-grid">
             {% set colors = ['Black','White','Beige','Navy','Brown','Blue','Grey','Green','Red','Pink','Purple','Yellow','Orange','Cream','Maroon'] %}
             {% for c in colors %}
-            <label class="checkbox-pill {% if c in prefs.preferred_colors_list %}checked{% endif %}">
+            <label class="checkbox-pill {% if prefs.has_preferred_color(c) %}checked{% endif %}">
               <input type="checkbox" name="colors" value="{{ c }}"
-                     {% if c in prefs.preferred_colors_list %}checked{% endif %}>{{ c }}
+                     {% if prefs.has_preferred_color(c) %}checked{% endif %}>{{ c }}
             </label>
             {% endfor %}
           </div>
@@ -290,8 +296,9 @@
         </div>
 
         <div class="mt-5">
-          <button type="submit" class="btn primary-button w-100 py-3" style="font-size:16px;">
-            💾 Save Preferences
+          <button type="submit" class="btn primary-button w-100 py-3" style="font-size:16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            <span>Save Preferences</span>
           </button>
         </div>
 
@@ -303,7 +310,10 @@
   <div class="prefs-sidebar">
 
     <div class="custom-card-box prefs-learned-card">
-      <p class="eyebrow mb-1">🧠 Learned Preferences</p>
+      <p class="eyebrow mb-1" style="display:flex;align-items:center;gap:6px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a5 5 0 0 1 5 5c0 2-1 3.5-2.5 4.5V13a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-1.5C8 10.5 7 9 7 7a5 5 0 0 1 5-5z"></path><path d="M10 17h4"></path><path d="M11 20h2"></path></svg>
+        <span>Learned Preferences</span>
+      </p>
       <h3 class="mt-0">Auto-Learned</h3>
       <p class="text-muted small mb-4">Based on your AI Stylist interactions.
         <strong>{{ feedback_count }}</strong> feedback action{{ 's' if feedback_count != 1 else '' }} recorded.</p>
@@ -312,7 +322,11 @@
         <strong class="pref-learned-title">Preferred Colors</strong>
         <div class="color-pills mt-2">
           {% for color in prefs.preferred_colors_list %}
-            <span class="color-pill-tag">{{ color }}</span>
+            {% set cinfo = color|color_info %}
+            <span class="color-pill-tag" title="{{ color }}">
+              <span class="color-swatch-dot" style="background-color: {{ cinfo.hex }};"></span>
+              <span>{{ cinfo.name }}</span>
+            </span>
           {% else %}
             <span class="text-muted small">None yet — like some outfits first!</span>
           {% endfor %}
@@ -323,7 +337,11 @@
         <strong class="pref-learned-title">Disliked Colors</strong>
         <div class="color-pills mt-2">
           {% for color in prefs.disliked_colors_list %}
-            <span class="color-pill-tag disliked">{{ color }}</span>
+            {% set cinfo = color|color_info %}
+            <span class="color-pill-tag disliked" title="{{ color }}">
+              <span class="color-swatch-dot" style="background-color: {{ cinfo.hex }};"></span>
+              <span>{{ cinfo.name }}</span>
+            </span>
           {% else %}
             <span class="text-muted small">None yet.</span>
           {% endfor %}
@@ -342,15 +360,16 @@
       </div>
 
       <div class="prefs-learned-actions mt-4">
-        <button type="button" class="btn light-button w-100 mb-2" id="view-details-btn">
-          🔍 View Details
+        <button type="button" class="btn light-button w-100 mb-2" id="view-details-btn" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span>View Details</span>
         </button>
-        <button type="button" class="btn prefs-clear-btn w-100" id="clear-learned-btn">
-            🗑️ Clear Learned Preferences
+        <form method="post" action="{{ url_for('recommendations.clear_learned_preferences') }}" onsubmit="return confirm('Are you sure you want to clear your learned preferences and feedback history?');">
+          <button type="submit" class="btn prefs-clear-btn w-100" id="clear-learned-btn" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            <span>Clear Learned Preferences</span>
           </button>
-        <div id="clear-learned-msg" class="text-muted small mt-2" style="display:none;">
-            Learned preferences will be cleared when this feature is connected.
-        </div>
+        </form>
       </div>
     </div>
 
@@ -361,7 +380,10 @@
 <div id="learned-details-modal" class="prefs-details-modal" style="display:none;">
   <div class="prefs-details-box">
     <div class="prefs-details-header">
-      <h3>🧠 Learned Preference Details</h3>
+      <h3 style="display:flex;align-items:center;gap:8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a5 5 0 0 1 5 5c0 2-1 3.5-2.5 4.5V13a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-1.5C8 10.5 7 9 7 7a5 5 0 0 1 5-5z"></path><path d="M10 17h4"></path><path d="M11 20h2"></path></svg>
+        <span>Learned Preference Details</span>
+      </h3>
       <button type="button" class="stylist-modal-close" id="close-details-btn" aria-label="Close">✕</button>
     </div>
     <div class="prefs-details-body">
@@ -374,7 +396,11 @@
         <strong>Preferred Colors</strong>
         <div class="color-pills mt-2">
           {% for color in prefs.preferred_colors_list %}
-            <span class="color-pill-tag">{{ color }}</span>
+            {% set cinfo = color|color_info %}
+            <span class="color-pill-tag" title="{{ color }}">
+              <span class="color-swatch-dot" style="background-color: {{ cinfo.hex }};"></span>
+              <span>{{ cinfo.name }}</span>
+            </span>
           {% else %}<span class="text-muted small">None yet.</span>{% endfor %}
         </div>
       </div>
@@ -382,7 +408,11 @@
         <strong>Disliked Colors</strong>
         <div class="color-pills mt-2">
           {% for color in prefs.disliked_colors_list %}
-            <span class="color-pill-tag disliked">{{ color }}</span>
+            {% set cinfo = color|color_info %}
+            <span class="color-pill-tag disliked" title="{{ color }}">
+              <span class="color-swatch-dot" style="background-color: {{ cinfo.hex }};"></span>
+              <span>{{ cinfo.name }}</span>
+            </span>
           {% else %}<span class="text-muted small">None yet.</span>{% endfor %}
         </div>
       </div>
@@ -432,6 +462,57 @@
     });
   });
 
+  /* Sync Body Shape radio and select */
+  var bodyShapeSelect = document.getElementById('ep-body-shape');
+  document.querySelectorAll('input[name="body_shape_pref"]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      if (bodyShapeSelect && r.checked) bodyShapeSelect.value = r.value;
+    });
+  });
+  if (bodyShapeSelect) {
+    bodyShapeSelect.addEventListener('change', function () {
+      var radio = document.querySelector('input[name="body_shape_pref"][value="' + bodyShapeSelect.value + '"]');
+      if (radio) {
+        radio.checked = true;
+        radio.dispatchEvent(new Event('change'));
+      }
+    });
+  }
+
+  /* Sync Clothing Size radio and select */
+  var sizeSelect = document.getElementById('ep-size');
+  document.querySelectorAll('input[name="clothing_size_pref"]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      if (sizeSelect && r.checked) sizeSelect.value = r.value;
+    });
+  });
+  if (sizeSelect) {
+    sizeSelect.addEventListener('change', function () {
+      var radio = document.querySelector('input[name="clothing_size_pref"][value="' + sizeSelect.value + '"]');
+      if (radio) {
+        radio.checked = true;
+        radio.dispatchEvent(new Event('change'));
+      }
+    });
+  }
+
+  /* Sync Fit Preference radio and select */
+  var fitSelect = document.getElementById('ep-fit');
+  document.querySelectorAll('input[name="fit_preference_pref"]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      if (fitSelect && r.checked) fitSelect.value = r.value;
+    });
+  });
+  if (fitSelect) {
+    fitSelect.addEventListener('change', function () {
+      var radio = document.querySelector('input[name="fit_preference_pref"][value="' + fitSelect.value + '"]');
+      if (radio) {
+        radio.checked = true;
+        radio.dispatchEvent(new Event('change'));
+      }
+    });
+  }
+
   /* Checkbox pill visual sync */
   document.querySelectorAll('.checkbox-pill input[type="checkbox"]').forEach(function (cb) {
     cb.addEventListener('change', function () {
@@ -447,13 +528,15 @@
     editBtn.addEventListener('click', function () {
       var open = editSection.style.display !== 'none';
       editSection.style.display = open ? 'none' : '';
-      editBtn.textContent = open ? '✏️ Edit Profile' : '✕ Close';
+      var lbl = document.getElementById('edit-profile-label');
+      if (lbl) lbl.textContent = open ? 'Edit Profile' : 'Close';
     });
   }
   if (cancelBtn) {
     cancelBtn.addEventListener('click', function () {
       editSection.style.display = 'none';
-      if (editBtn) editBtn.textContent = '✏️ Edit Profile';
+      var lbl = document.getElementById('edit-profile-label');
+      if (lbl) lbl.textContent = 'Edit Profile';
     });
   }
 
