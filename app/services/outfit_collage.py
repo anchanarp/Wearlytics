@@ -5,6 +5,7 @@ Creates high-fashion, editorial outfit collages from saved clothing item images.
 
 import hashlib
 import os
+import urllib.request
 from PIL import Image, ImageOps
 from flask import current_app
 
@@ -14,7 +15,7 @@ def get_outfit_collage_url(items, canvas_size=(800, 800)) -> str:
 
     Returns the public static URL to the collage image, or a fallback image URL.
     """
-    fallback_url = "/static/img/todays_look_editorial.jpg"
+    fallback_url = "/static/img/ai_outfit_casual_chic.jpg"
 
     if not items:
         return fallback_url
@@ -27,6 +28,8 @@ def get_outfit_collage_url(items, canvas_size=(800, 800)) -> str:
         if not getattr(item, "image_url", None):
             continue
         raw_url = item.image_url.strip()
+        full_path = ""
+
         # Convert /static/... URL to local file path
         if raw_url.startswith("/static/"):
             rel_path = raw_url[len("/static/"):]
@@ -34,14 +37,39 @@ def get_outfit_collage_url(items, canvas_size=(800, 800)) -> str:
         elif raw_url.startswith("static/"):
             rel_path = raw_url[len("static/"):]
             full_path = os.path.join(current_app.static_folder, rel_path)
+        elif raw_url.startswith("http://") or raw_url.startswith("https://"):
+            # Download & cache remote images locally
+            cache_dir = os.path.join(current_app.static_folder, "uploads", "cache")
+            os.makedirs(cache_dir, exist_ok=True)
+            url_hash = hashlib.md5(raw_url.encode("utf-8")).hexdigest()
+            cached_file = os.path.join(cache_dir, f"remote_{url_hash}.jpg")
+            if not (os.path.exists(cached_file) and os.path.getsize(cached_file) > 0):
+                try:
+                    req = urllib.request.Request(
+                        raw_url,
+                        headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"}
+                    )
+                    with urllib.request.urlopen(req, timeout=3.0) as resp:
+                        content = resp.read()
+                        if content and len(content) > 100:
+                            with open(cached_file, "wb") as f:
+                                f.write(content)
+                except Exception:
+                    pass
+            if os.path.exists(cached_file) and os.path.getsize(cached_file) > 0:
+                full_path = cached_file
         else:
             full_path = raw_url
 
-        if os.path.exists(full_path):
+        if full_path and os.path.exists(full_path):
             valid_paths.append(full_path)
             item_keys.append(f"{item.id}_{os.path.basename(full_path)}")
 
     if not valid_paths:
+        # Fallback to the first available item image URL if present
+        for it in items:
+            if getattr(it, "image_url", None) and it.image_url.strip():
+                return it.image_url.strip()
         return fallback_url
 
     # Cache key
