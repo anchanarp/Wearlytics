@@ -135,6 +135,7 @@
                 <input id="otp_phone" name="phone" type="tel" placeholder="Enter your mobile number" required>
               </div>
             </div>
+            <span class="auth-input-hint" style="font-size:12px; color:#8c7662; margin-top:6px; display:block;">ℹ️ Demo mode: Enter any 10-digit mobile number. Verification code is <strong>123456</strong>.</span>
           </div>
 
           <div id="otpSendMsg" class="auth-status-inline" style="display:none;"></div>
@@ -157,6 +158,11 @@
 
       <!-- ── MODE 3: Verify OTP Step 2 (6-digit Code) ── -->
       <div id="verifyOtpSection" style="display:none;">
+        <div class="auth-demo-otp-banner" style="margin-bottom:14px; padding:10px 14px; border-radius:10px; background:rgba(217,119,6,0.08); border:1px solid rgba(217,119,6,0.25); color:#92400e; font-size:13px; text-align:center;">
+          <strong style="color:#b45309;">Demo Code:</strong> <span style="font-family:monospace; font-size:15px; font-weight:700; letter-spacing:2px; margin:0 6px;">123456</span>
+          <button type="button" onclick="autoFillDemoOtp();" style="margin-left:8px; background:#b45309; color:#fff; border:none; padding:3px 10px; border-radius:6px; font-size:12px; cursor:pointer; font-weight:600;">Auto-fill</button>
+        </div>
+
         <form id="verifyOtpForm" onsubmit="handleVerifyOtp(event);" class="auth-form">
           <div class="auth-otp-digits-row" id="otpDigitsGroup">
             <input type="text" maxlength="1" class="otp-digit" data-index="0" autofocus inputmode="numeric">
@@ -175,7 +181,7 @@
           <div id="otpVerifyMsg" class="auth-status-inline" style="display:none;"></div>
 
           <button class="auth-btn-primary" type="submit" id="btnVerifyOtp">
-            <span>Verify OTP</span>
+            <span>Verify &amp; Sign In</span>
             <span aria-hidden="true">→</span>
           </button>
 
@@ -347,12 +353,30 @@
     document.getElementById('login-heading').textContent = 'Verify OTP';
     document.getElementById('authSubtitle').textContent = "We've sent a 6-digit code to " + phoneDisplay;
 
-    // Reset OTP input boxes
-    const digits = document.querySelectorAll('.otp-digit');
-    digits.forEach(d => { d.value = ''; });
-    if (digits[0]) digits[0].focus();
-
     startResendTimer();
+
+    const verifyMsg = document.getElementById('otpVerifyMsg');
+    if (verifyMsg) {
+      verifyMsg.className = 'auth-status-inline message-info';
+      verifyMsg.innerHTML = 'Demo code <strong>123456</strong> ready! Click <strong>Auto-fill</strong> or type it in.';
+      verifyMsg.style.display = 'block';
+    }
+  }
+
+  function autoFillDemoOtp() {
+    const code = '123456';
+    const digits = document.querySelectorAll('.otp-digit');
+    digits.forEach((input, idx) => {
+      input.value = code[idx] || '';
+    });
+    const msgEl = document.getElementById('otpVerifyMsg');
+    if (msgEl) {
+      msgEl.className = 'auth-status-inline message-success';
+      msgEl.textContent = 'Demo code 123456 filled! Click Verify & Sign In.';
+      msgEl.style.display = 'block';
+    }
+    const verifyBtn = document.getElementById('btnVerifyOtp');
+    if (verifyBtn) verifyBtn.focus();
   }
 
   function backToPhoneStep() {
