@@ -399,6 +399,16 @@ def _classify_with_custom_model(image_path: str) -> Optional[dict]:
             pass  # Cross-validation failed; keep the fine-tuned result
 
         clothing_type = _DEFAULT_TYPE.get(category, "")
+        # If ImageNet also predicted this category, use its finer-grained clothing_type
+        # (e.g. Sandals, Boots, Loafers instead of default Sneakers)
+        try:
+            if '_inet_logits' in locals():
+                _inet_res = _decode_imagenet_top5(_inet_logits)
+                if _inet_res and _inet_res[0] == category and _inet_res[1]:
+                    clothing_type = _inet_res[1]
+        except Exception:
+            pass
+
         return {
             "category":      category,
             "clothing_type": clothing_type,

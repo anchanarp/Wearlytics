@@ -100,12 +100,17 @@ def _nearest_color(r: int, g: int, b: int) -> tuple[str, str]:
             return "#000000", "Black"
 
     # ------------------------------------------------------------------
-    # Red / Brown family  (hue wraps around 0°/360°)
+    # Brown family: warm orange-red / earth tones (10° <= h <= 35°) with G > B
+    # ------------------------------------------------------------------
+    if (10 <= h_deg <= 35) and s >= 0.35 and (g > b):
+        return "#A52A2A", "Brown"
+
+    # ------------------------------------------------------------------
+    # Red / Maroon family  (hue wraps around 0°/360°)
     # ------------------------------------------------------------------
     if (h_deg <= 20 or h_deg >= 345) and s >= 0.35:
-        # Brown: same hue angle as red but lower saturation + mid value
-        # e.g. RGB(165,42,42) → H=0°, S=0.75, V=0.65
-        if s < 0.82 and 0.35 <= v <= 0.72:
+        # Canonical Brown check
+        if s < 0.82 and 0.35 <= v <= 0.72 and g >= b:
             return "#A52A2A", "Brown"
         if v < 0.55:
             return "#800000", "Maroon"
