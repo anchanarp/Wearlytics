@@ -98,7 +98,14 @@ def _resolve_todays_look(user_id):
             if comp:
                 todays_items.insert(0, comp)
 
-    collage_url = get_outfit_collage_url(todays_items)
+    has_outfit = len(todays_items) > 0
+    if not has_outfit:
+        collage_url = None
+        todays_title = "No Look Planned"
+        todays_desc = "Upload clothing items to your wardrobe to get AI-powered daily outfit recommendations."
+        todays_occasion = "Daily Style"
+    else:
+        collage_url = get_outfit_collage_url(todays_items)
 
     return {
         "today_str": today_str,
@@ -110,6 +117,7 @@ def _resolve_todays_look(user_id):
         "occasion": todays_occasion,
         "is_planned_today": is_planned_today,
         "collage_url": collage_url,
+        "has_outfit": has_outfit,
     }
 
 
@@ -140,6 +148,7 @@ def home():
         todays_look_image=look["collage_url"],
         todays_title=look["title"],
         todays_desc=look["desc"],
+        todays_look_has_outfit=look["has_outfit"],
     )
 
 
@@ -157,9 +166,10 @@ def todays_look():
         outfit_title=look["title"],
         outfit_desc=look["desc"],
         outfit_occasion=look["occasion"],
-        outfit_score=94,
+        outfit_score=94 if look["has_outfit"] else None,
         is_planned_today=look["is_planned_today"],
         todays_look_image=look["collage_url"],
+        has_outfit=look["has_outfit"],
     )
 
 

@@ -92,3 +92,37 @@ def test_demo_user_seeds_wardrobe(app_client):
     register(client, "demo", "demo@demo.com", "strongpwd123", is_demo=True)
     items = get_wardrobe(client)
     assert len(items) > 0
+
+
+def test_new_user_has_clean_profile_and_no_fake_outfits(app_client):
+    client = app_client
+    register(client, "Clean User", "clean@example.com", "strongpwd123", is_demo=False)
+
+    # 1. Dashboard has no fake look image and clean empty state
+    resp_home = client.get("/")
+    assert resp_home.status_code == 200
+    html_home = resp_home.data.decode("utf-8")
+    assert "ref-todays-empty" in html_home
+    assert "ref-look-thumbnail" not in html_home
+    assert "Your wardrobe is empty" in html_home
+
+    # 2. Today's Look standalone page has clean empty card and no fake score
+    resp_look = client.get("/todays-look")
+    assert resp_look.status_code == 200
+    html_look = resp_look.data.decode("utf-8")
+    assert "todays-look-empty-card" in html_look
+    assert "No Outfit for Today Yet" in html_look
+    assert '<div class="editorial-hero-card">' not in html_look
+    assert '<div class="compatibility-score-pill">' not in html_look
+    assert "94/100" not in html_look
+
+    # 3. Profile has empty inputs and no fake phone or DOB
+    resp_prof = client.get("/profile/")
+    assert resp_prof.status_code == 200
+    html_prof = resp_prof.data.decode("utf-8")
+    assert "98765 43210" not in html_prof
+    assert "2004-08-07" not in html_prof
+    assert "07 Aug 2004" not in html_prof
+    assert "169 cm" not in html_prof
+    assert "46 kg" not in html_prof
+

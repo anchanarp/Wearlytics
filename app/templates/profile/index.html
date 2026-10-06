@@ -289,23 +289,26 @@
               <div class="style-snapshot-row">
                 <div class="snapshot-item">
                   <span class="snapshot-label">Top Style</span>
-                  <span class="snapshot-pill">{{ prefs.preferred_styles_list[0] if prefs.preferred_styles_list else 'Casual' }} +</span>
+                  <span class="snapshot-pill">{{ prefs.preferred_styles_list[0] ~ (' +' if prefs.preferred_styles_list|length > 1 else '') if prefs.preferred_styles_list else 'Not set' }}</span>
                 </div>
                 <div class="snapshot-item">
                   <span class="snapshot-label">Top Occasion</span>
-                  <span class="snapshot-pill">{{ prefs.preferred_occasions_list[0] if prefs.preferred_occasions_list else 'College' }}</span>
+                  <span class="snapshot-pill">{{ prefs.preferred_occasions_list[0] ~ (' +' if prefs.preferred_occasions_list|length > 1 else '') if prefs.preferred_occasions_list else 'Not set' }}</span>
                 </div>
                 <div class="snapshot-item">
                   <span class="snapshot-label">Top Season</span>
-                  <span class="snapshot-pill">{{ prefs.preferred_seasons_list[0] if prefs.preferred_seasons_list else 'All Seasons' }}</span>
+                  <span class="snapshot-pill">{{ prefs.preferred_seasons_list[0] if prefs.preferred_seasons_list else 'Not set' }}</span>
                 </div>
                 <div class="snapshot-item">
                   <span class="snapshot-label">Favorite Colors</span>
                   <div class="swatches-row" style="margin-top:4px;">
-                    {% set fav_colors = prefs.preferred_colors_list if prefs.preferred_colors_list else ['#cbb39c', '#7a5840', '#5c5957', '#e89b9b', '#f7eee5'] %}
-                    {% for c in fav_colors[:5] %}
-                    <span class="color-circle-swatch" style="background:{{ c }};width:20px;height:20px;"></span>
-                    {% endfor %}
+                    {% if prefs.preferred_colors_list %}
+                      {% for c in prefs.preferred_colors_list[:5] %}
+                      <span class="color-circle-swatch" style="background:{{ c }};width:20px;height:20px;"></span>
+                      {% endfor %}
+                    {% else %}
+                      <span class="text-muted" style="font-size:11.5px;">Not set</span>
+                    {% endif %}
                   </div>
                 </div>
               </div>
@@ -350,7 +353,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                     Phone
                   </span>
-                  <span class="summary-detail-val">{{ meta.get('phone', '+91 98765 43210') }}</span>
+                  <span class="summary-detail-val">{{ meta.get('phone') or 'Not set' }}</span>
                 </div>
 
                 <div class="summary-detail-row">
@@ -358,7 +361,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                     Date of Birth
                   </span>
-                  <span class="summary-detail-val">{{ meta.get('dob', '07 Aug 2004') }}</span>
+                  <span class="summary-detail-val">{{ meta.get('dob') or 'Not set' }}</span>
                 </div>
 
                 <div class="summary-detail-row">
@@ -366,7 +369,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M12 15v7M9 19h6"/></svg>
                     Gender
                   </span>
-                  <span class="summary-detail-val">{{ meta.get('gender', 'Female') }}</span>
+                  <span class="summary-detail-val">{{ meta.get('gender') or 'Not set' }}</span>
                 </div>
               </div>
             </div>
@@ -395,7 +398,7 @@
                   </div>
                   <div class="summary-fit-meta">
                     <span class="summary-fit-lbl">Height</span>
-                    <strong class="summary-fit-val">{{ meta.get('height', '169') }} cm</strong>
+                    <strong class="summary-fit-val">{% if meta.get('height') %}{{ meta.get('height') }} cm{% else %}Not set{% endif %}</strong>
                   </div>
                 </div>
 
@@ -405,7 +408,7 @@
                   </div>
                   <div class="summary-fit-meta">
                     <span class="summary-fit-lbl">Clothing Size</span>
-                    <strong class="summary-fit-val">{{ meta.get('clothing_size', 'M') }}</strong>
+                    <strong class="summary-fit-val">{{ meta.get('clothing_size') or 'Not set' }}</strong>
                   </div>
                 </div>
 
@@ -415,7 +418,7 @@
                   </div>
                   <div class="summary-fit-meta">
                     <span class="summary-fit-lbl">Weight</span>
-                    <strong class="summary-fit-val">{{ meta.get('weight', '46') }} kg</strong>
+                    <strong class="summary-fit-val">{% if meta.get('weight') %}{{ meta.get('weight') }} kg{% else %}Not set{% endif %}</strong>
                   </div>
                 </div>
 
@@ -425,7 +428,7 @@
                   </div>
                   <div class="summary-fit-meta">
                     <span class="summary-fit-lbl">Shoe Size</span>
-                    <strong class="summary-fit-val">{{ meta.get('shoe_size', '38') }}</strong>
+                    <strong class="summary-fit-val">{{ meta.get('shoe_size') or 'Not set' }}</strong>
                   </div>
                 </div>
 
@@ -435,7 +438,7 @@
                   </div>
                   <div class="summary-fit-meta">
                     <span class="summary-fit-lbl">Body Shape</span>
-                    <strong class="summary-fit-val">{{ meta.get('body_shape', 'Rectangle') }}</strong>
+                    <strong class="summary-fit-val">{{ meta.get('body_shape') or 'Not set' }}</strong>
                   </div>
                 </div>
 
@@ -445,7 +448,7 @@
                   </div>
                   <div class="summary-fit-meta">
                     <span class="summary-fit-lbl">Preferred Fit</span>
-                    <span class="snapshot-pill" style="font-size:11.5px;padding:3px 10px;">{{ meta.get('preferred_fit', 'Slim') }}</span>
+                    <span class="snapshot-pill" style="font-size:11.5px;padding:3px 10px;">{{ meta.get('preferred_fit') or 'Not set' }}</span>
                   </div>
                 </div>
               </div>
@@ -496,14 +499,14 @@
                 <div class="col-12 col-md-6">
                   <div class="luxury-form-group">
                     <label for="phone" class="luxury-field-label">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" class="luxury-input-control" value="{{ meta.get('phone', '+91 98765 43210') }}" placeholder="+91 98765 43210">
+                    <input type="tel" id="phone" name="phone" class="luxury-input-control" value="{{ meta.get('phone', '') }}" placeholder="Enter your phone number">
                   </div>
                 </div>
 
                 <div class="col-12 col-md-6">
                   <div class="luxury-form-group">
                     <label for="dob" class="luxury-field-label">Date of Birth</label>
-                    <input type="date" id="dob" name="dob" class="luxury-input-control" value="{{ meta.get('dob', '2004-08-07') }}">
+                    <input type="date" id="dob" name="dob" class="luxury-input-control" value="{{ meta.get('dob', '') }}">
                   </div>
                 </div>
 
@@ -511,7 +514,8 @@
                   <div class="luxury-form-group">
                     <label for="gender" class="luxury-field-label">Gender <small>(optional)</small></label>
                     <select id="gender" name="gender" class="luxury-input-control">
-                      <option value="Female" {% if meta.get('gender', 'Female') == 'Female' %}selected{% endif %}>Female</option>
+                      <option value="" {% if not meta.get('gender') %}selected{% endif %}>Select gender (optional)</option>
+                      <option value="Female" {% if meta.get('gender') == 'Female' %}selected{% endif %}>Female</option>
                       <option value="Male" {% if meta.get('gender') == 'Male' %}selected{% endif %}>Male</option>
                       <option value="Non-Binary" {% if meta.get('gender') == 'Non-Binary' %}selected{% endif %}>Non-Binary</option>
                       <option value="Prefer not to say" {% if meta.get('gender') == 'Prefer not to say' %}selected{% endif %}>Prefer not to say</option>
@@ -559,17 +563,17 @@
             <div class="luxury-card-body">
               <div class="row g-3">
                 <div class="col-12 col-md-6">
-                  <label for="height" class="luxury-field-label">Height</label>
+                  <label for="height" class="luxury-field-label">Height <small>(optional)</small></label>
                   <div class="luxury-input-with-suffix">
-                    <input type="number" id="height" name="height" class="luxury-input-control" value="{{ meta.get('height', '169') }}" placeholder="169" min="50" max="250">
+                    <input type="number" id="height" name="height" class="luxury-input-control" value="{{ meta.get('height', '') }}" placeholder="e.g. 170" min="50" max="250">
                     <span class="luxury-input-suffix">cm</span>
                   </div>
                 </div>
 
                 <div class="col-12 col-md-6">
-                  <label for="weight" class="luxury-field-label">Weight</label>
+                  <label for="weight" class="luxury-field-label">Weight <small>(optional)</small></label>
                   <div class="luxury-input-with-suffix">
-                    <input type="number" id="weight" name="weight" class="luxury-input-control" value="{{ meta.get('weight', '46') }}" placeholder="46" min="20" max="250">
+                    <input type="number" id="weight" name="weight" class="luxury-input-control" value="{{ meta.get('weight', '') }}" placeholder="e.g. 60" min="20" max="250">
                     <span class="luxury-input-suffix">kg</span>
                   </div>
                 </div>
@@ -578,7 +582,7 @@
               <!-- Body Shape -->
               <div class="luxury-form-group mt-3">
                 <label class="luxury-field-label">Body Shape <small>(optional)</small></label>
-                {% set active_shape = meta.get('body_shape', 'Rectangle') %}
+                {% set active_shape = meta.get('body_shape', '') %}
                 <div class="body-shapes-grid">
                   <label>
                     <input type="radio" name="body_shape" value="Rectangle" class="body-shape-radio" style="display:none;" {% if active_shape == 'Rectangle' %}checked{% endif %}>
@@ -625,9 +629,10 @@
               <!-- Sizes Row -->
               <div class="row g-3 mt-2">
                 <div class="col-12 col-md-6">
-                  <label for="clothing_size" class="luxury-field-label">Usual Clothing Size</label>
+                  <label for="clothing_size" class="luxury-field-label">Usual Clothing Size <small>(optional)</small></label>
                   <select id="clothing_size" name="clothing_size" class="luxury-input-control">
-                    {% set active_size = meta.get('clothing_size', 'M') %}
+                    <option value="" {% if not meta.get('clothing_size') %}selected{% endif %}>Select size (optional)</option>
+                    {% set active_size = meta.get('clothing_size', '') %}
                     {% for sz in ['XS', 'S', 'M', 'L', 'XL', 'XXL'] %}
                     <option value="{{ sz }}" {% if active_size == sz %}selected{% endif %}>{{ sz }}</option>
                     {% endfor %}
@@ -637,7 +642,8 @@
                 <div class="col-12 col-md-6">
                   <label for="shoe_size" class="luxury-field-label">Shoe Size <small>(optional)</small></label>
                   <select id="shoe_size" name="shoe_size" class="luxury-input-control">
-                    {% set active_shoe = meta.get('shoe_size', '38') %}
+                    <option value="" {% if not meta.get('shoe_size') %}selected{% endif %}>Select size (optional)</option>
+                    {% set active_shoe = meta.get('shoe_size', '') %}
                     {% for s in [35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45] %}
                     <option value="{{ s }}" {% if active_shoe|string == s|string %}selected{% endif %}>{{ s }}</option>
                     {% endfor %}
@@ -648,7 +654,7 @@
               <!-- Preferred Fit -->
               <div class="luxury-form-group mt-3">
                 <label class="luxury-field-label">Preferred Fit <small>(optional)</small></label>
-                {% set active_fit = meta.get('preferred_fit', 'Slim') %}
+                {% set active_fit = meta.get('preferred_fit', '') %}
                 <div class="luxury-pill-toggles">
                   {% for fit in ['Slim', 'Regular', 'Relaxed', 'Oversized'] %}
                   <label class="fit-toggle-label">
@@ -690,9 +696,9 @@
 
             <div class="luxury-card-body">
               <div class="luxury-form-group">
-                <label class="luxury-field-label">Preferred Styles</label>
+                <label class="luxury-field-label">Preferred Styles <small class="text-muted">(optional)</small></label>
                 <div class="luxury-pill-toggles">
-                  {% set user_styles = prefs.preferred_styles_list if prefs.preferred_styles_list else ['Casual'] %}
+                  {% set user_styles = prefs.preferred_styles_list if prefs.preferred_styles_list else [] %}
                   {% for style in ['Casual', 'Formal', 'Sporty', 'Streetwear', 'Ethnic', 'Business', 'Party', 'Vintage'] %}
                   <label class="fit-toggle-label">
                     <input type="checkbox" name="styles" value="{{ style }}" class="fit-toggle-input" style="display:none;" {% if style in user_styles %}checked{% endif %}>
@@ -703,9 +709,9 @@
               </div>
 
               <div class="luxury-form-group mt-3">
-                <label class="luxury-field-label">Preferred Occasions</label>
+                <label class="luxury-field-label">Preferred Occasions <small class="text-muted">(optional)</small></label>
                 <div class="luxury-pill-toggles">
-                  {% set user_occasions = prefs.preferred_occasions_list if prefs.preferred_occasions_list else ['College'] %}
+                  {% set user_occasions = prefs.preferred_occasions_list if prefs.preferred_occasions_list else [] %}
                   {% for occ in ['College', 'Office', 'Casual', 'Party', 'Interview', 'Wedding', 'Gym', 'Date'] %}
                   <label class="fit-toggle-label">
                     <input type="checkbox" name="occasions" value="{{ occ }}" class="fit-toggle-input" style="display:none;" {% if occ in user_occasions %}checked{% endif %}>
@@ -716,9 +722,9 @@
               </div>
 
               <div class="luxury-form-group mt-3">
-                <label class="luxury-field-label">Preferred Seasons</label>
+                <label class="luxury-field-label">Preferred Seasons <small class="text-muted">(optional)</small></label>
                 <div class="luxury-pill-toggles">
-                  {% set user_seasons = prefs.preferred_seasons_list if prefs.preferred_seasons_list else ['All Seasons'] %}
+                  {% set user_seasons = prefs.preferred_seasons_list if prefs.preferred_seasons_list else [] %}
                   {% for s in ['All Seasons', 'Summer', 'Rainy', 'Winter'] %}
                   <label class="fit-toggle-label">
                     <input type="checkbox" name="seasons" value="{{ s }}" class="fit-toggle-input" style="display:none;" {% if s in user_seasons %}checked{% endif %}>
@@ -776,7 +782,7 @@
                   <div class="palette-swatches-container" id="container_favorite_colors">
                     <!-- Hidden inputs container for form submission -->
                     <div class="palette-hidden-inputs" id="inputs_favorite_colors">
-                      {% set user_fav_colors = fav_colors if fav_colors is defined else (prefs.preferred_colors_list if prefs.preferred_colors_list else ['#891C1C', '#E8DDD0', '#1C1C1C', '#C59B6D']) %}
+                      {% set user_fav_colors = fav_colors if fav_colors is defined else (prefs.preferred_colors_list if prefs.preferred_colors_list else []) %}
                       {% for c in user_fav_colors %}
                       <input type="hidden" name="favorite_colors" value="{{ c }}">
                       {% endfor %}
@@ -849,7 +855,7 @@
                   <div class="palette-swatches-container" id="container_colors_to_avoid">
                     <!-- Hidden inputs container for form submission -->
                     <div class="palette-hidden-inputs" id="inputs_colors_to_avoid">
-                      {% set user_avoid_colors = avoid_colors if avoid_colors is defined else (prefs.disliked_colors_list if prefs.disliked_colors_list else ['#9E9E9E', '#4CAF50', '#F48FB1']) %}
+                      {% set user_avoid_colors = avoid_colors if avoid_colors is defined else (prefs.disliked_colors_list if prefs.disliked_colors_list else []) %}
                       {% for c in user_avoid_colors %}
                       <input type="hidden" name="colors_to_avoid" value="{{ c }}">
                       {% endfor %}
@@ -907,8 +913,8 @@
 
               <!-- Preferred Clothing Types -->
               <div class="luxury-form-group mt-3">
-                <label class="luxury-field-label">Preferred Clothing Types</label>
-                {% set active_types = meta.get('preferred_clothing_types', ['Tops', 'Jeans', 'Dresses']) %}
+                <label class="luxury-field-label">Preferred Clothing Types <small class="text-muted">(optional)</small></label>
+                {% set active_types = meta.get('preferred_clothing_types', []) %}
                 <div class="luxury-pill-toggles">
                   {% for ctype in ['Tops', 'Jeans', 'Dresses', 'Skirts', 'Jackets', 'Ethnic Wear', 'Active Wear', 'Formals'] %}
                   <label class="fit-toggle-label">
@@ -929,7 +935,7 @@
                   </svg>
                   <label class="luxury-field-label m-0">Preferred Fabrics <small class="text-muted">(optional)</small></label>
                 </div>
-                {% set active_fabrics = meta.get('preferred_fabrics', ['Cotton', 'Silk']) %}
+                {% set active_fabrics = meta.get('preferred_fabrics', []) %}
                 <div class="luxury-pill-toggles">
                   {% for fabric in ['Cotton', 'Linen', 'Denim', 'Silk', 'Wool', 'Leather'] %}
                   <label class="fit-toggle-label">
@@ -951,7 +957,7 @@
                   </svg>
                   <label class="luxury-field-label m-0">Preferred Patterns <small class="text-muted">(optional)</small></label>
                 </div>
-                {% set active_patterns = meta.get('preferred_patterns', ['Solid']) %}
+                {% set active_patterns = meta.get('preferred_patterns', []) %}
                 <div class="luxury-pill-toggles">
                   {% for pat in ['Solid', 'Stripes', 'Floral', 'Checks', 'Printed', 'Polka Dots'] %}
                   <label class="fit-toggle-label">

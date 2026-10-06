@@ -13,12 +13,10 @@ from flask import current_app
 def get_outfit_collage_url(items, canvas_size=(800, 800)) -> str:
     """Generate or retrieve a cached collage image for a list of ClothingItem objects.
 
-    Returns the public static URL to the collage image, or a fallback image URL.
+    Returns the public static URL to the collage image, or None if no items exist.
     """
-    fallback_url = "/static/img/ai_outfit_casual_chic.jpg"
-
     if not items:
-        return fallback_url
+        return None
 
     # Resolve local file paths for items
     valid_paths = []
@@ -70,7 +68,7 @@ def get_outfit_collage_url(items, canvas_size=(800, 800)) -> str:
         for it in items:
             if getattr(it, "image_url", None) and it.image_url.strip():
                 return it.image_url.strip()
-        return fallback_url
+        return None
 
     # Cache key
     key_str = "_".join(item_keys)
