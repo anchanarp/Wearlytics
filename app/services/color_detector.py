@@ -90,6 +90,9 @@ def _nearest_color(r: int, g: int, b: int) -> tuple[str, str]:
             return "#FFFFFF", "White"
         elif v >= 0.78:
             return "#F5F5F5", "Off White"
+        elif v >= 0.70 and (20 <= h_deg <= 50):
+            # Warm off-white / ecru / cream undertone
+            return "#F5F5F5", "Off White"
         elif v >= 0.60:
             return "#C0C0C0", "Silver"
         elif v >= 0.32:
@@ -131,7 +134,7 @@ def _nearest_color(r: int, g: int, b: int) -> tuple[str, str]:
     # ------------------------------------------------------------------
     # Green family  (hue around 75°–165°)
     # ------------------------------------------------------------------
-    if 75 <= h_deg <= 165 and s >= 0.20:
+    if 75 <= h_deg <= 165 and s >= 0.15:
         if v < 0.45 or g < 90:
             return "#008000", "Dark Green"
         else:
@@ -268,10 +271,20 @@ def extract_color(image_path: str, n_clusters: int = 3) -> Optional[dict]:
         km = KMeans(n_clusters=n_clusters, n_init=10, random_state=42)
         km.fit(sample)
 
-        # Pick the largest cluster (most foreground pixels)
-        counts       = np.bincount(km.labels_)
-        dominant_idx = int(counts.argmax())
-        r, g, b      = [int(v) for v in km.cluster_centers_[dominant_idx]]
+        counts = np.bincount(km.labels_)
+        # If foreground was filtered and multiple clusters exist, weight cluster
+        # size by contrast distance from the background so high-contrast objects
+        # (e.g. cherry red bag) are not dominated by subtle background residual shadows.
+        if len(foreground) >= 200 and np.linalg.norm(bg_median - np.median(pixels, axis=0)) > 15:
+            scores = []
+            for idx, count in enumerate(counts):
+                d = np.linalg.norm(km.cluster_centers_[idx] - bg_median)
+                scores.append(count * (max(d, 10.0) ** 0.5))
+            dominant_idx = int(np.argmax(scores))
+        else:
+            dominant_idx = int(counts.argmax())
+
+        r, g, b = [int(v) for v in km.cluster_centers_[dominant_idx]]
 
         hex_code, color_name = _nearest_color(r, g, b)
         return {"hex": hex_code, "name": color_name, "rgb": (r, g, b)}

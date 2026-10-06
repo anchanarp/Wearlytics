@@ -485,6 +485,29 @@ def _classify_with_imagenet(image_path: str) -> Optional[dict]:
             except Exception:
                 pass
 
+        # Disambiguate lower-body pants / trousers portraits:
+        # Full or 3/4 lower-body portrait photos (waist to feet) featuring trousers,
+        # wide-leg pants, or chinos are sometimes predicted as Outerwear (Coat/Trench Coat)
+        # or Skirt because long wide legs resemble coats or skirts.
+        # Detecting the lower-body portrait geometry (aspect ratio >= 1.20, dark floor,
+        # and shoes/feet at the bottom) correctly maps them to Bottoms -> Trousers.
+        if category in ("Outerwear", "Bottoms"):
+            try:
+                from PIL import Image as _PIL3
+                import numpy as _np3
+                _img3 = _PIL3.open(image_path).convert("RGB")
+                _w3, _h3 = _img3.size
+                if _h3 / _w3 >= 1.20:
+                    _arr3 = _np3.array(_img3)
+                    _bottom3 = _arr3[int(_h3 * 0.88):, :]
+                    _floor3 = (_bottom3[:, :, 0] < 155) & (_bottom3[:, :, 1] < 155) & (_bottom3[:, :, 2] < 155)
+                    _shoes3 = (_bottom3[:, :, 0] > 180) & (_bottom3[:, :, 1] > 180) & (_bottom3[:, :, 2] > 180)
+                    if _floor3.mean() > 0.20 and _shoes3.mean() > 0.05:
+                        category = "Bottoms"
+                        clothing_type = "Trousers"
+            except Exception:
+                pass
+
         return {
             "category":      category,
             "clothing_type": clothing_type,
