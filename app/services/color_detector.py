@@ -102,7 +102,7 @@ def _nearest_color(r: int, g: int, b: int) -> tuple[str, str]:
     # ------------------------------------------------------------------
     # Red / Brown family  (hue wraps around 0°/360°)
     # ------------------------------------------------------------------
-    if (h_deg <= 20 or h_deg >= 345) and s >= 0.40:
+    if (h_deg <= 20 or h_deg >= 345) and s >= 0.35:
         # Brown: same hue angle as red but lower saturation + mid value
         # e.g. RGB(165,42,42) → H=0°, S=0.75, V=0.65
         if s < 0.82 and 0.35 <= v <= 0.72:
@@ -113,6 +113,33 @@ def _nearest_color(r: int, g: int, b: int) -> tuple[str, str]:
             return "#FF2400", "Cherry Red"
         else:
             return "#FF0000", "Red"
+
+    # ------------------------------------------------------------------
+    # Yellow / Gold / Olive family  (hue around 40°–68°)
+    # ------------------------------------------------------------------
+    if 40 <= h_deg <= 68 and s >= 0.18:
+        if v >= 0.70:
+            return "#FFFF00", "Yellow"
+        elif v >= 0.40:
+            return "#808000", "Olive"
+
+    # ------------------------------------------------------------------
+    # Green family  (hue around 75°–165°)
+    # ------------------------------------------------------------------
+    if 75 <= h_deg <= 165 and s >= 0.20:
+        if v < 0.45 or g < 90:
+            return "#008000", "Dark Green"
+        else:
+            return "#00FF00", "Green"
+
+    # ------------------------------------------------------------------
+    # Blue / Navy Blue family  (hue around 190°–255°)
+    # ------------------------------------------------------------------
+    if 190 <= h_deg <= 255 and s >= 0.25:
+        if v < 0.55:
+            return "#000080", "Navy Blue"
+        else:
+            return "#0000FF", "Blue"
 
     # ------------------------------------------------------------------
     # Fallback: nearest Euclidean distance in RGB space

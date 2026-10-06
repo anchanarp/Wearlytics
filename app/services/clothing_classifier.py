@@ -433,6 +433,48 @@ def _classify_with_imagenet(image_path: str) -> Optional[dict]:
             return _imagenet_shape_heuristic(image_path)
 
         category, clothing_type, confidence = result
+
+        # Disambiguate peplum tops vs dresses:
+        # Garments with flared waistlines (peplum tops) frequently trigger
+        # 'hoopskirt' or 'overskirt' in ImageNet. When the garment has top/hip
+        # length (aspect < 1.55) and long sleeves extending below the central hem,
+        # it is a top (Blouse), not a dress.
+        if category == "Dresses":
+            try:
+                from PIL import Image as _PIL
+                import numpy as _np
+                _img = _PIL.open(image_path).convert("RGB")
+                _w, _h = _img.size
+                _arr = _np.array(_img).astype(float)
+                _border = _np.vstack([
+                    _arr[0:max(4, int(_h * 0.05)), :].reshape(-1, 3),
+                    _arr[:, 0:max(4, int(_w * 0.05))].reshape(-1, 3),
+                    _arr[:, _w - max(4, int(_w * 0.05)):].reshape(-1, 3)
+                ])
+                _bg = _np.median(_border, axis=0)
+                _dist = _np.linalg.norm(_arr - _bg, axis=2)
+                _fg = _dist > 22
+                _ys, _xs = _np.where(_fg)
+                if len(_ys) > 0:
+                    _ymin, _ymax = _ys.min(), _ys.max()
+                    _xmin, _xmax = _xs.min(), _xs.max()
+                    _gh, _gw = _ymax - _ymin, _xmax - _xmin
+                    _aspect = _gh / _gw if _gw > 0 else 1.0
+
+                    # Check central coverage in the bottom 15% of garment bounding box
+                    _bottom_strip = _fg[int(_ymax - 0.15 * _gh):_ymax, _xmin:_xmax]
+                    _col_proj = _bottom_strip.mean(axis=0)
+                    _w_strip = len(_col_proj)
+                    _c_start = int(_w_strip * 0.3)
+                    _c_end = int(_w_strip * 0.7)
+                    _c_mean = float(_col_proj[_c_start:_c_end].mean()) if _c_end > _c_start else 0.0
+
+                    if _aspect < 1.50 and _c_mean < 0.15:
+                        category = "Tops"
+                        clothing_type = "Blouse"
+            except Exception:
+                pass
+
         return {
             "category":      category,
             "clothing_type": clothing_type,
