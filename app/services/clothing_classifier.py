@@ -187,15 +187,27 @@ def _preprocess_image(image_path: str, size: int = 224):
 
 _IMAGENET_KEYWORD_MAP: list[tuple[str, str, str]] = [
     # (keyword_lowercase, wearlytics_category, clothing_type)
+    # Dresses (must be matched before generic 'skirt' so hoopskirt/overskirt/gown map to Dresses)
+    ("hoopskirt",       "Dresses",     "Casual Dress"),
+    ("overskirt",       "Dresses",     "Casual Dress"),
+    ("academic gown",   "Dresses",     "Casual Dress"),
+    ("gown",            "Dresses",     "Evening Gown"),
+    ("abaya",           "Dresses",     "Maxi Dress"),
+    ("kimono",          "Dresses",     "Casual Dress"),
+    ("vestment",        "Dresses",     "Casual Dress"),
+    ("sarong",          "Dresses",     "Sundress"),
+    ("sundress",        "Dresses",     "Sundress"),
     # Tops
     ("jersey",          "Tops",        "T-Shirt"),
     ("tee shirt",       "Tops",        "T-Shirt"),
     ("t-shirt",         "Tops",        "T-Shirt"),
     ("sweatshirt",      "Tops",        "Sweater"),
+    ("cardigan",        "Tops",        "Sweater"),
     ("brassiere",       "Tops",        "Top"),
     ("bikini",          "Tops",        "Top"),
     ("polo shirt",      "Tops",        "Polo"),
     ("sport shirt",     "Tops",        "Shirt"),
+    ("peplum",          "Tops",        "Blouse"),
     # Bottoms
     ("jean",            "Bottoms",     "Jeans"),
     ("denim",           "Bottoms",     "Jeans"),
@@ -224,11 +236,6 @@ _IMAGENET_KEYWORD_MAP: list[tuple[str, str, str]] = [
     ("lab coat",        "Outerwear",   "Jacket"),
     ("poncho",          "Outerwear",   "Coat"),
     ("suit",            "Outerwear",   "Blazer"),
-    # Dresses
-    ("abaya",           "Dresses",     "Dress"),
-    ("gown",            "Dresses",     "Evening Gown"),
-    ("kimono",          "Dresses",     "Casual Dress"),
-    ("vestment",        "Dresses",     "Dress"),
     # Accessories
     ("bow tie",         "Accessories", "Bow Tie"),
     ("windsor tie",     "Accessories", "Tie"),
@@ -369,6 +376,12 @@ def _classify_with_custom_model(image_path: str) -> Optional[dict]:
                 _inet_sees_garment = any(kw in _top5_labels for kw in _garment_keywords)
                 if _inet_sees_garment and category == "Accessories":
                     return None   # ImageNet says garment, fine-tuned says Accessories → Tier 1B
+
+                # Dress signal in ImageNet but fine-tuned says Bottoms
+                _dress_keywords = ("hoopskirt", "overskirt", "gown", "abaya", "kimono", "vestment", "sarong")
+                _inet_sees_dress = any(kw in _top5_labels for kw in _dress_keywords)
+                if _inet_sees_dress and category == "Bottoms":
+                    return None   # ImageNet says dress, fine-tuned says Bottoms → Tier 1B
 
                 # Extra gate: fine-tuned says Accessories, ImageNet sees NEITHER
                 # bag NOR garment, AND the image is very bright (mean > 200).

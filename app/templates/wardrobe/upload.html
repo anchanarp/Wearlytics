@@ -15,11 +15,11 @@
   <div class="row g-4 mb-4">
     <!-- Left: Dropzone -->
     <div class="col-12 col-lg-6">
-      <div class="upload-main-card h-100">
+      <div class="upload-main-card h-100 d-flex flex-column">
         <div class="upload-dropzone" id="dropzone" onclick="document.getElementById('image_file').click()">
           <input type="file" id="image_file" name="image_file" accept="image/*" class="file-input-hidden"
                  onchange="previewUploadImage(this); triggerAiAnalysis(this);">
-          <div class="dropzone-content">
+          <div class="dropzone-content" id="dropzoneContent">
             <div class="upload-icon-circle">
               <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M19 13v6H5v-6H3v8h18v-8h-2ZM11 3v8.17L8.41 8.59 7 10l5 5 5-5-1.41-1.41L13 11.17V3h-2Z"/></svg>
             </div>
@@ -30,12 +30,24 @@
             </button>
           </div>
           <div id="imagePreview" class="image-preview-box d-none">
-            <img id="previewImg" src="#" alt="Upload preview">
+            <div class="preview-img-wrapper">
+              <img id="previewImg" src="#" alt="Upload preview">
+            </div>
+            <div class="preview-actions-toolbar">
+              <button type="button" class="btn-change-image" onclick="event.stopPropagation(); document.getElementById('image_file').click();">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <span>Change Image</span>
+              </button>
+              <button type="button" class="btn-remove-image" onclick="event.stopPropagation(); clearUploadPreview();">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <span>Remove</span>
+              </button>
+            </div>
           </div>
         </div>
         <!-- AI scanning indicator -->
         <div id="aiScanningIndicator" class="ai-scanning-indicator d-none mt-2">
-          <span class="ai-spinner"></span> Analysing garment features…
+          <span class="ai-spinner"></span> Analysing garment features &amp; silhouette…
         </div>
       </div>
     </div>

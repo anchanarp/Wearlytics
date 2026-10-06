@@ -194,23 +194,51 @@ document.addEventListener('DOMContentLoaded', function() {
 function previewUploadImage(input) {
   var previewBox = document.getElementById('imagePreview');
   var previewImg = document.getElementById('previewImg');
+  var dropzoneContent = document.getElementById('dropzoneContent') || document.querySelector('.dropzone-content') || document.querySelector('.dropzone-label');
+  var dropzone = document.getElementById('dropzone');
 
   if (input.files && input.files[0]) {
     var reader = new FileReader();
     reader.onload = function(e) {
-      previewImg.src = e.target.result;
-      previewBox.classList.remove('d-none');
+      if (previewImg) previewImg.src = e.target.result;
+      if (previewBox) previewBox.classList.remove('d-none');
+      if (dropzoneContent) dropzoneContent.classList.add('d-none');
+      if (dropzone) dropzone.classList.add('has-preview');
     };
     reader.readAsDataURL(input.files[0]);
-    // Clear preset selection if custom image uploaded
-    document.getElementById('preset_url').value = '';
+    var presetInput = document.getElementById('preset_url');
+    if (presetInput) presetInput.value = '';
     document.querySelectorAll('.preset-card').forEach(function(card) { card.classList.remove('selected'); });
   }
 }
 
+function clearUploadPreview() {
+  var fileInput = document.getElementById('image_file');
+  if (fileInput) fileInput.value = '';
+  var previewBox = document.getElementById('imagePreview');
+  var previewImg = document.getElementById('previewImg');
+  var dropzoneContent = document.getElementById('dropzoneContent') || document.querySelector('.dropzone-content') || document.querySelector('.dropzone-label');
+  var dropzone = document.getElementById('dropzone');
+
+  if (previewImg) previewImg.src = '#';
+  if (previewBox) previewBox.classList.add('d-none');
+  if (dropzoneContent) dropzoneContent.classList.remove('d-none');
+  if (dropzone) dropzone.classList.remove('has-preview');
+
+  var presetInput = document.getElementById('preset_url');
+  if (presetInput) presetInput.value = '';
+
+  // Reset AI suggestion panel if present
+  var aiPanel = document.getElementById('aiSuggestionPanel');
+  if (aiPanel) aiPanel.classList.add('d-none');
+  var aiSource = document.getElementById('aiSourceLabel');
+  if (aiSource) aiSource.textContent = '✦ Ready for Image';
+}
+
 // Preset Selection for Clothing Upload
 function selectPreset(url, element) {
-  document.getElementById('preset_url').value = url;
+  var presetInput = document.getElementById('preset_url');
+  if (presetInput) presetInput.value = url;
   document.querySelectorAll('.preset-card').forEach(function(card) { card.classList.remove('selected'); });
   element.classList.add('selected');
 
@@ -220,9 +248,14 @@ function selectPreset(url, element) {
 
   var previewBox = document.getElementById('imagePreview');
   var previewImg = document.getElementById('previewImg');
+  var dropzoneContent = document.getElementById('dropzoneContent') || document.querySelector('.dropzone-content') || document.querySelector('.dropzone-label');
+  var dropzone = document.getElementById('dropzone');
+
   if (previewImg && previewBox) {
     previewImg.src = url;
     previewBox.classList.remove('d-none');
+    if (dropzoneContent) dropzoneContent.classList.add('d-none');
+    if (dropzone) dropzone.classList.add('has-preview');
   }
 }
 

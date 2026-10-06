@@ -5505,19 +5505,26 @@ details.saved-dress-dropdown .saved-dress-content {
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 20px;
   padding: 24px;
+  display: flex;
+  flex-direction: column;
 }
 
 .upload-dropzone {
   border: 2px dashed rgba(201, 154, 107, 0.25);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.015);
-  min-height: 280px;
-  display: grid;
-  place-items: center;
+  min-height: 290px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   text-align: center;
-  padding: 28px 20px;
+  padding: 24px 20px;
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  flex: 1;
+  position: relative;
+  overflow: hidden;
 }
 
 .upload-dropzone:hover {
@@ -5555,6 +5562,126 @@ details.saved-dress-dropdown .saved-dress-content {
 .btn-choose-image {
   font-size: 12.5px;
   padding: 7px 18px;
+}
+
+/* Image Preview in Dropzone */
+.upload-dropzone.has-preview {
+  padding: 16px;
+  border-style: solid;
+  border-color: rgba(201, 154, 107, 0.45);
+  background: rgba(201, 154, 107, 0.03);
+}
+
+.image-preview-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-img-wrapper {
+  width: 100%;
+  max-height: 250px;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 8px;
+}
+
+[data-theme="dark"] .preview-img-wrapper {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="light"] .preview-img-wrapper {
+  background: #f7f3ed;
+  border: 1px solid rgba(140, 106, 74, 0.15);
+}
+
+#previewImg {
+  max-width: 100%;
+  max-height: 235px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  display: block;
+  margin: 0 auto;
+}
+
+.preview-actions-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.btn-change-image {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  background: rgba(201, 154, 107, 0.15);
+  color: var(--primary, #c99a6b);
+  border: 1px solid rgba(201, 154, 107, 0.35);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-change-image:hover {
+  background: var(--primary, #c99a6b);
+  color: #12100d;
+}
+
+.btn-remove-image {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-remove-image:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+[data-theme="light"] .btn-change-image {
+  background: #f0e7dc;
+  color: #543f2e;
+  border: 1px solid #d4c4b2;
+}
+
+[data-theme="light"] .btn-change-image:hover {
+  background: #8c6a4a;
+  color: #ffffff;
+}
+
+[data-theme="light"] .btn-remove-image {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+[data-theme="light"] .btn-remove-image:hover {
+  background: #dc2626;
+  color: #ffffff;
 }
 
 .badge-high-confidence {
@@ -6395,6 +6522,12 @@ details.saved-dress-dropdown .saved-dress-content {
 [data-theme="light"] .upload-dropzone {
   background: #fcfaf7 !important;
   border: 2px dashed rgba(180, 130, 85, 0.38) !important;
+}
+
+[data-theme="light"] .upload-dropzone.has-preview {
+  border-style: solid !important;
+  border-color: rgba(180, 130, 85, 0.45) !important;
+  background: #fdfaf6 !important;
 }
 
 [data-theme="light"] .upload-dropzone:hover {

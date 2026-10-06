@@ -92,7 +92,17 @@
               <span>Supports PNG, JPG, WEBP</span>
             </label>
             <div id="imagePreview" class="image-preview-box d-none">
-              <img id="previewImg" src="#" alt="Upload preview">
+              <div class="preview-img-wrapper">
+                <img id="previewImg" src="#" alt="Upload preview">
+              </div>
+              <div class="preview-actions-toolbar">
+                <button type="button" class="btn-change-image" onclick="document.getElementById('image_file').click();">
+                  Change Image
+                </button>
+                <button type="button" class="btn-remove-image" onclick="clearUploadPreview();">
+                  Remove
+                </button>
+              </div>
             </div>
           </div>
         </div>
